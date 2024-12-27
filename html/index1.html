@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leads Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .leads-table-container {
+            width: 87.5%; /* 7/8 of the screen width */
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td.editable {
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            width: 50%;
+            padding: 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .modal-header button {
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .sub-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .sub-table th, .sub-table td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: left;
+            }
+
+            .sub-table th {
+                background-color: #f4f4f4;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="leads-table-container">
+        <table id="leadsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Join Date</th>
+                    <th>Source</th>
+                    <th>Agent</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+            <tbody id="leadsBody">
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="modal" id="productsModal">
+        <div class="modal-header">
+            <h2>Products Viewed by Lead</h2>
+            <button onclick="closeModal()">&times;</button>
+        </div>
+        <table class="sub-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="productsBody">
+                <!-- Product rows will be dynamically added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>const leadsData = [
+        { name: "John Doe", phone: "123-456-7890", email: "john@example.com", location: "New York", company: "Acme Corp", status: "New", joinDate: "2024-12-01", source: "Website", agent: "Agent A", products: [
+            { product: "Product 1", date: "2024-12-05" },
+            { product: "Product 2", date: "2024-12-06" }
+        ] },
+        { name: "Jane Smith", phone: "987-654-3210", email: "jane@example.com", location: "Los Angeles", company: "Beta Inc", status: "Contacted", joinDate: "2024-12-02", source: "Referral", agent: "Agent B", products: [
+            { product: "Product 3", date: "2024-12-10" }
+        ] }
+    ];
+
+    function renderLeads() {
+        const tbody = document.getElementById("leadsBody");
+        tbody.innerHTML = "";
+
+        leadsData.sort((a, b) => new Date(b.joinDate) - new Date(a.joinDate));
+
+        leadsData.forEach(lead => {
+            const row = document.createElement("tr");
+
+            Object.entries(lead).forEach(([key, value]) => {
+                if (key === "products") {
+                    const cell = document.createElement("td");
+                    const button = document.createElement("button");
+                    button.textContent = "Products";
+                    button.onclick = () => openModal(lead.products);
+                    cell.appendChild(button);
+                    row.appendChild(cell);
+                } else {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    if (key !== "joinDate" && key !== "products") {
+                        cell.classList.add("editable");
+                        cell.ondblclick = () => makeEditable(cell);
+                    }
+                    row.appendChild(cell);
+                }
+            });
+
+            tbody.appendChild(row);
+        });
+    }
+
+    function makeEditable(cell) {
+        const originalText = cell.textContent;
+        cell.innerHTML = `<input type='text' value='${originalText}' />`;
+        const input = cell.querySelector("input");
+        input.focus();
+        input.onblur = () => {
+            cell.textContent = input.value;
+        };
+        input.onkeypress = (e) => {
+            if (e.key === "Enter") {
+                input.blur();
+            }
+        };
+    }
+
+    function openModal(products) {
+        const modal = document.getElementById("productsModal");
+        const overlay = document.getElementById("overlay");
+        const tbody = document.getElementById("productsBody");
+        tbody.innerHTML = "";
+
+        products.forEach(product => {
+            const row = document.createElement("tr");
+
+            Object.values(product).forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            tbody.appendChild(row);
+        });
+
+        modal.style.display = "block";
+        overlay.style.display = "block";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("productsModal");
+        const overlay = document.getElementById("overlay");
+        modal.style.display = "none";
+        overlay.style.display = "none";
+    }
+
+    renderLeads();</script>
+
+</body>
+</html>
