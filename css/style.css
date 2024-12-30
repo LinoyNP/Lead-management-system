@@ -1,0 +1,123 @@
+
+
+.sortAndSearch{
+    display: flex; /* אלמנטים בשורה אחת */
+    align-items: center; /* יישור אנכי */
+    justify-content: flex-start; /* יישור האלמנטים לצד שמאל */
+    max-width: 600px; /* רוחב מרבי */
+    margin: 10px auto; /* מרכז את האלמנטים */
+    gap: 0;
+}
+/* 
+Sort
+ */
+ .search-container button {
+    background-color: transparent; /* רקע שקוף */
+    border: none; /* הסרת המסגרת */
+    cursor: pointer; /* שינוי הסמן ליד */
+    font-size: 16px; /* גודל אייקון */
+    padding: 5px;
+    margin-right: -10px;
+    
+}
+
+.search-container button:hover {
+    color: #007bff; /* שינוי צבע בעת ריחוף */
+}
+
+.panel-sorting{
+    display: none; /* מוסתר בהתחלה */
+    position: absolute; /* מיקום יחסי לכפתור */
+    top: 10%; /* ממוקם מתחת לכפתור */
+    left:0; /* מיושר לצד שמאל של הכפתור */
+    width: 200px; /* רוחב הפאנל */
+    height: 200px;
+    background-color: #f4f4f4; /* צבע רקע */
+    border: 1px solid #ccc; /* מסגרת */
+    border-radius: 5px; /* פינות מעוגלות */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* צל */
+    z-index: 1000; /* קדימות מעל אלמנטים אחרים */
+}
+
+.panel-sorting.open {
+    display: block;
+    right: 0px; /* מזיז את הפאנל למיקום הנראה */
+}
+
+.panel-sorting.close {
+    display: none;
+}
+
+/* 
+Search engine
+ */
+.search-container {
+    display: flex;
+    align-items: center; /* יישור אנכי */
+    border: 1px solid #ccc; /* מסגרת מסביב לשדה */
+    border-radius: 5px; /* עיגול פינות */
+    padding: 5px;
+    max-width: 300px; /* רוחב מרבי */
+    margin: 0 auto;
+}
+
+.search-container input[type="text"] {
+    align-items: center;
+    border: none; /* הסרת המסגרת של השדה */
+    outline: none; /* הסרת ההדגשה בעת לחיצה */
+    flex: 1; /* שדה הטקסט יתפוס את כל השטח שנותר */
+    padding: 5px;
+}
+
+.search-container button {
+    background-color: transparent; /* רקע שקוף */
+    border: none; /* הסרת המסגרת */
+    cursor: pointer; /* שינוי הסמן ליד */
+    font-size: 16px; /* גודל אייקון */
+    padding: 5px;
+}
+
+.search-container button:hover {
+    color: #007bff; /* שינוי צבע בעת ריחוף */
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+}
+
+/*
+Search 
+ */
+.panel-SearchingBY{
+    display: none; /* מוסתר בהתחלה */
+    position: absolute; /* מיקום יחסי לכפתור */
+    top: 10%; /* ממוקם מתחת לכפתור */
+    right:0; /* מיושר לצד שמאל של הכפתור */
+    width: 200px; /* רוחב הפאנל */
+    height: 200px;
+    background-color: #f4f4f4; /* צבע רקע */
+    border: 1px solid #ccc; /* מסגרת */
+    border-radius: 5px; /* פינות מעוגלות */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* צל */
+    z-index: 1000; /* קדימות מעל אלמנטים אחרים */
+}
+
+.panel-SearchingBY.open {
+    display: block;
+    right: 0px; /* מזיז את הפאנל למיקום הנראה */
+}
+
+.panel-SearchingBY.close {
+    display: none;
+}
+
+/* All buttons that in the "searching by" panel*/
+.panel-SearchingBY .btns-SearchingBY button {
+    
+    margin: 5px;
+}
+

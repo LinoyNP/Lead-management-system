@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <form>
+        <!----Sort & Search ---->
+        <div class="sortAndSearch">
+
+            <!----Sort ---->
+            <div class="sorting-container">
+                <button id="openSorting" type="button" onclick="Sort()">
+                    <span class="material-symbols-outlined">
+                        filter_alt
+                        </span>
+                </button>
+            </div>
+            
+            <!----Search engine---->
+            <div class="search-container">
+                <button type="submit">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                
+                <input type="text" id="Search" name="Search" placeholder="Search by Name">
+                
+                <button id="openSearchingBY" type="button" onclick="filteringSearchBy()">
+                    <span class="material-symbols-outlined ">
+                        filter_list
+                        </span>
+                </button>
+            </div>
+        </div>
+        
+        <!----Panel of search ---->
+        <div id="panel-SearchingBY" class="panel-SearchingBY">
+            <div class="btns-SearchingBY">
+                <button id="phone">phone</button>
+                <!-- כאן אפשר להוסיף כפתורים נוספים אם צריך -->
+            </div>
+        </div>
+
+        <!----Panel of sort ---->
+        <div id="panel-sorting" class="panel-sorting">
+            <div class="btns-sort">
+                <button id="status">status</button>
+                <!-- כאן אפשר להוסיף כפתורים נוספים אם צריך -->
+            </div>
+        </div>
+        
+
+    </form>
+    <script src="../js/script.js"></script>
+</body>
+</html>
