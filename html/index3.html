@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="../css/style3.css">
+    <script src="js/dashboard.js"></script>
+</head>
+<body>
+    <div class="header">
+        <button id="dashboardBtn">Dashboard</button>
+    </div>
+
+    <div class="dashboard">
+        <div class="chart-container">
+            <h2>Lead Status</h2>
+            <canvas id="pieChart"></canvas>
+            <ul id="statusDetails" class="chart-details"></ul>
+        </div>
+        <div class="chart-container">
+            <h2>Sales Performance</h2>
+            <canvas id="barChart"></canvas>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

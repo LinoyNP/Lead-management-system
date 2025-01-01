@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Profile</title>
+    <link rel="stylesheet" href="../css/style4.css">
+    <script src="js/personalProfile.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Personal Profile</h1>
+        <form id="profileForm">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" maxlength="20" value="Yossi Cohen" required>
+            <span id="fullNameError" class="error-message"></span>
+
+            <label for="phoneNumber">Phone Number:</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" pattern="0[0-9]{9}" value="0501234567" required>
+            <span id="phoneNumberError" class="error-message"></span>
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" list="cities" value="Tel Aviv" required>
+            <datalist id="cities">
+                <option value="Tel Aviv">
+                <option value="Haifa">
+                <option value="Jerusalem">
+                <option value="Beersheba">
+            </datalist>
+            <span id="cityError" class="error-message"></span>
+
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street" value="HaShalom" required>
+            <span id="streetError" class="error-message"></span>
+
+            <label for="houseNumber">House Number:</label>
+            <input type="number" id="houseNumber" name="houseNumber" value="10" required>
+            <span id="houseNumberError" class="error-message"></span>
+
+            <button type="submit">Save</button>
+        </form>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
