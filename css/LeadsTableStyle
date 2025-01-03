@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.leads-table-container {
+    width: 87.5%;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+td.editable {
+    cursor: pointer;
+}
+
+form {
+    margin: 20px auto;
+    width: 87.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+    form input, form button {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    form button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+
+#productModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    z-index: 1000;
+}
+
+    #productModal table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #productModal th,
+    #productModal td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+    }
+
+    #productModal .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
