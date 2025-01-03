@@ -24,8 +24,8 @@ async function connectToDB() {
     try {
         await client.connect();
         const db = client.db("LeadsTable");
-        console.log("Connected to database: LeadsTable");
-        return db.collection("leads");
+        console.log("Connected to database: Leads");
+        return db.collection("Leads table");  
     } catch (err) {
         console.error("Connection failed:", err); 
         throw err;
