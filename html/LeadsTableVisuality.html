@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/LeadsTableStyle.css">
+</head>
+
+<body>
+    <!-- leads table -->
+    <div class="leads-table-container">
+        <table id="leadsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Join Date</th>
+                    <th>Source</th>
+                    <th>Agent</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+            <tbody id="leadsBody">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- product window -->
+    <div id="productModal">
+        <span class="close">&times;</span>
+        <h2>Products Viewed by Lead</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+            </tbody>
+        </table>
+    </div>
+    <script src="Lead-management-system/js/LeadsTable.js"></script>
+</body>
+
+</html>
