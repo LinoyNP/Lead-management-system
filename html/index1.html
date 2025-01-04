@@ -9,11 +9,11 @@
 <body>
     <form>
         <!----Sort & Search ---->
-        <div class="sortAndSearch">
+        <div class="sortAndSearch" onclick="event.stopPropagation();">
 
             <!----Sort ---->
-            <div class="sorting-container">
-                <button type="button" id="openSorting"  onclick="Sort()">
+            <div class="sorting-container" onclick="event.stopPropagation();">
+                <button type="button" id="openSorting"  onclick="Sort(event)">
                     <span class="material-symbols-outlined">
                         filter_alt
                         </span>
@@ -57,22 +57,62 @@
         </div>
 
         <!----Panel of sort ---->
-        <div class="panel-sorting" id="panel-sorting" >
+        <div class="panel-sorting" id="panel-sorting" onclick="event.stopPropagation();" >
+            <br><label for="sorting by">Sorting by..</label><br>
+            
             <div class="btns-sort" id = "btns-sort">
-                
-                <label for="sorting by">Sorting by..</label><br>
-                
-                <div class="checkbox-status">
-                    <form>
-                        <select>
-                            <option value="open"></option>
-                            <option value="new">new</option>
-                        </select>
-                    </form>
+                <!-- status -->
+                <div class="checkboxs-sorting" >
                     <label for="status">Status</label><br>
+                    <button class="sorting-btn" id="status-btn" onclick="togglePanel(event, this)">&#9662;</button>
+                    <div class="sorting-options" id="status-options" onclick="event.stopPropagation();">
+                        <label><input type="checkbox" value="new"> New</label><br>
+                        <label><input type="checkbox" value="in process"> In Process</label><br>
+                        <label><input type="checkbox" value="closed"> Closed</label>
+                    </div>
                     <!-- <input type="checkbox" id="" name="checkbox-sort" value=""> -->
-                    
                 </div>
+
+                <!-- Joining date -->
+                <!-- <div class="checkboxs-JoiningDate"> -->
+                <div class="checkboxs-sorting">
+                    <label for="Joining date">Joining date</label>
+                    <button class="sorting-btn" id="JoiningDate-btn" onclick="togglePanel(event, this)">&#9662;</button>
+                    <!-- <button class="JoiningDate-btn" id="JoiningDate-btn" onclick="toggleStatus(event)">&#9662;</button> -->
+                    <div class="sorting-options" id="JoiningDate-options" onclick="event.stopPropagation();">
+                    <!-- <div class="JoiningDate-options" id="JoiningDate-options" onclick="event.stopPropagation();"> -->
+                        <label><input type="checkbox" value="Today"> Today</label><br>
+                        <label><input type="checkbox" value="Week"> A week ago</label><br>
+                        <label><input type="checkbox" value="Month"> A month ago</label>
+                        <label><input type="checkbox" value="Years"> 3 years ago</label>
+                    </div>
+                </div>
+                
+                
+                <!-- joining source -->
+                <div class="checkboxs-sorting">
+                    <label for="joiningSource">Source of joining</label><br>
+                    <button class="sorting-btn" id="joiningSource-btn" onclick="togglePanel(event, this)">&#9662;</button>
+                    <div class="sorting-options" id="joiningSource-options" onclick="event.stopPropagation();">
+                        <label><input type="checkbox" value="Advertisement"> "Advertisement" </label><br>
+                        <label><input type="checkbox" value="Recommendation"> Recommendation</label><br>
+                        <label><input type="checkbox" value="SocialMedia"> Social Media</label>
+                        <label><input type="checkbox" value="Website"> Website</label>
+                        <label><input type="checkbox" value="PhoneCall"> Phone Call</label>
+                    </div>
+                </div>
+
+                <!-- Frequency -->
+                <div class="checkboxs-sorting">
+                    <label for="Frequency">Frequency</label><br>
+                    <button class="sorting-btn" id="Frequency-btn" onclick="togglePanel(event, this)">&#9662;</button>
+                    <div class="sorting-options" id="Frequency-options" onclick="event.stopPropagation();">
+                        <label><input type="checkbox" value="Very"> "Very Active Leads" </label><br>
+                        <label><input type="checkbox" value="Medium"> Medium Active Leads</label><br>
+                        <label><input type="checkbox" value="Inactive"> Inactive Leads</label>
+                    </div>
+                </div>
+                
 
             </div>
         </div>

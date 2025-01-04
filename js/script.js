@@ -88,14 +88,15 @@ function SearchingFromDB(content, searchKind){
 /*
 -----Sorting--------
 */
-function Sort(){
+function Sort(event){
     // Open the "sorting" menu
+    event.stopPropagation();
     const panel = document.getElementById("panel-sorting");
     const sortButton = document.getElementById("openSorting");
    
     const buttonRect = sortButton.getBoundingClientRect();
     panel.style.left = `${buttonRect.left + window.scrollX}px`;
-
+    
     if (panel.classList.contains("open")) {
         panel.classList.remove("open");
     } 
@@ -103,3 +104,51 @@ function Sort(){
         panel.classList.add("open");
     }
 }
+
+function togglePanel(event, button) {
+    event.stopPropagation(); // מונע התפשטות האירוע
+    
+    // סוגר את כל הפאנלים האחרים
+    const allPanels = document.querySelectorAll('.sorting-options');
+    allPanels.forEach((panel) => {
+        panel.classList.remove('open');
+    });
+
+    // מוצא את הפאנל הרלוונטי לכפתור שנלחץ
+    const panel = button.nextElementSibling; // הפאנל הוא האלמנט הבא אחרי הכפתור
+    if (panel && panel.classList.contains('sorting-options')) {
+        panel.classList.toggle('open'); // פותח/סוגר את הפאנל
+    }
+}
+
+// מאזין לסגירת כל הפאנלים בלחיצה מחוץ
+document.addEventListener('click', () => {
+    const allPanels = document.querySelectorAll('.sorting-options');
+    allPanels.forEach((panel) => {
+        panel.classList.remove('open');
+    });
+});
+
+
+// function toggleStatus(event) {
+//     event.stopPropagation();
+//     const panel = document.getElementById("sorting-options");
+//     const statusButton = document.getElementById("sorting-btn");
+//     const buttonRect = statusButton.getBoundingClientRect();
+//     // panel.style.left = `${buttonRect.left + window.scrollX}px`;
+
+//     if (panel.classList.contains("open")) {
+//         panel.classList.remove("open");
+//     } 
+//     else {
+//         panel.classList.add("open");
+//     }
+    
+
+//     // document.addEventListener("click", (event) => {
+//     //     const dropdown = document.getElementById("status-options");
+//     //     if (!event.target.closest(".checkboxs-status")) {
+//     //         dropdown.classList.remove("open");
+//     //     }
+//     // });
+// }
