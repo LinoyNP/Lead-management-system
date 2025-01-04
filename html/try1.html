@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Agent Home</title>
+    <link rel="stylesheet" href="../css/try11.css">
+
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-left">
+            <button class="btn logout">Log Out</button>
+        </div>
+        <div class="nav-right">
+            <button class="btn">Personal Profile</button>
+            <button class="btn">Dashboard</button>
+            <button class="btn">Leads to Associate</button>
+            <button class="btn" id="toggle-leads-btn" onclick="toggleLeadsView(this)">New Leads</button>
+            <button class="btn add-lead" onclick="alert('Add Lead Form Opening...')">+</button>
+        </div>
+    </header>
+
+    <!-- Search Box -->
+    <section class="search-container">
+        <input type="text" class="search-input" placeholder="Search by Name">
+        <button class="search-btn">🔍</button>
+        <button class="search-btn">🔄</button>
+        <button class="search-btn">⚙️</button>
+    </section>
+
+    <!-- Leads Table -->
+    <section class="table-container">
+        <table id="leadsTable" class="leads-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Join Date</th>
+                    <th>Join Source</th>
+                    <th>Agent</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td ondblclick="alert('Editing Name...')">John Doe</td>
+                    <td ondblclick="alert('Editing Phone...')">1234567890</td>
+                    <td ondblclick="alert('Editing Email...')">john@example.com</td>
+                    <td ondblclick="alert('Editing Location...')">New York</td>
+                    <td ondblclick="alert('Editing Company...')">Example Inc.</td>
+                    <td ondblclick="alert('Editing Status...')">Active</td>
+                    <td>2025-01-01</td>
+                    <td>Web</td>
+                    <td>Agent A</td>
+                    <td><button class="btn" onclick="openProductPane()">Products</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table id="newLeadsTable" class="leads-table hidden">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Join Date</th>
+                    <th>Join Source</th>
+                    <th>Agent</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>0987654321</td>
+                    <td>jane@example.com</td>
+                    <td>Los Angeles</td>
+                    <td>Test Corp.</td>
+                    <td>Pending</td>
+                    <td>2025-01-02</td>
+                    <td>Email</td>
+                    <td>Empty</td>
+                    <td>Products</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Products Pane -->
+    <div id="productsPane" class="products-pane hidden">
+        <button class="close-btn" onclick="closeProductPane()">X</button>
+        <h3>Products</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Product A</td>
+                    <td>2025-01-03</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // JavaScript for toggling and pane control
+        function toggleLeadsView(button) {
+            const leadsTable = document.getElementById("leadsTable");
+            const newLeadsTable = document.getElementById("newLeadsTable");
+            if (button.textContent === "New Leads") {
+                button.textContent = "My Leads";
+                leadsTable.classList.add("hidden");
+                newLeadsTable.classList.remove("hidden");
+            } else {
+                button.textContent = "New Leads";
+                leadsTable.classList.remove("hidden");
+                newLeadsTable.classList.add("hidden");
+            }
+        }
+
+        function openProductPane() {
+            document.getElementById("productsPane").classList.remove("hidden");
+        }
+
+        function closeProductPane() {
+            document.getElementById("productsPane").classList.add("hidden");
+        }
+    </script>
+</body>
+</html>

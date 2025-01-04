@@ -1,0 +1,135 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #e3f2fd; /* Very light blue */
+    color: #333;
+}
+
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1e88e5; /* Vibrant blue */
+    color: white;
+}
+
+.navbar .btn {
+    background-color: #42a5f5; /* Lively blue */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.navbar .btn:hover {
+    background-color: #64b5f6; /* Lighter blue */
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.search-input {
+    padding: 10px;
+    font-size: 16px;
+    width: 300px;
+    border: 1px solid #64b5f6; /* Lighter blue border */
+    border-radius: 5px;
+}
+
+.search-btn {
+    background-color: #1e88e5; /* Vibrant blue */
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-btn:hover {
+    background-color: #42a5f5; /* Lively blue */
+}
+
+/* Table Container */
+.table-container {
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.leads-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.leads-table th, .leads-table td {
+    border: 1px solid #64b5f6; /* Lighter blue border */
+    padding: 10px;
+    text-align: left;
+}
+
+.leads-table th {
+    background-color: #42a5f5; /* Lively blue */
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Products Pane */
+.products-pane {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    border: 2px solid #1e88e5; /* Vibrant blue border */
+}
+
+.products-pane .close-btn {
+    background-color: #1e88e5; /* Vibrant blue */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right;
+}
+
+.products-pane .close-btn:hover {
+    background-color: #42a5f5; /* Lively blue */
+}
+
+.products-pane table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.products-pane th, .products-pane td {
+    border: 1px solid #64b5f6; /* Lighter blue border */
+    padding: 10px;
+    text-align: left;
+}
+
+.products-pane th {
+    background-color: #42a5f5; /* Lively blue */
+    color: white;
+}
