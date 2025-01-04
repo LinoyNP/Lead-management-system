@@ -1,6 +1,8 @@
 
 
 .sortAndSearch{
+    
+    position: relative;
     display: flex; /* אלמנטים בשורה אחת */
     align-items: center; /* יישור אנכי */
     justify-content: flex-start; /* יישור האלמנטים לצד שמאל */
@@ -11,20 +13,7 @@
 /* 
 Sort
  */
- .search-container button {
-    background-color: transparent; /* רקע שקוף */
-    border: none; /* הסרת המסגרת */
-    cursor: pointer; /* שינוי הסמן ליד */
-    font-size: 16px; /* גודל אייקון */
-    padding: 5px;
-    margin-right: -10px;
-    
-}
-
-.search-container button:hover {
-    color: #007bff; /* שינוי צבע בעת ריחוף */
-}
-
+ 
 .panel-sorting{
     display: none; /* מוסתר בהתחלה */
     position: absolute; /* מיקום יחסי לכפתור */
@@ -41,17 +30,25 @@ Sort
 
 .panel-sorting.open {
     display: block;
-    right: 0px; /* מזיז את הפאנל למיקום הנראה */
+    position: absolute;
+    top: 10%;
 }
 
 .panel-sorting.close {
     display: none;
+}
+.btns-sort{
+    display: flex; /* משתמש ב-Flexbox כדי לסדר את האלמנטים */ 
+    flex-direction: column; /* מסדר את האלמנטים בצורה אנכית */ 
+    gap: 5px; /* מרווח של 10 פיקסלים בין כל כפתור */ 
+    align-items: flex-start; /* מיושר בצד שמאל */
 }
 
 /* 
 Search engine
  */
 .search-container {
+    position: relative;
     display: flex;
     align-items: center; /* יישור אנכי */
     border: 1px solid #ccc; /* מסגרת מסביב לשדה */
@@ -70,6 +67,7 @@ Search engine
 }
 
 .search-container button {
+    position: relative;
     background-color: transparent; /* רקע שקוף */
     border: none; /* הסרת המסגרת */
     cursor: pointer; /* שינוי הסמן ליד */
@@ -89,27 +87,34 @@ Search engine
   'opsz' 24;
 }
 
+
+
 /*
 Search 
  */
 .panel-SearchingBY{
-    display: none; /* מוסתר בהתחלה */
-    position: absolute; /* מיקום יחסי לכפתור */
-    top: 10%; /* ממוקם מתחת לכפתור */
-    right:0; /* מיושר לצד שמאל של הכפתור */
+    display: none; 
+    position: absolute; 
+    /* align-items: center; */
+    /* top: 10%; ממוקם מתחת לכפתור */
+    right: 0; 
     width: 200px; /* רוחב הפאנל */
-    height: 200px;
-    background-color: #f4f4f4; /* צבע רקע */
-    border: 1px solid #ccc; /* מסגרת */
-    border-radius: 5px; /* פינות מעוגלות */
+    /* height: 200px; */
+    /* width: auto;
+    height: auto; */
+    background-color: #ffffff; /* צבע רקע */
+    border: 1px solid #2e3de0; /* מסגרת */
+    border-radius: 10px; /* פינות מעוגלות */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* צל */
     z-index: 1000; /* קדימות מעל אלמנטים אחרים */
 }
 
 .panel-SearchingBY.open {
     display: block;
-    right: 0px; /* מזיז את הפאנל למיקום הנראה */
-}
+    align-items: center;
+    position: absolute;
+    top: 10%;
+} 
 
 .panel-SearchingBY.close {
     display: none;
