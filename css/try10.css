@@ -1,0 +1,170 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #e3f2fd; /* Very light blue */
+    color: #333;
+}
+
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #1e88e5; /* Vibrant blue */
+    color: white;
+}
+
+.navbar .btn {
+    background-color: #42a5f5; /* Lively blue */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.navbar .btn:hover {
+    background-color: #64b5f6; /* Lighter blue */
+}
+
+/* Sort and Search */
+.sortAndSearch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    max-width: 600px;
+    margin: 10px auto;
+    gap: 10px;
+}
+
+.sortAndSearch button {
+    background-color: transparent;
+    border: 2px solid #42a5f5;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #1e88e5;
+    transition: all 0.3s ease;
+}
+
+.sortAndSearch button:hover {
+    background-color: #42a5f5;
+    color: white;
+}
+
+/* Sort Panel */
+.panel-sorting {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 200px;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.panel-sorting.open {
+    display: block;
+}
+
+.panel-sorting .btns-sort {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px;
+}
+
+/* Search Container */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.search-container input[type="text"] {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.search-container button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.search-container button:hover {
+    color: #007bff;
+}
+
+/* Search Panel */
+.panel-SearchingBY {
+    display: none;
+    position: absolute;
+    top: 10%;
+    right: 0;
+    width: 250px;
+    background-color: #ffffff;
+    border: 1px solid #42a5f5;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.panel-SearchingBY.open {
+    display: block;
+}
+
+.panel-SearchingBY .btns-SearchingBY {
+    padding: 10px;
+    display: flex;
+    flex-direction: column; /* Arrange elements vertically */
+    gap: 10px;
+}
+
+.panel-SearchingBY .btns-SearchingBY label {
+    font-size: 16px;
+    color: #1e88e5;
+    display: flex; /* Align checkbox and label horizontally */
+    align-items: center; /* Center align vertically */
+    gap: 10px; /* Space between checkbox and text */
+}
+
+.panel-SearchingBY .btns-SearchingBY input[type="checkbox"] {
+    width: 20px; /* Adjust size of checkbox */
+    height: 20px;
+}
+
+.panel-SearchingBY .btns-SearchingBY button {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #42a5f5;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.panel-SearchingBY .btns-SearchingBY button:hover {
+    background-color: #64b5f6;
+}
