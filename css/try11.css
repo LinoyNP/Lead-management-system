@@ -37,8 +37,6 @@ body {
     --primary-blue: #1e88e5; /* כחול עיקרי */
     --hover-blue: #42a5f5;  /* כחול כשהעכבר מרחף */
 }
-
-
 /* Sort and Search */
 .sortAndSearch {
     position: relative;
