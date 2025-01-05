@@ -7,21 +7,22 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
     width: 50%;
     margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color:white;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow:  0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: #1E3A5F; /* Dark Blue */
+    color: #1e88e5; /* Dark Blue */
 }
 
 form {
@@ -31,28 +32,37 @@ form {
 
 label {
     margin-bottom: 5px;
-    color: #1E3A5F;
+    color: #555;
+    font-size: 0.9rem;
+
 }
 
 input {
     padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #A7C6ED; /* Light Blue */
+    border: 1px solid #ccc; /* Light Blue */
     border-radius: 4px;
-    color: #1E3A5F;
+    font-size: 1rem;
+    color: #333;
+}
+
+input:focus {
+    border-color: #1e88e5; /* כחול עיקרי */
+    outline: none;
 }
 
 button {
-    padding: 10px 20px;
-    background-color: #3A7CA5; /* Medium Blue */
-    color: #fff;
+    padding: 10px;
+    background-color: #1e88e5;  
+    color: white;
     border: none;
     border-radius: 4px;
+    font-size: 1rem;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #336D8E; /* Darker Blue */
+    background-color: #1565c0;  
 }
 
 .error-message {
