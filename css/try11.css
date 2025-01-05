@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #e3f2fd; /* Very light blue */
+    background-color: white; /* Very light blue */
     color: #333;
 }
 
@@ -32,34 +32,161 @@ body {
     background-color: #64b5f6; /* Lighter blue */
 }
 
-/* Search Container */
-.search-container {
+/* צבעים כחולים מותאמים */
+:root {
+    --primary-blue: #1e88e5; /* כחול עיקרי */
+    --hover-blue: #42a5f5;  /* כחול כשהעכבר מרחף */
+}
+
+
+/* Sort and Search */
+.sortAndSearch {
+    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin: 20px 0;
+    justify-content: flex-start;
+    max-width: 600px;
+    margin: 10px auto;
+    gap: 10px;
 }
 
-.search-input {
-    padding: 10px;
-    font-size: 16px;
-    width: 300px;
-    border: 1px solid #64b5f6; /* Lighter blue border */
+.sortAndSearch button {
+    background-color: transparent;
+    border: 2px solid #42a5f5;
+    padding: 8px;
+    cursor: pointer;
     border-radius: 5px;
+    font-size: 18px;
+    color: #1e88e5;
+    transition: all 0.3s ease;
 }
 
-.search-btn {
-    background-color: #1e88e5; /* Vibrant blue */
+.sortAndSearch button:hover {
+    background-color: #42a5f5;
+    color: white;
+}
+
+/* פאנל סינון */
+.panel-sorting {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 220px;
+    background-color: white; /* רקע לבן לפאנל */
+    border: 2px solid #42a5f5; /* גבול כחול */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.panel-sorting.open {
+    display: block;
+}
+
+.panel-sorting .btns-sort {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+}
+
+.panel-sorting .btns-sort label {
+    font-size: 16px;
+    color: #1e88e5; /* כחול עיקרי */
+}
+
+.panel-sorting .btns-sort button {
+    background-color: #42a5f5;
     color: white;
     border: none;
     padding: 10px;
-    margin: 0 5px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.search-btn:hover {
-    background-color: #42a5f5; /* Lively blue */
+.panel-sorting .btns-sort button:hover {
+    background-color: #64b5f6; /* כחול בהיר יותר */
+}
+
+/* סגנון לחיפוש */
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;/* ch*/
+    max-width: 300px;
+    margin: 0 auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* צל */
+    background-color: white; /* רקע לבן */
+}
+
+.search-container input[type="text"] {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+.search-container button {
+    position: relative;
+    background-color: transparent; /* רקע שקוף */
+    border: none; /* הסרת המסגרת */
+    cursor: pointer; /* שינוי הסמן ליד */
+    font-size: 16px; /* גודל אייקון */
+    padding: 5px;
+}
+
+.search-container button:hover {
+    color: var(--primary-blue); /* שינוי צבע כחול */
+}
+
+/* פאנל חיפוש לפי קריטריונים */
+.panel-SearchingBY {
+    display: none;
+    position: absolute;
+    right: 0;
+    width: 220px;
+    background-color: white; /* רקע לבן לפאנל */
+    border: 1px solid var(--primary-blue);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    padding: 15px;
+}
+
+.panel-SearchingBY.open {
+    display: block;
+    position: absolute;
+    top: 10%;
+}
+
+.panel-SearchingBY .btns-SearchingBY button {
+    margin: 8px 0;
+    background-color: #f4f4f4;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.panel-SearchingBY .btns-SearchingBY button:hover {
+    background-color: var(--hover-blue);
+    color: white;
+}
+
+.panel-SearchingBY .btns-SearchingBY button i {
+    margin-right: 8px;
+    font-size: 18px;
 }
 
 /* Table Container */
