@@ -1,0 +1,24 @@
+<script>
+    // JavaScript for toggling and pane control
+    function toggleLeadsView(button) {
+        const leadsTable = document.getElementById("leadsTable");
+        const newLeadsTable = document.getElementById("newLeadsTable");
+        if (button.textContent === "New Leads") {
+            button.textContent = "My Leads";
+            leadsTable.classList.add("hidden");
+            newLeadsTable.classList.remove("hidden");
+        } else {
+            button.textContent = "New Leads";
+            leadsTable.classList.remove("hidden");
+            newLeadsTable.classList.add("hidden");
+        }
+    }
+
+    function openProductPane() {
+        document.getElementById("productsPane").classList.remove("hidden");
+    }
+
+    function closeProductPane() {
+        document.getElementById("productsPane").classList.add("hidden");
+    }
+</script>

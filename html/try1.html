@@ -148,6 +148,7 @@
         </div>
     </form>
     <script src="../js/script.js"></script>
+
     <!-- Leads Table -->
     <section class="table-container">
         <table id="leadsTable" class="leads-table">
@@ -165,19 +166,7 @@
                     <th>Products</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td ondblclick="alert('Editing Name...')">John Doe</td>
-                    <td ondblclick="alert('Editing Phone...')">1234567890</td>
-                    <td ondblclick="alert('Editing Email...')">john@example.com</td>
-                    <td ondblclick="alert('Editing Location...')">New York</td>
-                    <td ondblclick="alert('Editing Company...')">Example Inc.</td>
-                    <td ondblclick="alert('Editing Status...')">Active</td>
-                    <td>2025-01-01</td>
-                    <td>Web</td>
-                    <td>Agent A</td>
-                    <td><button class="btn" onclick="openProductPane()">Products</button></td>
-                </tr>
+            <tbody id="leadsBody">
             </tbody>
         </table>
 
@@ -196,19 +185,7 @@
                     <th>Products</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>0987654321</td>
-                    <td>jane@example.com</td>
-                    <td>Los Angeles</td>
-                    <td>Test Corp.</td>
-                    <td>Pending</td>
-                    <td>2025-01-02</td>
-                    <td>Email</td>
-                    <td>Empty</td>
-                    <td>Products</td>
-                </tr>
+            <tbody id="leadsBody"> 
             </tbody>
         </table>
     </section>
@@ -224,38 +201,12 @@
                     <th>Date</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>Product A</td>
-                    <td>2025-01-03</td>
-                </tr>
+            <tbody id="productTableBody">
             </tbody>
         </table>
     </div>
+    <script src="../js/LeadsTable.js"></script>
 
-    <script>
-        // JavaScript for toggling and pane control
-        function toggleLeadsView(button) {
-            const leadsTable = document.getElementById("leadsTable");
-            const newLeadsTable = document.getElementById("newLeadsTable");
-            if (button.textContent === "New Leads") {
-                button.textContent = "My Leads";
-                leadsTable.classList.add("hidden");
-                newLeadsTable.classList.remove("hidden");
-            } else {
-                button.textContent = "New Leads";
-                leadsTable.classList.remove("hidden");
-                newLeadsTable.classList.add("hidden");
-            }
-        }
 
-        function openProductPane() {
-            document.getElementById("productsPane").classList.remove("hidden");
-        }
-
-        function closeProductPane() {
-            document.getElementById("productsPane").classList.add("hidden");
-        }
-    </script>
 </body>
 </html>
