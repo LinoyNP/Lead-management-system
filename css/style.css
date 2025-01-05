@@ -19,29 +19,83 @@ Sort
     position: absolute; /* מיקום יחסי לכפתור */
     top: 10%; /* ממוקם מתחת לכפתור */
     left:0; /* מיושר לצד שמאל של הכפתור */
-    width: 200px; /* רוחב הפאנל */
-    height: 200px;
+    width:fit-content; 
+    height: 200px; 
     background-color: #f4f4f4; /* צבע רקע */
-    border: 1px solid #ccc; /* מסגרת */
+    border: 1px solid #1003ff; /* מסגרת */
     border-radius: 5px; /* פינות מעוגלות */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* צל */
     z-index: 1000; /* קדימות מעל אלמנטים אחרים */
+    
 }
 
 .panel-sorting.open {
-    display: block;
+    display: flex;
     position: absolute;
     top: 10%;
+    flex-direction:column; 
+    gap: 5px;
 }
 
 .panel-sorting.close {
     display: none;
 }
+
 .btns-sort{
     display: flex; /* משתמש ב-Flexbox כדי לסדר את האלמנטים */ 
-    flex-direction: column; /* מסדר את האלמנטים בצורה אנכית */ 
-    gap: 5px; /* מרווח של 10 פיקסלים בין כל כפתור */ 
+    flex-direction: row; 
+    gap: 20px; 
     align-items: flex-start; /* מיושר בצד שמאל */
+    position: relative;
+}
+
+/* status */
+.checkboxs-sorting {
+    display: flex; /* משתמש ב-Flexbox כדי לסדר את האלמנטים */ 
+    flex-direction:row; 
+    gap: 2px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.sorting-btn {
+    /* button - that open status options */
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sorting-options {
+    /* panel- status\join date\joining source\  options */
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    padding: 10px;
+}
+
+.sorting-options label {
+    display: block;
+    margin: 5px 0;
+}
+
+.sorting-options.open {
+    display: block;
+}
+
+.sorting-options.close{
+    display: none;
 }
 
 /* 
@@ -125,4 +179,6 @@ Search
     
     margin: 5px;
 }
+
+
 
