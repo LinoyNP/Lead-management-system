@@ -1,13 +1,61 @@
 //npm install cors in the cmd before the use
 
-const express = require("express");
-const { MongoClient, ObjectId, ServerApiVersion } = require("mongodb");
+import express from 'express';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
+import nodemailer from 'nodemailer';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
+
+
 const app = express();
 const port = 3000;
 
-const cors = require("cors");
+// Middleware to parse JSON requests
 app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
+
+ 
+  
+
+// Nodemailer Transporter configuration
+const transporter = nodemailer.createTransport({
+    service: "gmail", // SMTP service provider (can be changed to another service)
+    auth: {
+      user: process.env.EMAIL_USER, // Your email address
+      pass: process.env.EMAIL_PASS, // Application password for the email
+    },
+  });
+  
+  // Route to handle email sending
+  app.post("/send-email", async (req, res) => {
+    const { email, subject, message } = req.body;
+  
+    // Validate that all fields are provided
+    if (!email || !subject || !message) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+  
+    try {
+      // Mail options
+      const mailOptions = {
+        from: process.env.EMAIL_USER, // Sender's email address
+        to: email, // Recipient's email address
+        subject: subject, // Email subject
+        text: message, // Email body
+      };
+  
+      // Send the email using Nodemailer
+      await transporter.sendMail(mailOptions);
+      res.status(200).json({ message: "Email sent successfully!" });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      res.status(500).json({ error: "Failed to send email." });
+    }
+  });
+
 
 // URI MongoDB
 const uri = "mongodb+srv://chayami:KXwRU0GteUWetJY4@leadsmanagement.aoz66.mongodb.net/?retryWrites=true&w=majority&appName=LeadsManagement";
