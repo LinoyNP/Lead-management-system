@@ -52,7 +52,7 @@ async function handleRegistration(event) {
           body: JSON.stringify({
               email,
               subject: 'Welcome to Our Platform',
-              message: `Hi ${fullName},\n\nThank you for registering! Please verify your email.`,
+              message: `Hi ${fullName},\n\nThank you for registering! Please`, 
           }),
       });
 
