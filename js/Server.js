@@ -4,6 +4,7 @@ import express from 'express';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import nodemailer from 'nodemailer';
 import bodyParser from 'body-parser';
+
 import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -28,33 +29,61 @@ const transporter = nodemailer.createTransport({
       pass: process.env.EMAIL_PASS, // Application password for the email
     },
   });
-  
-  // Route to handle email sending
-  app.post("/send-email", async (req, res) => {
-    const { email, subject, message } = req.body;
-  
-    // Validate that all fields are provided
-    if (!email || !subject || !message) {
-      return res.status(400).json({ error: "All fields are required." });
-    }
-  
+
+app.post('/send-email', async (req, res) => {
     try {
-      // Mail options
-      const mailOptions = {
-        from: process.env.EMAIL_USER, // Sender's email address
-        to: email, // Recipient's email address
-        subject: subject, // Email subject
-        text: message, // Email body
-      };
-  
-      // Send the email using Nodemailer
-      await transporter.sendMail(mailOptions);
-      res.status(200).json({ message: "Email sent successfully!" });
+        const { email, subject, message } = req.body;
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject,
+            text: message,
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        // אם המייל נשלח בהצלחה, מחזירים סטטוס 200
+        res.status(200).send({ message: 'Email sent successfully' });
     } catch (error) {
-      console.error("Error sending email:", error);
-      res.status(500).json({ error: "Failed to send email." });
+        console.error('Error sending email:', error);
+
+        // במקרה של שגיאה, מחזירים סטטוס 500
+        res.status(500).send({ error: 'Failed to send email' });
     }
-  });
+});
+
+// Send email endpoint
+/*app.post('/send-email', (req, res) => {
+    const { email, subject, message } = req.body;
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: subject,
+        text: message,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+            res.status(500).send('Failed to send email.');
+        } else {
+            console.log('Email sent:', info.response);
+            res.status(200).send('Email sent successfully.');
+        }
+    });
+});*/
+
+// Registration endpoint (example)
+app.post('/register', (req, res) => {
+    const { fullName, email, password } = req.body;
+
+    // Registration logic here (e.g., save user to database)
+
+    res.status(200).send('User registered successfully.');
+});
+
 
 
 // URI MongoDB
@@ -143,3 +172,6 @@ app.put("/leads/:id", async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+
+
