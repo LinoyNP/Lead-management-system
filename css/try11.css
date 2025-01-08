@@ -143,7 +143,9 @@ body {
     color: var(--primary-blue); /* שינוי צבע כחול */
 }
 
-/* פאנל חיפוש לפי קריטריונים */
+/*
+panel search by
+ */
 .panel-SearchingBY {
     display: none;
     position: absolute;
@@ -160,7 +162,7 @@ body {
 .panel-SearchingBY.open {
     display: block;
     position: absolute;
-    top: 10%;
+    top: 20%;
 }
 
 .panel-SearchingBY .btns-SearchingBY button {
