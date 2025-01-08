@@ -1,5 +1,3 @@
-//npm install cors in the cmd before the use
-
 import express from 'express';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import nodemailer from 'nodemailer';

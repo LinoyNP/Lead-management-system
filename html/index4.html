@@ -5,11 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Profile</title>
     <link rel="stylesheet" href="../css/style4.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="js/personalProfile.js"></script>
 
 </head>
 <body>
     <div class="container">
+        <button class="btn" id="returnBack" onclick="window.history.go(-1); return false;">
+            <span class="material-symbols-outlined">
+            undo
+            </span>
+        </button>
         <h1>Personal Profile</h1>
         <form id="profileForm">
             <label for="fullName">Full Name:</label>

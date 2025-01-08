@@ -108,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Update result:", result);
     }
 
+
     // Add new lead by User input
     /*document.getElementById("addLeadForm").addEventListener("submit", async function (e) {
         e.preventDefault();

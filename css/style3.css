@@ -8,14 +8,24 @@ body {
 
 .header {
     display: flex;
-    justify-content: center;
+    /* justify-content: center;  */
+    justify-content: space-between;
+    position: relative;
     align-items: center;
     background-color: #1e88e5; /* כחול עיקרי */
     padding: 1rem;
     color: white;
 }
 
+.returnBack {
+    align-items: first baseline;
+    
+}
+
 #dashboardBtn {
+    position: absolute; 
+    left: 50%; 
+    transform: translateX(-50%);
     background-color: white;
     color: #1e88e5;
     border: 2px solid #42a5f5;
