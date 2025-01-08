@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Add new lead by User input
-    document.getElementById("addLeadForm").addEventListener("submit", async function (e) {
+    /*document.getElementById("addLeadForm").addEventListener("submit", async function (e) {
         e.preventDefault();
 
         const newLead = {
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Failed to add lead. Check console for details.");
             console.error(err);
         }
-    });
+    });*/
 
     // Add new lead to the server
     async function addLead(newLead) {

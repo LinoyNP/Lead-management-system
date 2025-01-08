@@ -282,3 +282,18 @@ body {
 /*.leads-table td:nth-child(6):contains('Pending') {
     background-color: #ffa726; /* כתום */
 /*}
+
+.back-btn {
+    display: none;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color: #a71d2a;
+}
