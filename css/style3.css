@@ -16,16 +16,7 @@ body {
     padding: 1rem;
     color: white;
 }
-
-.returnBack {
-    align-items: first baseline;
-    
-}
-
-#dashboardBtn {
-    position: absolute; 
-    left: 50%; 
-    transform: translateX(-50%);
+.header .btn{
     background-color: white;
     color: #1e88e5;
     border: 2px solid #42a5f5;
@@ -34,6 +25,16 @@ body {
     cursor: pointer;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
+}
+#returnBack {
+    align-items: first baseline;
+}
+
+#dashboardBtn {
+    position: absolute; 
+    left: 50%; 
+    transform: translateX(-50%);
+    
 }
 
 #dashboardBtn:hover {
