@@ -139,7 +139,7 @@ app.get('/verify-email', (req, res) => {
               // פעולה שתתרחש אחרי 3 שניות
               setTimeout(() => {
                 // הפניה אוטומטית לעמוד try1
-                window.location.href = '/try1.html'; 
+                window.location.href = '/try1.ejs'; 
               }, 5000); // זמן ההמתנה הוא 3 שניות
             </script>
         `);
