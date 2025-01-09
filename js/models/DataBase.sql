@@ -1,8 +1,3 @@
--- Create the database ZLqH2NWj$pu5#qd
-SUPABASE_DB_URL=postgresql://postgres:[ZLqH2NWj$pu5#qd]@db.zytuhnekhcxxdrlphsda.supabase.co:5432/postgres
-
-CREATE DATABASE LeadsDataBase;
-
 -- Create the `leads` table
 CREATE TABLE leads (
     phone VARCHAR(15) PRIMARY KEY, 
