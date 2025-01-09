@@ -24,16 +24,23 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(express.static('public'))
+
+// app.use(express.static('public'))
+app.set('view engine', 'ejs')
+app.set('views', '../views');
+
 
 // הגדרת תיקיית הסטטיים
-app.use(express.static(path.join(__dirname, '../js')));
-app.use(express.static(path.join(__dirname, '../css')));
-app.use(express.static(path.join(__dirname, '../html')));
+// app.use(express.static(path.join(__dirname, '../js')));
+// app.use(express.static(path.join(__dirname, '..pu/css')));
+// app.use(express.static(path.join(__dirname, '../html')));
+
 
 // הגדר קבצים סטטיים
-/*app.use('/css', express.static(path.join(__dirname, 'css')));
-app.use('/js', express.static(path.join(__dirname, 'js')));
-app.use('/html', express.static(path.join(__dirname, 'html')));*/
+app.use('/css', express.static(path.join(__dirname, '../public/css')));
+app.use('/js', express.static(path.join(__dirname, '../js')));
+// app.use('/html', express.static(path.join(__dirname, 'html')));
 
 
 //************************User registration************************* */
@@ -76,6 +83,7 @@ app.post('/register', (req, res) => {
     // ***********************************************
     res.status(200).send('User registered successfully.');
 });
+
 
 
 // Send email with the token
@@ -124,6 +132,9 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
+app.get('/home', (req, res) => {
+    res.render('HomePage'); 
+});
 
 // Verification endpoint (when the user clicks the verification link in their email)
 app.get('/verify-email', (req, res) => {
@@ -144,21 +155,17 @@ app.get('/verify-email', (req, res) => {
             <div style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
                 <h1 style="color: #4CAF50;">Email Verified Successfully!</h1>
                 <p style="font-size: 18px; color: #555;">Your email has been successfully verified. You will be redirected to the homepage shortly...</p>
-                <p style="font-size: 16px; color: #888;">If you are not automatically redirected, <a href="/try1.html" style="color: #007BFF;">click here</a>.</p>
+                <p style="font-size: 16px; color: #888;">If you are not automatically redirected, <a href="/HomePage.ejs" style="color: #007BFF;">click here</a>.</p>
                 <script>
                     setTimeout(() => {
-                        window.location.href = '/try1.html'; // Redirect to the dashboard
+                        window.location.href = '/home';
                     }, 5000); 
                 </script>
             </div>
         `);
-        
-     
-        /*res.sendFile(path.join(__dirname, '../html/try1.html'));*/  
-    
+            
     }
 });
-
 
 //connecting to MongoDB
 /*async function connectToDB() {
@@ -259,9 +266,14 @@ app.put("/leads/:id", async (req, res) => {
     }
 });
 
+app.get('/', (req,res) => {
+    res.render('SignUp');        
+});
+
+
 // hearing requests for port 3000
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://127.0.0.1:${port}`);
 });
 
 

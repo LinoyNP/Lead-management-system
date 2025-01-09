@@ -5,20 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Agent Home</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link rel="stylesheet" href="../css/try11.css">
+    <link rel="stylesheet" href="/css/homePageStyle.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-
 
 </head>
 <body>
     <!-- Top Navigation Bar -->
     <header class="navbar">
         <div class="nav-left">
-            <button class="btn" id="returnBack" onclick="window.history.go(-1); return false;">
-                <span class="material-symbols-outlined">
-                undo
-                </span>
-            </button>
+            <button class="btn" id="returnBack" onclick="window.history.go(-1); return false;">Back</button>
             <button class="btn logout">Log Out</button>
         </div>
         <div class="nav-right">
@@ -152,7 +147,7 @@
             </div>
         </div>
     </form>
-    <script src="../js/script.js"></script>
+    <script src="/js/script.js"></script>
 
     <!-- Leads Table -->
     <section class="table-container">
@@ -210,34 +205,7 @@
             </tbody>
         </table>
     </div>
-    <script src="../js/LeadsTable.js"></script>
-
-    <script>
-        // JavaScript for toggling and pane control
-        function toggleLeadsView(button) {
-            const leadsTable = document.getElementById("leadsTable");
-            const newLeadsTable = document.getElementById("newLeadsTable");
-            if (button.textContent === "New Leads") {
-                button.textContent = "My Leads";
-                leadsTable.classList.add("hidden");
-                newLeadsTable.classList.remove("hidden");
-            } else {
-                button.textContent = "New Leads";
-                leadsTable.classList.remove("hidden");
-                newLeadsTable.classList.add("hidden");
-            }
-        }
-    
-        function openProductPane() {
-            document.getElementById("productsPane").classList.remove("hidden");
-        }
-    
-        function closeProductPane() {
-            document.getElementById("productsPane").classList.add("hidden");
-        }
-    </script>
-    
-
+    <script src="/js/LeadsTable.js"></script>
 
 </body>
 </html>

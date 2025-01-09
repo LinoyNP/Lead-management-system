@@ -100,7 +100,7 @@ app.get('/verify-email', async (req, res) => {
       <p>Redirecting to your dashboard...</p>
       <script>
         setTimeout(() => {
-          window.location.href = '/try1'; 
+          window.location.href = '/try1.ejs'; 
         }, 3000);
       </script>
     `);
