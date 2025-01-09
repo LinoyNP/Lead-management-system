@@ -1,5 +1,3 @@
-//Manager the table of leads
-
 document.addEventListener("DOMContentLoaded", () => {
     const productModal = document.getElementById("productModal");
     const closeModal = document.querySelector(".close");
@@ -12,70 +10,98 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // func to add leads to the table
     async function fetchLeads() {
-        const response = await fetch("http://localhost:3000/leads");
+        const response = await fetch("http://localhost:3000/leads");  // Server endpoint
         const leads = await response.json();
+        console.log("Leads fetched from server:", leads);
         const leadsBody = document.getElementById("leadsBody");
         leadsBody.innerHTML = ""; // clean the table first
 
         leads.forEach(lead => {
             const row = document.createElement("tr");
 
-            // rows wuth the leads data
+            // rows with the leads data
             Object.entries(lead).forEach(([key, value]) => {
-                // dont show the id
-                if (key === "_id") return;
+                // don't show the id
+                if (key === "id") return;
 
                 const cell = document.createElement("td");
 
-                // format of the joinDate
+                // format of the joinDate (handle invalid date)
                 if (key === "joinDate") {
                     const date = new Date(value);
-                    const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
-                    cell.textContent = formattedDate;
+                    if (isNaN(date)) {
+                        cell.textContent = "Invalid Date";  // if not valid, show an error message
+                    } else {
+                        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
+                        cell.textContent = formattedDate;
+                    }
                 } else {
                     cell.textContent = value;
                 }
 
-                // in the prodect column make bottom product
-                if (key === "products") {
-                    const button = document.createElement("button");
-                    button.textContent = "products";
-                    button.addEventListener("click", () => {
-                        // clicking the button opens the products window
-                        productModal.style.display = "block";
-                        showProducts(lead.products);
-                    });
-                    cell.appendChild(button);
-                } else {
-                    cell.classList.add("editable");
-                    cell.ondblclick = () => makeEditable(cell, lead._id, key);
-                }
+                cell.classList.add("editable");
+                cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
 
                 row.appendChild(cell);
             });
+
+            // Create the "Products" button column right after the "agent" column
+            const buttonCell = document.createElement("td");  // New cell for the button
+            const button = document.createElement("button");
+            button.textContent = "Products";
+            button.addEventListener("click", () => {
+                productModal.style.display = "block";
+                showProducts(lead.phone);  // pass the lead's phone number to fetch the products
+            });
+            buttonCell.appendChild(button);
+            row.appendChild(buttonCell); // Add the button cell to the row
 
             leadsBody.appendChild(row);
         });
     }
 
-    //show Products the lead watched
-    function showProducts(products) {
-        productTableBody.innerHTML = "";
-        products.forEach(product => {
-            const row = document.createElement("tr");
-            const productCell = document.createElement("td");
-            const dateCell = document.createElement("td");
+    // Show products for a given lead
+    async function showProducts(leadPhone) {
+        try {
+            const response = await fetch(`http://localhost:3000/leads/${leadPhone}/products`);
+            const products = await response.json();
+            console.log("Products fetched from server:", products);
 
-            productCell.textContent = product.name;
-            dateCell.textContent = product.date;
+            const productTable = document.getElementById("productTable");
+            const productTableBody = document.getElementById("productTableBody");
+            productTableBody.innerHTML = "";  // clear previous products
 
-            row.appendChild(productCell);
-            row.appendChild(dateCell);
-            productTableBody.appendChild(row);
-        });
+            products.forEach(product => {
+                const row = document.createElement("tr");
+
+                // Add product data to the row
+                Object.entries(product).forEach(([key, value]) => {
+                    const cell = document.createElement("td");
+
+                    // Check if the value is a valid date and format it
+                    if (key === "viewDate") {
+                        const date = new Date(value);
+                        if (isNaN(date)) {
+                            cell.textContent = "Invalid Date";
+                        } else {
+                            const formattedDate = date.toISOString().split('T').join(' ').split('.')[0];
+                            cell.textContent = formattedDate;
+                        }
+                    } else {
+                        cell.textContent = value;
+                    }
+
+                    row.appendChild(cell);
+                });
+
+                productTableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("Error fetching products:", error);
+        }
     }
 
-    // Edit fileds
+    // Edit fields in the table
     function makeEditable(cell, leadId, fieldName) {
         const originalText = cell.textContent;
         cell.innerHTML = `<input type='text' value='${originalText}' />`;
@@ -93,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // update Lead
+    // Update Lead in the SQL database
     async function updateLead(id, field, value) {
         console.log(`Updating lead with ID: ${id}, field: ${field}, value: ${value}`);
         const response = await fetch(`http://localhost:3000/leads/${id}`, {
@@ -107,37 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         console.log("Update result:", result);
     }
-
-
-    // Add new lead by User input
-    /*document.getElementById("addLeadForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const newLead = {
-            name: document.getElementById("name").value,
-            phone: document.getElementById("phone").value,
-            email: document.getElementById("email").value,
-            location: document.getElementById("location").value,
-            company: document.getElementById("company").value,
-            status: document.getElementById("status").value,
-            joinDate: new Date(),
-            source: document.getElementById("source").value,
-            agent: document.getElementById("agent").value,
-            products: []
-        };
-
-        console.log("Sending new lead:", newLead);
-
-        try {
-            await addLead(newLead);
-            alert("Lead added successfully!");
-            await fetchLeads();
-            this.reset();
-        } catch (err) {
-            alert("Failed to add lead. Check console for details.");
-            console.error(err);
-        }
-    });*/
 
     // Add new lead to the server
     async function addLead(newLead) {
@@ -158,6 +153,31 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Lead add result:", result);
     }
 
-    //loading leads
-    fetchLeads();
+    // loading leads
+    fetchLeads(); 
 });
+
+// function to show products
+async function showProducts(leadPhone) {
+    const response = await fetch(`http://localhost:3000/leads/${leadPhone}/products`);
+    const products = await response.json();
+    const productTableBody = document.getElementById("productTableBody");
+    productTableBody.innerHTML = "";  // clear the table before displaying new products
+
+    products.forEach(product => {
+        const row = document.createElement("tr");
+
+        // Display only product name and formatted date, not the product ID or lead phone number
+        const productNameCell = document.createElement("td");
+        productNameCell.textContent = product.productName;  // Show product name
+        row.appendChild(productNameCell);
+
+        const dateCell = document.createElement("td");
+        const date = new Date(product.viewDate);
+        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
+        dateCell.textContent = formattedDate;  // Show formatted date
+        row.appendChild(dateCell);
+
+        productTableBody.appendChild(row);
+    });
+}
