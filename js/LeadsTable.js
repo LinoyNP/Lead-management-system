@@ -60,8 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Show products for a given lead
-    async function showProducts(leadPhone) {
+    // Show products for a given lead, this functiom is global because it has use in other files
+    window.showProducts  = async function (leadPhone) {
         try {
             const response = await fetch(`http://localhost:3000/leads/${leadPhone}/products`);
             const products = await response.json();
@@ -100,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error fetching products:", error);
         }
     }
+
 
     // Edit fields in the table
     function makeEditable(cell, leadId, fieldName) {
