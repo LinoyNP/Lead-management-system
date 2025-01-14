@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/css/InterestForm.css">           
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="close-button" onclick="closeForm()">X</div>
+        <form id="interestForm">
+            <div class="form-group">
+                <label class="required" for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName">
+                <div class="error-message" id="fullNameError"></div>
+            </div>
+            <div class="form-group">
+                <label class="required" for="phone">Phone:</label>
+                <input type="text" id="phone" name="phone">
+                <div class="error-message" id="phoneError"></div>
+            </div>
+            <div class="form-group">
+                <label class="required" for="email">Email:</label>
+                <input type="email" id="email" name="email">
+                <div class="error-message" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label for="source">Source:</label>
+                <select id="source" name="source">
+                    <option value="" selected>Source:</option>
+                    <option value="Advertising">Advertising</option>
+                    <option value="Recommendation">Recommendation</option>
+                    <option value="Social Media">Social Media</option>
+                    <option value="Website">Website</option>
+                    <option value="Phone Call">Phone Call</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country">
+                <div class="error-message" id="countryError"></div>
+            </div>
+            <div class="form-group">
+                <label for="company">Company:</label>
+                <input type="text" id="company" name="company">
+                <div class="error-message" id="companyError"></div>
+            </div>
+            <div class="form-group">
+                <label for="additionalInfo">Additional Info:</label>
+                <textarea id="additionalInfo" name="additionalInfo" rows="4"></textarea>
+                <div class="error-message" id="additionalInfoError"></div>
+            </div>
+            <div class="buttons">
+                <button type="button" class="submit-btn" onclick="submitForm()">Submit</button>
+                <button type="reset" class="cancel-btn" onclick="resetForm()">Cancel</button>
+            </div>
+            <div id="successMessage" class="success-message"></div>
+        </form>
+    </div>
+    <script src="../js/InterestForm.js"></script>
+</body>
+
+</html>

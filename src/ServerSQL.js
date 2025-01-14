@@ -114,9 +114,69 @@ client.connect()
     .catch((err) => {
         console.error("Connection error", err.stack);
         process.exit(1); // Exit if connection fails
-    });
+    });    
+
+
 
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+// Endpoint to handle form submission and add lead to the database
+app.post('/submitForm', async (req, res) => {
+    const { fullName, phone, email, source, country, company } = req.body;
+
+    // Check if the phone or email already exists in the database
+    try {
+         const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
+         if (phoneCheck.rows.length > 0) {
+             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
+         }
+ 
+         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+         if (emailCheck.rows.length > 0) {
+             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
+         }
+
+        // If phone does not exist, insert the new lead into the database
+        const currentDate = new Date();  // Current date and time
+        const status = 'New';            // Default status
+        const agent = '';                // Empty for now
+
+        // Insert query to add the lead to the database
+        const insertQuery = `
+            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `;
+
+        await client.query(insertQuery, [
+            phone, fullName, email, country, company, status, currentDate, source, agent
+        ]);
+
+        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
+
+    } catch (error) {
+        console.error("Error processing form submission:", error);
+        res.status(500).send({ error: 'Failed to process form submission.' });
+    }
+});
+
+// Endpoint to update a specific field in a lead
+app.put('/leads/:id', async (req, res) => {
+    const leadId = req.params.id; // Get the lead ID from the URL parameter
+    const { field, value } = req.body; // Extract the field and value from the request body
+
+    // Construct the dynamic SQL query
+    const query = `UPDATE leads SET ${field} = $1 WHERE phone = $2`;
+
+    try {
+        // Execute the query with parameterized values
+        await client.query(query, [value, leadId]);
+        res.status(200).send({ success: `Lead with phone ${leadId} updated successfully.` });
+    } catch (error) {
+        console.error("Error updating lead:", error);
+        res.status(500).send({ error: 'Failed to update the lead.' });
+    }
+});
+

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login and Reset</title>
-    <link rel="stylesheet" href="/public/css/login.css">
+    <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
     <div class="container">
@@ -12,6 +12,8 @@
         <div id="login-form">
             <h2>Welcome Back!</h2>
             <form id="login">
+                <!-- <form id="login" action="/api/login" method="POST"> -->
+
                 <div class="form-group">
                     <input type="email" id="email" name="email" placeholder="Enter your email" required>
                     <span id="email-error" class="error-message"></span>
@@ -22,11 +24,13 @@
                     <span id="password-error" class="error-message"></span>
                 </div>
 
-                <button type="submit">Log In</button>
+                <button type="submit">Log in</button>
             </form>
-            <a id="forgot-password" href="#">Forgot Password?</a>
+            <a id="forgot-password" href="/reset-password">Forgot Password?</a>
             <br>
-            <a id="register-link" href="index0.html">Don't have an account? Register</a>
+            <!-- <a id="register-link" href="signUp.ejs">Don't have an account? Sign up</a> -->
+            <a id="register-link" href="/re-register">Don't have an account? Sign up</a>
+
 
         </div>
 
