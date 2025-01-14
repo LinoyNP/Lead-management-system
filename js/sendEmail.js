@@ -46,4 +46,22 @@ const handleRegister = async (event) => {
   }
 };
 
- 
+
+// reset password
+
+const resetPasswordDisplay = async (req, res) => {
+  let employer = await Employer.findOne({email:req.params.email})
+  if (employer) {
+     res.render('../views/resetPasswordEmployer', employer);
+  } 
+  else {
+      return res.status(400).send('That email is error!');
+  }
+}
+const resetPassword = async (req, res) => {
+
+  const salt = await bcrypt.genSalt(10);
+  const password = await bcrypt.hash(req.body.password, salt);
+  let employer = await Employer.findOneAndUpdate({email: req.params.email}, { password: password}, {new: true });
+  res.redirect(`/employer/homePage/${req.params.email}`);
+}
