@@ -125,11 +125,13 @@ async function inputFromEngineSearch(typeOfAction)
             };
             resultsList.appendChild(resultItem);
         });
-        if(typeOfAction == 'button')
+        if(typeOfAction == 'button'){
             searchInput.value = '';
             searchInput.placeholder = "Search by Name";
             resultsList.innerHTML = "";
             showLeadsSearchBy(data); // present data in table
+        }
+            
     } catch (error) {
         console.error('Error occurred:', error);
     }
