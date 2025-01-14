@@ -163,9 +163,14 @@ app.get('/home', (req, res) => {
     res.render('loginPage');
 });
 
-app.get('/re-register', (req, res) => {
+app.get('/register', (req, res) => {
     res.render('signUp');
 });
+
+app.get('/reset-password', (req, res) => {
+    res.render('resetPassword');
+});
+
 
 //LOGIN
 
@@ -222,11 +227,54 @@ app.post('/api/login', async (req, res) => {
 //   app.get('/register', (req, res) => {
 //     res.status(200).send('This is the registration page placeholder.');
 //   });
+
+
+
+// PASSWORD RESET
   
   app.get('/password-reset', (req, res) => {
     res.status(200).send('This is the password reset page placeholder.');
   });
   
+  app.post('/api/reset-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        if (result.rows.length === 0) {
+            return res.status(400).send({ message: 'This email is not registered.' });
+        }
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Password Reset Request',
+            text: `Click the link below to reset your password.\n\nhttp://localhost:3000/set-new-password?email=${email}`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.send({ message: 'Password reset link has been sent to your email.' });
+    } catch (error) {
+        res.status(500).send({ message: 'An error occurred. Please try again later.' });
+    }
+});
+
+app.post('/api/set-new-password', async (req, res) => {
+    const { email, newPassword, confirmPassword } = req.body;
+    if (newPassword !== confirmPassword) {
+        return res.status(400).send({ message: 'Passwords do not match.' });
+    }
+
+    try {
+        // Update password in DB without encryption
+        const result = await pool.query('UPDATE users SET password = $1 WHERE email = $2', [newPassword, email]);
+        if (result.rowCount === 0) {
+            return res.status(400).send({ message: 'User not found.' });
+        }
+        res.send({ message: 'Password has been successfully changed!' });
+    } catch (error) {
+        res.status(500).send({ message: 'An error occurred. Please try again later.' });
+    }
+});
 
 
 // הפעלת השרת

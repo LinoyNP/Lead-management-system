@@ -16,16 +16,15 @@
             <button class="btn logout">Log Out</button>
         </div>
         <div class="nav-right">
-            <a href="personalProfile.ejs" class="btn">Personal Profile</a>
-            <a href="dashboard.ejs" class="btn">Dashboard</a>
+            <!-- <a href="personalProfile.ejs" class="btn">Personal Profile</a> -->
+            <!-- <a href="dashboard.ejs" class="btn">Dashboard</a> -->
             <button class="btn" id="toggle-leads-btn" onclick="toggleLeadsView(this)">New Leads</button>
-            <button class="btn add-lead" onclick="alert('Add Lead Form Opening...')">+</button>
-            <!--
-            <button class="btn">Personal Profile</button>
-            <button class="btn">Dashboard</button>
-            <a href="new-leads.html" class="btn" id="toggle-leads-btn">New Leads</a>
-            <a href="add-lead.html" class="btn add-lead">+</a>-->
-
+            <!-- <button class="btn add-lead" onclick="alert('Add Lead Form Opening...')">+</button>  -->
+            <a href="/personalProfile" class="btn">Personal Profile</a>
+            <a href="/dashboard" class="btn">Dashboard</a>
+            <!-- <a href="/newLeads" class="btn" id="toggle-leads-btn">New Leads</a> -->
+            <a href="/addLeadForm" class="btn add-lead">+</a>
+            
         </div>
     </header>
 
@@ -198,7 +197,7 @@
             </tbody>
         </table>
     </div>
-    <script src="./js/leadsTable1.js"></script>
+    <script src="./js/LeadsTable.js"></script>
 
 </body>
 </html>

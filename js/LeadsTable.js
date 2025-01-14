@@ -1,12 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const productModal = document.getElementById("productModal");
-    const closeModal = document.querySelector(".close");
+    // const productModal = document.getElementById("productModal");
+    // const closeModal = document.querySelector(".close");
+    // const productTableBody = document.getElementById("productTableBody");
+
+    // // Close product window
+    // closeModal.addEventListener("click", () => {
+    //     productModal.style.display = "none";
+    // });
+    const productsPane = document.getElementById("productsPane");
+    const closePaneButton = document.querySelector(".close-btn");
     const productTableBody = document.getElementById("productTableBody");
 
-    // Close product window
-    closeModal.addEventListener("click", () => {
-        productModal.style.display = "none";
+    // Close the products pane
+    closePaneButton.addEventListener("click", () => {
+        productsPane.classList.add("hidden");
     });
+
+
 
     // func to add leads to the table
     async function fetchLeads() {
@@ -50,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const button = document.createElement("button");
             button.textContent = "Products";
             button.addEventListener("click", () => {
-                productModal.style.display = "block";
+                productsPane.style.display = "block";
                 showProducts(lead.phone);  // pass the lead's phone number to fetch the products
             });
             buttonCell.appendChild(button);
@@ -182,3 +192,27 @@ async function showProducts(leadPhone) {
         productTableBody.appendChild(row);
     });
 }
+
+    // JavaScript for toggling and pane control
+    function toggleLeadsView(button) {
+        const leadsTable = document.getElementById("leadsTable");
+        const newLeadsTable = document.getElementById("newLeadsTable");
+        if (button.textContent === "New Leads") {
+            button.textContent = "My Leads";
+            leadsTable.classList.add("hidden");
+            newLeadsTable.classList.remove("hidden");
+        } else {
+            button.textContent = "New Leads";
+            leadsTable.classList.remove("hidden");
+            newLeadsTable.classList.add("hidden");
+        }
+    }
+
+    function openProductPane() {
+        document.getElementById("productsPane").classList.remove("hidden");
+    }
+
+    function closeProductPane() {
+        document.getElementById("productsPane").classList.add("hidden");
+    }
+
