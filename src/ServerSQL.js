@@ -304,6 +304,10 @@ app.get('/reset-password', (req, res) => {
     res.render('resetPassword');
 });
 
+app.get('/addLeadForm', (req, res) => {
+    res.render('interestForm');
+});
+
 
 //LOGIN
 
