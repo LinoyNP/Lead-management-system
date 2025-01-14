@@ -73,3 +73,20 @@ p {
 #login-form, #password-reset, #email-verification {
   display: none;
 }
+
+a {
+  color: #1e88e5; /* Vibrant blue */
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container a {
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+}

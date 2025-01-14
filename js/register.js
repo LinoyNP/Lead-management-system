@@ -14,70 +14,112 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
-// Function to handle registration and email
+// // Function to handle registration and email
+// async function handleRegistration(event) {
+//   event.preventDefault();
+
+//   const fullName = document.getElementById('full-name').value;
+//   const email = document.getElementById('email').value;
+//   const password = document.getElementById('password').value;
+
+//   // Validate inputs
+//   let errorMessage = "";
+//   const passwordValidationErrors = validatePassword(password);
+//   if (passwordValidationErrors.length > 0) errorMessage += passwordValidationErrors.join("<br>");
+//   if (!validateEmail(email)) errorMessage += "<br>Please enter a valid email address.";
+
+//   if (errorMessage) {
+//       document.getElementById('signup-error').innerHTML = errorMessage;
+//       return;
+//   }
+
+//   try {
+//       // Register the user
+//       const registerResponse = await fetch('http://localhost:3000/register', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify({ fullName, email, password }),
+//       });
+
+//       if (!registerResponse.ok) {
+//           throw new Error('Registration failed');
+//       }
+
+//       // Send verification email
+//       const emailResponse = await fetch('http://localhost:3000/send-email', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify({
+//               email,
+//               subject: 'Welcome to Our Platform',
+//               message: `${fullName}`, 
+//           }),
+//       });
+
+//       /*if (!emailResponse.ok) {
+//           alert('Registration successful, but failed to send email.');
+//       } else {
+//           alert('Registration successful! Verification email sent.');
+//       }
+//   } catch (error) {
+//       console.error('Error:', error);
+//       alert('An error occurred. Please try again later.');
+//   }*/
+//       const emailData = await emailResponse.json();
+
+//       // Check the message from the server
+//       if (emailData.message === 'Email sent successfully') {
+//           alert('Registration successful! Verification email sent.');
+//       } else {
+//           alert('Registration successful, but failed to send email.');
+//       }
+//   } catch (error) {
+//       console.error('Error:', error);
+//       alert('An error occurred. Please try again later.');
+//   }
+
+// }
+
+
 async function handleRegistration(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  const fullName = document.getElementById('full-name').value;
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+    const fullName = document.getElementById('full-name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-  // Validate inputs
-  let errorMessage = "";
-  const passwordValidationErrors = validatePassword(password);
-  if (passwordValidationErrors.length > 0) errorMessage += passwordValidationErrors.join("<br>");
-  if (!validateEmail(email)) errorMessage += "<br>Please enter a valid email address.";
+    // Validate inputs
+    let errorMessage = "";
+    const passwordValidationErrors = validatePassword(password);
+    if (passwordValidationErrors.length > 0) errorMessage += passwordValidationErrors.join("<br>");
+    if (!validateEmail(email)) errorMessage += "<br>Please enter a valid email address.";
 
-  if (errorMessage) {
-      document.getElementById('signup-error').innerHTML = errorMessage;
-      return;
-  }
+    if (errorMessage) {
+        document.getElementById('signup-error').innerHTML = errorMessage;
+        return;
+    }
 
-  try {
-      // Register the user
-      const registerResponse = await fetch('http://localhost:3000/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fullName, email, password }),
-      });
+    try {
+        // Register the user
+        const registerResponse = await fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullName, email, password }),
+        });
 
-      if (!registerResponse.ok) {
-          throw new Error('Registration failed');
-      }
+        const registerData = await registerResponse.json();
 
-      // Send verification email
-      const emailResponse = await fetch('http://localhost:3000/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-              email,
-              subject: 'Welcome to Our Platform',
-              message: `${fullName}`, 
-          }),
-      });
+        if (!registerResponse.ok) {
+            // Display specific error message from server
+            document.getElementById('signup-error').innerHTML = registerData.error || 'An error occurred during registration.';
+            return;
+        }
 
-      /*if (!emailResponse.ok) {
-          alert('Registration successful, but failed to send email.');
-      } else {
-          alert('Registration successful! Verification email sent.');
-      }
-  } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again later.');
-  }*/
-      const emailData = await emailResponse.json();
-
-      // Check the message from the server
-      if (emailData.message === 'Email sent successfully') {
-          alert('Registration successful! Verification email sent.');
-      } else {
-          alert('Registration successful, but failed to send email.');
-      }
-  } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred. Please try again later.');
-  }
-
+        alert('Registration successful! Verification email sent.');
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
+    }
 }
 
 // Attach event listener
