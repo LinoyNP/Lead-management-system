@@ -16,14 +16,14 @@ function filteringSearchBy(){
     }
 }
 
-    //Listener of "search by" option
-    const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
-    let selectedSearchBy = "name"; //The default search is by name.
-    radioButtonsSearchBY.forEach((radio) => {
-        radio.addEventListener("change", (event) => {
-            selectedSearchBy = event.target.value;
-          });
-    });
+//Listener of "search by" option
+const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
+let selectedSearchBy = "name"; //The default search is by name.
+radioButtonsSearchBY.forEach((radio) => {
+    radio.addEventListener("change", (event) => {
+        selectedSearchBy = event.target.value;
+        });
+});
 
 function ListenersForSearchAndFiltering(){
     // this function changes the description in the search engine according to the "Search by" selection.
@@ -38,7 +38,7 @@ function ListenersForSearchAndFiltering(){
         radio.addEventListener("change", (event) => {
             selectedSearchBy = event.target.value;
             switch (selectedSearchBy) {
-                case "product":
+                case "productName":
                     searchInput.placeholder = "Search by Product";
                     break;
                 case "email":
@@ -73,107 +73,122 @@ function ListenersForSearchAndFiltering(){
     // });
 }
 
-async function inputFromEngineSearch(){
-    const searchInput = document.getElementById("Search");
-    const searchValue = searchInput.value; // The value typed in the search field
-    // const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
-
-    // let selectedSearchBy = "name"; //The default search is by name.
+// document.addEventListener("DOMContentLoaded", () => 
+//     {
     
-        if (!searchValue) {
-            alert("Please enter a search value.");
-            return;
-        }
-    // //"Search by" option
-    // radioButtonsSearchBY.forEach((radio) => {
-    //     radio.addEventListener("change", (event) => {
-    //         selectedSearchBy = event.target.value;
-    //       });
-    // });
-   
-    //Sending a request to the server to obtain information from the DB
-    try {
-        const response = await fetch("http://localhost:3000/searchBy", {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
-            body: JSON.stringify({ selectedSearchBy, searchValue }), 
-        });
 
-        if (!response.ok) {
-            console.error('Server returned an error:', response.status);
-            return;
-        }
+    async function inputFromEngineSearch()
+    {
+        const searchInput = document.getElementById("Search");
+        const searchValue = searchInput.value; // The value typed in the search field
+        // const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
 
-        const data = await response.json();
-        console.log('Data received:', data); 
-        searchInput.value = '';
-        searchInput.placeholder = "Search by Name";
-        showLeadsSearchBy(data); // אם הפונקציה דורשת את הנתונים
-    } catch (error) {
-        console.error('Error occurred:', error);
-    }
+        // let selectedSearchBy = "name"; //The default search is by name.
+        
+            if (!searchValue) {
+                alert("Please enter a search value.");
+                return;
+            }
+        // //"Search by" option
+        // radioButtonsSearchBY.forEach((radio) => {
+        //     radio.addEventListener("change", (event) => {
+        //         selectedSearchBy = event.target.value;
+        //       });
+        // });
     
-}
+        //Sending a request to the server to obtain information from the DB
+        try {
+            const response = await fetch("http://localhost:3000/searchBy", {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
+                body: JSON.stringify({ selectedSearchBy, searchValue }), 
+            });
 
-// func that show leads in table by "search by"
-async function showLeadsSearchBy(leads) {
-    // const response = await fetch("http://localhost:3000/searchBy");  // Server endpoint
-    // const leads = await response.json();
-    // console.log("Leads fetched from server:", leads);
-    const leadsBody = document.getElementById("leadsBody");
-    if(!leads || leads.length == 0){
-        //TODO messege - empty
-        return;
-    }
-    if(leadsBody)
-        leadsBody.innerHTML = ""; // clean the table first
-
-    leads.forEach(lead => {
-        const row = document.createElement("tr");
-
-        // rows with the leads data
-        Object.entries(lead).forEach(([key, value]) => {
-            // don't show the id
-            if (key === "id") return;
-
-            const cell = document.createElement("td");
-
-            // format of the joinDate (handle invalid date)
-            if (key === "joinDate") {
-                const date = new Date(value);
-                if (isNaN(date)) {
-                    cell.textContent = "Invalid Date";  // if not valid, show an error message
-                } else {
-                    const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
-                    cell.textContent = formattedDate;
-                }
-            } else {
-                cell.textContent = value;
+            if (!response.ok) {
+                console.error('Server returned an error:', response.status);
+                return;
             }
 
-            cell.classList.add("editable");
-            cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
+            const data = await response.json();
+            console.log('Data received:', data); 
+            searchInput.value = '';
+            searchInput.placeholder = "Search by Name";
+            showLeadsSearchBy(data); // present data in table
+        } catch (error) {
+            console.error('Error occurred:', error);
+        }
+        
+    }
 
-            row.appendChild(cell);
+    // func that show leads in table by "search by"
+    async function showLeadsSearchBy(leads) {
+        // const response = await fetch("http://localhost:3000/searchBy");  // Server endpoint
+        // const leads = await response.json();
+        // console.log("Leads fetched from server:", leads);
+        const leadsBody = document.getElementById("leadsBody");
+        // if(!leads || leads.length == 0){
+        //     //TODO messege - empty
+        //     return;
+        // }
+        // if(leadsBody)
+        leadsBody.innerHTML = ""; // clean the table first
+
+        leads.forEach(lead => {
+            const row = document.createElement("tr");
+
+            // rows with the leads data
+            Object.entries(lead).forEach(([key, value]) => {
+                // don't show the id
+                if (key === "id") return;
+
+                const cell = document.createElement("td");
+
+                // format of the joinDate (handle invalid date)
+                if (key === "joinDate") {
+                    const date = new Date(value);
+                    if (isNaN(date)) {
+                        cell.textContent = "Invalid Date";  // if not valid, show an error message
+                    } else {
+                        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
+                        cell.textContent = formattedDate;
+                    }
+                } else {
+                    cell.textContent = value;
+                }
+
+                cell.classList.add("editable");
+                cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
+
+                row.appendChild(cell);
+                
+            });
+
+            // Create the "Products" button column right after the "agent" column
+            const buttonCell = document.createElement("td");  // New cell for the button
+            const button = document.createElement("button");
+            button.textContent = "Products";
+            button.addEventListener("click", () => {
+                const productModal = document.getElementById("productsPane");
+                const closeModal = document.querySelector(".close-btn");
+                const productTableBody = document.getElementById("productTableBody");
+                
+                // Close product window
+                closeModal.addEventListener("click", () => {
+                    productModal.style.display = "none";
+                });
+                productModal.style.display = "block";
+                showProducts(lead.phone);  // pass the lead's phone number to fetch the products
+            });
+            buttonCell.appendChild(button);
+            row.appendChild(buttonCell); // Add the button cell to the row
+            console.log("Row is:", row);
+            leadsBody.appendChild(row);
         });
-
-        // Create the "Products" button column right after the "agent" column
-        const buttonCell = document.createElement("td");  // New cell for the button
-        const button = document.createElement("button");
-        button.textContent = "Products";
-        button.addEventListener("click", () => {
-            productModal.style.display = "block";
-            showProducts(lead.phone);  // pass the lead's phone number to fetch the products
-        });
-        buttonCell.appendChild(button);
-        row.appendChild(buttonCell); // Add the button cell to the row
-
-        leadsBody.appendChild(row);
-    });
-}
+    }
+// });
 
 /*
 -----Sorting--------

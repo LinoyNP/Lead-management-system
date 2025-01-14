@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <link rel="stylesheet" href="../public/css/style.css">
+    <link rel="stylesheet" href="../public/css/LeadsTableStyle.css">
 
 </head>
 <body>
@@ -40,16 +41,16 @@
         <!----Panel of search ---->
         <div class="panel-SearchingBY" id="panel-SearchingBY" >
             <div class="btns-SearchingBY">
-                <input type="radio" id="name" name="radio-buttons-search" value="Name">
+                <input type="radio" id="name" name="radio-buttons-search" value="name">
                 <label for="name">Search by name</label><br>
 
-                <input type="radio" id="product" name="radio-buttons-search" value="Product">
+                <input type="radio" id="product" name="radio-buttons-search" value="productName">
                 <label for="product">Search by product</label><br>
 
-                <input type="radio" id="email" name="radio-buttons-search" value="Email">
+                <input type="radio" id="email" name="radio-buttons-search" value="email">
                 <label for="email">Search by email</label><br>
                 
-                <input type="radio" id="location" name="radio-buttons-search" value="Location">
+                <input type="radio" id="location" name="radio-buttons-search" value="location">
                 <label for="location">Search by location</label><br>
 
                 <input type="radio" id="company" name="radio-buttons-search" value="company">
@@ -121,6 +122,45 @@
 
     </form>
     <script src="../js/script.js"></script>
+<!---------------------for checking----------------------------------->
+    <!-- leads table -->
+    <div class="leads-table-container">
+        <table id="leadsTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Location</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Join Date</th>
+                    <th>Source</th>
+                    <th>Agent</th>
+                    <th>Products</th>
+                </tr>
+            </thead>
+            <tbody id="leadsBody">
+            </tbody>
+        </table>
+    </div>
+
+    <!-- product window -->
+    <div id="productModal">
+        <span class="close">&times;</span>
+        <h2>Products Viewed by Lead</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+            </tbody>
+        </table>
+    </div>
+    <script src="../js/LeadsTable.js"></script>
 
 </body>
 </html>
