@@ -309,6 +309,15 @@ app.get('/addLeadForm', (req, res) => {
 });
 
 
+app.get('/personalProfile', (req, res) => {
+    res.render('personalProfile');
+});
+
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard');
+});
+
+
 //LOGIN
 
 // Login endpoint
