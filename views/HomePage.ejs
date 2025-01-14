@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Agent Home</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link rel="stylesheet" href="/css/styleHomePage.css">
+    <link rel="stylesheet" href="/public/css/styleHomePage.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
 </head>
@@ -43,19 +43,20 @@
             
             <!----Search engine---->
             <div class="search-container" onclick="ListenersForSearchAndFiltering()">
-                <button type= "button" id="submitSearching" onclick="inputFromEngineSearch()" style="position: relative">
+                <button type= "button" id="submitSearching" onclick="inputFromEngineSearch('button')" style="position: relative">
                     <span class="material-symbols-outlined">search</span>
                 </button>
                 
-                <input type="text" id="Search" name="Search" placeholder="Search by Name">
-                
+                <input type="text" id="Search" name="Search" placeholder="Search by Name" oninput="inputFromEngineSearch('search')">
                 <button type="button" id="openSearchingBY"  onclick="filteringSearchBy()" style="position: relative">
                     <span class="material-symbols-outlined ">
                         filter_list
                         </span>
                 </button>
             </div>
+            <ul id="results"></ul>
         </div>
+        
         
         <!----Panel of search ---->
         <div class="panel-SearchingBY" id="panel-SearchingBY" >

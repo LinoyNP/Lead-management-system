@@ -4,6 +4,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const pieChartCtx = document.getElementById("pieChart").getContext("2d");
     const barChartCtx = document.getElementById("barChart").getContext("2d");
 
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    async function leadStatusPai(){
+        try {
+            const response = await fetch("http://localhost:3000/   ", {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                console.error('Server returned an error:', response.status);
+                return;
+            }
+
+            const dataFromQuery = await response.json();
+            console.log('Data received:', dataFromQuery); 
+        } catch (error) {
+            console.error('Error occurred:', error);
+        }
+        data.addColumn('string', 'Topping');
+        data.addColumn('number', 'Slices');
+        data.addRows([])
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // Data for Pie Chart
     const leadStatusData = {
         labels: ["New", "In Process", "Closed"],

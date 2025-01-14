@@ -70,6 +70,7 @@ app.get('/leads/:id/products', async (req, res) => {
 app.post('/searchBy', async (req, res) => {
     console.log('post');
     const { selectedSearchBy, searchValue } = req.body;
+    const searchPattern = `${searchValue}%`
     if (selectedSearchBy == "productName")
     {
         
@@ -77,9 +78,9 @@ app.post('/searchBy', async (req, res) => {
             const query = `SELECT l.* 
                         FROM products p
                         JOIN leads l ON p.lead_phone = l.phone
-                        WHERE p.${selectedSearchBy} = $1;
+                        WHERE p.${selectedSearchBy} LIKE $1;
                         `;
-            const result = await client.query(query, [searchValue]);
+            const result = await client.query(query, [searchPattern]);
             console.log("Query successful:", result.rows);
             res.json(result.rows); 
         } catch (error) {
@@ -91,8 +92,8 @@ app.post('/searchBy', async (req, res) => {
 
     else{
         try{
-            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} = $1`;
-            const result = await client.query(query, [searchValue]);
+            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1`;
+            const result = await client.query(query, [searchPattern]);
             console.log("Query successful:", result.rows);
             res.json(result.rows); 
         } catch (error) {
