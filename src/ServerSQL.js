@@ -66,6 +66,44 @@ app.get('/leads/:id/products', async (req, res) => {
     }
 });
 
+//Endpoint for getting results from the database according to "search by"
+app.post('/searchBy', async (req, res) => {
+    console.log('post');
+    const { selectedSearchBy, searchValue } = req.body;
+    if (selectedSearchBy == "productName")
+    {
+        
+        try {
+            const query = `SELECT l.* 
+                        FROM products p
+                        JOIN leads l ON p.lead_phone = l.phone
+                        WHERE p.${selectedSearchBy} = $1;
+                        `;
+            const result = await client.query(query, [searchValue]);
+            console.log("Query successful:", result.rows);
+            res.json(result.rows); 
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            res.status(500).send({ error: 'Failed to fetch data' });
+        }
+
+    }
+
+    else{
+        try{
+            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} = $1`;
+            const result = await client.query(query, [searchValue]);
+            console.log("Query successful:", result.rows);
+            res.json(result.rows); 
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            res.status(500).send({ error: 'Failed to fetch data' });
+        }    
+    }
+
+});
+
+
 // Connect to PostgreSQL database
 const client = new Client({
     connectionString: process.env.SUPABASE_DB_URL, // Database URL from .env file
