@@ -122,5 +122,21 @@ app.post('/submitForm', async (req, res) => {
     }
 });
 
+// Endpoint to update a specific field in a lead
+app.put('/leads/:id', async (req, res) => {
+    const leadId = req.params.id; // Get the lead ID from the URL parameter
+    const { field, value } = req.body; // Extract the field and value from the request body
 
+    // Construct the dynamic SQL query
+    const query = `UPDATE leads SET ${field} = $1 WHERE phone = $2`;
+
+    try {
+        // Execute the query with parameterized values
+        await client.query(query, [value, leadId]);
+        res.status(200).send({ success: `Lead with phone ${leadId} updated successfully.` });
+    } catch (error) {
+        console.error("Error updating lead:", error);
+        res.status(500).send({ error: 'Failed to update the lead.' });
+    }
+});
 
