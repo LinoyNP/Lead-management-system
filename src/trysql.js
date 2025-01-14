@@ -171,6 +171,11 @@ app.get('/reset-password', (req, res) => {
     res.render('resetPassword');
 });
 
+app.get('/set-new-password', (req, res) => {
+    res.render('setNewPassword');
+});
+
+
 
 //LOGIN
 
@@ -228,18 +233,20 @@ app.post('/api/login', async (req, res) => {
 //     res.status(200).send('This is the registration page placeholder.');
 //   });
 
-
+app.get('/reset-password', (req, res) => {
+    res.render('resetPassword');
+});
 
 // PASSWORD RESET
   
-  app.get('/password-reset', (req, res) => {
+app.get('/password-reset', (req, res) => {
     res.status(200).send('This is the password reset page placeholder.');
-  });
+});
   
-  app.post('/api/reset-password', async (req, res) => {
+app.post('/api/reset-password', async (req, res) => {
     const { email } = req.body;
     try {
-        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const result = await pool.query('SELECT * FROM public.users WHERE email = $1', [email]);
         if (result.rows.length === 0) {
             return res.status(400).send({ message: 'This email is not registered.' });
         }
@@ -248,7 +255,18 @@ app.post('/api/login', async (req, res) => {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Password Reset Request',
-            text: `Click the link below to reset your password.\n\nhttp://localhost:3000/set-new-password?email=${email}`,
+            // text: `Click the link below to reset your password.\n\nhttp://localhost:3000/set-new-password?email=${email}`,
+            html: `
+            <p>Hello,</p>
+            <p>We received a request to reset your password. You can reset your password by clicking the link below:</p>
+            <p>
+                <a href="http://localhost:3000/set-new-password?email=${email}" style="color: #007BFF; text-decoration: none; font-weight: bold;">
+                    Reset Your Password
+                </a>
+            </p>
+            <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
+            <p>Thank you,<br>Your Website Team</p>
+        `    
         };
 
         await transporter.sendMail(mailOptions);
@@ -266,7 +284,7 @@ app.post('/api/set-new-password', async (req, res) => {
 
     try {
         // Update password in DB without encryption
-        const result = await pool.query('UPDATE users SET password = $1 WHERE email = $2', [newPassword, email]);
+        const result = await pool.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
         if (result.rowCount === 0) {
             return res.status(400).send({ message: 'User not found.' });
         }
