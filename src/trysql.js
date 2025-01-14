@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 import crypto from 'crypto'; // Importing crypto for token generation
 import path from 'path';
 import { fileURLToPath } from 'url';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 // import { Pool } from 'pg'; // Using PostgreSQL
 import pkg from 'pg';
 const { Pool } = pkg;
@@ -41,6 +44,7 @@ app.set('views', '../views');
 app.use('/css', express.static(path.join(__dirname, '../public/css')));
 app.use('/js', express.static(path.join(__dirname, '../js')));
 
+
 // Nodemailer Transporter configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -68,6 +72,7 @@ app.post('/register', async (req, res) => {
 
         // יצירת טוקן אימות
         const verificationToken = generateVerificationToken();
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 הוא ה-salt rounds
 
         // הכנסת נתוני המשתמש לדאטהבייס
         await pool.query(
@@ -154,17 +159,74 @@ app.get('/home', (req, res) => {
     res.render('homePage');
 });
 
-// מסך הבית
-app.get('/login', (req, res) => {
+ app.get('/login', (req, res) => {
     res.render('loginPage');
 });
 
-// מסך הבית
 app.get('/re-register', (req, res) => {
     res.render('signUp');
 });
 
+//LOGIN
 
+// Login endpoint
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+  
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+  
+    try {
+        // Find user by email in the database
+        const result = await pool.query('SELECT * FROM public.users WHERE email = $1', [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'This email is not registered. Please check your email or register.' });
+        }
+
+        const user = result.rows[0];
+
+        // Check if the user is verified
+        if (!user.verified) {
+            return res.status(401).json({ error: 'This email is not registered. Please check your email or register.' });
+        }
+    
+        // // Check password
+        // const isPasswordValid = await bcrypt.compare(password, user.password);
+        // if (!isPasswordValid) {
+        //     return res.status(401).json({ error: 'The password you entered is incorrect. Please try again.' });
+        // }
+
+        // Check password (without bcrypt)
+        if (password !== user.password) {
+            return res.status(401).json({ error: 'The password you entered is incorrect. Please try again.' });
+        }
+
+    
+        // Generate JWT
+        const token = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+        res.status(200).json({ message: 'Login successful', token });
+        // res.redirect('/home');
+
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+  
+//   // Placeholder routes for registration and password reset
+//   app.get('/register', (req, res) => {
+//     res.status(200).send('This is the registration page placeholder.');
+//   });
+  
+  app.get('/password-reset', (req, res) => {
+    res.status(200).send('This is the password reset page placeholder.');
+  });
+  
 
 
 // הפעלת השרת
