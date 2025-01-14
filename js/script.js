@@ -76,119 +76,150 @@ function ListenersForSearchAndFiltering(){
 // document.addEventListener("DOMContentLoaded", () => 
 //     {
     
+async function inputFromEngineSearch(typeOfAction)
+{
+    const searchInput = document.getElementById("Search");
+    const searchValue = searchInput.value; // The value typed in the search field
+    // const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
 
-    async function inputFromEngineSearch()
-    {
-        const searchInput = document.getElementById("Search");
-        const searchValue = searchInput.value; // The value typed in the search field
-        // const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
-
-        // let selectedSearchBy = "name"; //The default search is by name.
-        
-            if (!searchValue) {
-                alert("Please enter a search value.");
-                return;
-            }
-        // //"Search by" option
-        // radioButtonsSearchBY.forEach((radio) => {
-        //     radio.addEventListener("change", (event) => {
-        //         selectedSearchBy = event.target.value;
-        //       });
-        // });
+    // let selectedSearchBy = "name"; //The default search is by name.
     
-        //Sending a request to the server to obtain information from the DB
-        try {
-            const response = await fetch("http://localhost:3000/searchBy", {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-                //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
-                body: JSON.stringify({ selectedSearchBy, searchValue }), 
-            });
+        if (!searchValue && typeOfAction=='button') {
+            alert("Please enter a search value.");
+            return;
+        }
+    // //"Search by" option
+    // radioButtonsSearchBY.forEach((radio) => {
+    //     radio.addEventListener("change", (event) => {
+    //         selectedSearchBy = event.target.value;
+    //       });
+    // });
 
-            if (!response.ok) {
-                console.error('Server returned an error:', response.status);
-                return;
-            }
+    //Sending a request to the server to obtain information from the DB
+    try {
+        const response = await fetch("http://localhost:3000/searchBy", {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
+            body: JSON.stringify({ selectedSearchBy, searchValue }), 
+        });
 
-            const data = await response.json();
-            console.log('Data received:', data); 
+        if (!response.ok) {
+            console.error('Server returned an error:', response.status);
+            return;
+        }
+        // getting data from server
+        const data = await response.json();
+        console.log('Data received:', data); 
+        const resultsList = document.getElementById("results");
+        resultsList.innerHTML = ""; // נקה את הרשימה הקודמת
+
+        data.forEach(item => {
+            const resultItem = document.createElement("li");
+            resultItem.textContent = item.name;    
+            resultItem.onclick = () => { 
+                searchInput.value = item.name; // Selecting the value by clicking
+                resultsList.innerHTML = ""; 
+            };
+            resultsList.appendChild(resultItem);
+        });
+        if(typeOfAction == 'button')
             searchInput.value = '';
             searchInput.placeholder = "Search by Name";
+            resultsList.innerHTML = "";
             showLeadsSearchBy(data); // present data in table
-        } catch (error) {
-            console.error('Error occurred:', error);
-        }
-        
+    } catch (error) {
+        console.error('Error occurred:', error);
     }
+    
+}
 
-    // func that show leads in table by "search by"
-    async function showLeadsSearchBy(leads) {
-        // const response = await fetch("http://localhost:3000/searchBy");  // Server endpoint
-        // const leads = await response.json();
-        // console.log("Leads fetched from server:", leads);
-        const leadsBody = document.getElementById("leadsBody");
-        // if(!leads || leads.length == 0){
-        //     //TODO messege - empty
-        //     return;
-        // }
-        // if(leadsBody)
-        leadsBody.innerHTML = ""; // clean the table first
+// func that show leads in table by "search by"
+async function showLeadsSearchBy(leads) {
 
-        leads.forEach(lead => {
-            const row = document.createElement("tr");
+    const leadsBody = document.getElementById("leadsBody");
+    // if(!leads || leads.length == 0){
+    //     //TODO messege - empty
+    //     return;
+    // }
+    
+    leadsBody.innerHTML = ""; // clean the table first
 
-            // rows with the leads data
-            Object.entries(lead).forEach(([key, value]) => {
-                // don't show the id
-                if (key === "id") return;
+    leads.forEach(lead => {
+        const row = document.createElement("tr");
 
-                const cell = document.createElement("td");
+        // rows with the leads data
+        Object.entries(lead).forEach(([key, value]) => {
+            // don't show the id
+            if (key === "id") return;
 
-                // format of the joinDate (handle invalid date)
-                if (key === "joinDate") {
-                    const date = new Date(value);
-                    if (isNaN(date)) {
-                        cell.textContent = "Invalid Date";  // if not valid, show an error message
-                    } else {
-                        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
-                        cell.textContent = formattedDate;
-                    }
+            const cell = document.createElement("td");
+
+            // format of the joinDate (handle invalid date)
+            if (key === "joinDate") {
+                const date = new Date(value);
+                if (isNaN(date)) {
+                    cell.textContent = "Invalid Date";  // if not valid, show an error message
                 } else {
-                    cell.textContent = value;
+                    const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
+                    cell.textContent = formattedDate;
                 }
+            } else {
+                cell.textContent = value;
+            }
 
-                cell.classList.add("editable");
-                cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
+            cell.classList.add("editable");
+            cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
 
-                row.appendChild(cell);
-                
-            });
-
-            // Create the "Products" button column right after the "agent" column
-            const buttonCell = document.createElement("td");  // New cell for the button
-            const button = document.createElement("button");
-            button.textContent = "Products";
-            button.addEventListener("click", () => {
-                const productModal = document.getElementById("productsPane");
-                const closeModal = document.querySelector(".close-btn");
-                const productTableBody = document.getElementById("productTableBody");
-                
-                // Close product window
-                closeModal.addEventListener("click", () => {
-                    productModal.style.display = "none";
-                });
-                productModal.style.display = "block";
-                showProducts(lead.phone);  // pass the lead's phone number to fetch the products
-            });
-            buttonCell.appendChild(button);
-            row.appendChild(buttonCell); // Add the button cell to the row
-            console.log("Row is:", row);
-            leadsBody.appendChild(row);
+            row.appendChild(cell);
+            
         });
-    }
+
+        // Create the "Products" button column right after the "agent" column
+        const buttonCell = document.createElement("td");  // New cell for the button
+        const button = document.createElement("button");
+        button.textContent = "Products";
+        button.addEventListener("click", () => {
+            const productModal = document.getElementById("productsPane");
+            const closeModal = document.querySelector(".close-btn");
+            const productTableBody = document.getElementById("productTableBody");
+            
+            // Close product window
+            closeModal.addEventListener("click", () => {
+                productModal.style.display = "none";
+            });
+            productModal.style.display = "block";
+            showProducts(lead.phone);  // pass the lead's phone number to fetch the products
+        });
+        buttonCell.appendChild(button);
+        row.appendChild(buttonCell); // Add the button cell to the row
+        console.log("Row is:", row);
+        leadsBody.appendChild(row);
+    });
+}
 // });
+
+function showResultWhenSearching(){
+    const query = document.getElementById('Search').value;
+
+    if (query.length > 0) {
+        fetch(`http://localhost:3000/searchBy?query=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                const results = document.getElementById('results');
+                results.innerHTML = '';
+                data.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item.name;
+                    results.appendChild(li);
+                });
+            });
+    } else {
+        document.getElementById('results').innerHTML = '';
+    }
+}
 
 /*
 -----Sorting--------

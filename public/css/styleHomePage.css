@@ -32,7 +32,7 @@ body {
     background-color: #64b5f6; /* Lighter blue */
 }
 
-/* צבעים כחולים מותאמים */
+
 :root {
     --primary-blue: #1e88e5; /* כחול עיקרי */
     --hover-blue: #42a5f5;  /* כחול כשהעכבר מרחף */
@@ -64,15 +64,15 @@ body {
     color: white;
 }
 
-/* פאנל סינון */
+/* sort-panel*/
 .panel-sorting {
     display: none;
     position: absolute;
     top: 10%;
     left: 0;
     width: 220px;
-    background-color: white; /* רקע לבן לפאנל */
-    border: 2px solid #42a5f5; /* גבול כחול */
+    background-color: white; 
+    border: 2px solid #42a5f5; 
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
@@ -91,7 +91,7 @@ body {
 
 .panel-sorting .btns-sort label {
     font-size: 16px;
-    color: #1e88e5; /* כחול עיקרי */
+    color: #1e88e5; 
 }
 
 .panel-sorting .btns-sort button {
@@ -105,10 +105,10 @@ body {
 }
 
 .panel-sorting .btns-sort button:hover {
-    background-color: #64b5f6; /* כחול בהיר יותר */
+    background-color: #64b5f6; 
 }
 
-/* סגנון לחיפוש */
+/* style to search*/
 .search-container {
     position: relative;
     display: flex;
@@ -118,8 +118,8 @@ body {
     padding: 10px;/* ch*/
     max-width: 300px;
     margin: 0 auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* צל */
-    background-color: white; /* רקע לבן */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    background-color: white; 
 }
 
 .search-container input[type="text"] {
@@ -132,15 +132,15 @@ body {
 
 .search-container button {
     position: relative;
-    background-color: transparent; /* רקע שקוף */
-    border: none; /* הסרת המסגרת */
-    cursor: pointer; /* שינוי הסמן ליד */
-    font-size: 16px; /* גודל אייקון */
+    background-color: transparent; 
+    border: none;
+    cursor: pointer; 
+    font-size: 16px; 
     padding: 5px;
 }
 
 .search-container button:hover {
-    color: var(--primary-blue); /* שינוי צבע כחול */
+    color: var(--primary-blue); 
 }
 
 /*
@@ -151,7 +151,7 @@ panel search by
     position: absolute;
     right: 0;
     width: 220px;
-    background-color: white; /* רקע לבן לפאנל */
+    background-color: white; 
     border: 1px solid var(--primary-blue);
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
@@ -188,6 +188,34 @@ panel search by
     margin-right: 8px;
     font-size: 18px;
 }
+
+#results {
+    position: absolute; 
+    top: 100%; /* Place the list below the search field*/
+    left: 0;
+    width: 100%; /* Make the list the width of the search field*/
+    background-color: white; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    z-index: 1000; /* Make sure the list is above other elements*/
+    max-height: 200px; /* List height limit*/
+    overflow-y: auto; /* Add scrolling if the list exceeds*/
+    list-style: none; /*Remove list formatting*/
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* צל קל */
+}
+
+#results li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+#results li:hover {
+    background-color: #f0f0f0; /* שינוי צבע בעת ריחוף */
+}
+
+
 
 /* Table Container */
 .table-container {

@@ -44,19 +44,20 @@
             
             <!----Search engine---->
             <div class="search-container" onclick="ListenersForSearchAndFiltering()">
-                <button type= "button" id="submitSearching" onclick="inputFromEngineSearch()" style="position: relative">
+                <button type= "button" id="submitSearching" onclick="inputFromEngineSearch('button')" style="position: relative">
                     <span class="material-symbols-outlined">search</span>
                 </button>
                 
-                <input type="text" id="Search" name="Search" placeholder="Search by Name">
-                
+                <input type="text" id="Search" name="Search" placeholder="Search by Name" oninput="inputFromEngineSearch('search')">
                 <button type="button" id="openSearchingBY"  onclick="filteringSearchBy()" style="position: relative">
                     <span class="material-symbols-outlined ">
                         filter_list
                         </span>
                 </button>
             </div>
+            <ul id="results"></ul>
         </div>
+        
         
         <!----Panel of search ---->
         <div class="panel-SearchingBY" id="panel-SearchingBY" >
