@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    <link rel="stylesheet" href="/css/styleDashboard.css">
-    <script src="js/dashboard.js"></script>
+    
+    <link rel="stylesheet" href="../public/css//styleDashboard.css">
 
 </head>
-<body>
+<body >
     <div class="header">
         <button class="btn" id="returnBack" onclick="window.history.go(-1); return false;">Back</button>
         <button class="btn" id="dashboardBtn">Dashboard</button>
@@ -19,8 +18,8 @@
     <div class="dashboard">
         <div class="chart-container">
             <h2>Lead Status</h2>
-            <canvas id="pieChart"></canvas>
-            <ul id="statusDetails" class="chart-details"></ul>
+            <div id="pieChart"></div>
+            <!-- <ul id="statusDetails" class="chart-details"></ul> -->
         </div>
         <div class="chart-container">
             <h2>Sales Performance</h2>

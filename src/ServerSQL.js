@@ -104,6 +104,36 @@ app.post('/searchBy', async (req, res) => {
 
 });
 
+// ---DASHBOARD---
+
+//Endpoint for getting results from database for pie graph
+app.post('/peiGraph', async (req, res) => {
+    
+    try {
+        let queryForStatus = `SELECT COUNT(*) AS new_leads_count
+                        FROM leads
+                        WHERE status = 'New';`;
+        let result = await client.query(queryForStatus);
+        const newCount = result.rows[0].new_leads_count;
+
+        queryForStatus = `SELECT COUNT(*) AS new_leads_count
+                        FROM leads
+                        WHERE status = 'In Process';`;
+        result = await client.query(queryForStatus);
+        const inProccesCount = result.rows[0].new_leads_count;
+        
+        queryForStatus = `SELECT COUNT(*) AS new_leads_count
+                        FROM leads
+                        WHERE status = 'Closed';`;
+        result = await client.query(queryForStatus);
+        const closedCount = result.rows[0].new_leads_count;
+        console.log(newCount, inProccesCount, closedCount)
+        res.json([newCount, inProccesCount, closedCount]); 
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send({ error: 'Failed to fetch data' });
+    }
+});
 
 // Connect to PostgreSQL database
 const client = new Client({
