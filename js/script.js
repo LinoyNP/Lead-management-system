@@ -60,17 +60,6 @@ function ListenersForSearchAndFiltering(){
         });
     });
 
-
-    // searchButton.addEventListener("click", () => {
-    //     const searchValue = searchInput.value; // The value typed in the search field
-    
-    //     if (!searchValue) {
-    //         alert("Please enter a search value.");
-    //         return;
-    //     }
-    //     console.log(searchValue, selectedSearchBy);
-    //     SearchingFromDB(searchValue, selectedSearchBy);
-    // });
 }
 
 // document.addEventListener("DOMContentLoaded", () => 
@@ -80,20 +69,23 @@ async function inputFromEngineSearch(typeOfAction)
 {
     const searchInput = document.getElementById("Search");
     const searchValue = searchInput.value; // The value typed in the search field
-    // const radioButtonsSearchBY = document.querySelectorAll('input[name="radio-buttons-search"]');
-
-    // let selectedSearchBy = "name"; //The default search is by name.
+    const noResultsMessage = document.getElementById("noResultsMessage");
+    const resultsList = document.getElementById("results");
+    noResultsMessage.style.display = "none";    
     
-        if (!searchValue && typeOfAction=='button') {
-            alert("Please enter a search value.");
-            return;
-        }
-    // //"Search by" option
-    // radioButtonsSearchBY.forEach((radio) => {
-    //     radio.addEventListener("change", (event) => {
-    //         selectedSearchBy = event.target.value;
-    //       });
-    // });
+    if (!searchValue && typeOfAction=='button') {
+        noResultsMessage.textContent = "Please enter a search value."; 
+        noResultsMessage.style.display = 'block'; 
+        return;
+    }
+
+    if (searchValue.length > 21) {
+        noResultsMessage.textContent = " No leads found for this search.";
+        noResultsMessage.style.display = 'block';
+        resultsList.innerHTML = ''; 
+        searchInput.value = '';
+        return; 
+    }
 
     //Sending a request to the server to obtain information from the DB
     try {
@@ -112,10 +104,10 @@ async function inputFromEngineSearch(typeOfAction)
         }
         // getting data from server
         const data = await response.json();
-        console.log('Data received:', data); 
-        const resultsList = document.getElementById("results");
-        resultsList.innerHTML = ""; // נקה את הרשימה הקודמת
-
+        // console.log('Data received:', data); 
+        
+        resultsList.innerHTML = ""; 
+        //Show options when typing in a search engine
         data.forEach(item => {
             const resultItem = document.createElement("li");
             resultItem.textContent = item.name;    
@@ -126,9 +118,16 @@ async function inputFromEngineSearch(typeOfAction)
             resultsList.appendChild(resultItem);
         });
         if(typeOfAction == 'button'){
+            if (data.length === 0){
+                noResultsMessage.textContent = " No leads found for this search.";
+                noResultsMessage.style.display = "block";
+            }
+            
             searchInput.value = '';
             searchInput.placeholder = "Search by Name";
             resultsList.innerHTML = "";
+            
+            
             showLeadsSearchBy(data); // present data in table
         }
             
