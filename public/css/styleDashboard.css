@@ -71,3 +71,23 @@ canvas {
     font-size: 0.9rem;
     color: #1e88e5;
 }
+.chart-container{
+    position: relative;
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center;
+    align-items: center; 
+    height: 300px; 
+    text-align: center; 
+}
+.h2{
+    position: absolute;
+    align-items: center;
+    margin: 0; 
+    padding: 0;
+}
+#pieChart {
+    width: 400px;
+    height: 300px;
+  }
+  
