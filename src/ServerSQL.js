@@ -135,6 +135,24 @@ app.post('/peiGraph', async (req, res) => {
     }
 });
 
+
+//Endpoint for getting results from database for pie graph
+app.post('/barGraphSalesPerformance', async (req, res) => {
+    
+    try {
+        let queryForStatus = `SELECT u.full_name AS agent_name, COUNT(l.phone) AS lead_count
+        FROM users u LEFT JOIN leads l ON u.full_name = l.agent GROUP BY u.full_name;`;
+        let result = await client.query(queryForStatus);
+        const agentName = result.rows[0].full_name;
+        const countLeads = result.rows[0].lead_count;
+        console.log(result.rows[0]);
+        res.json(result.rows); 
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send({ error: 'Failed to fetch data' });
+    }
+});
+
 // Connect to PostgreSQL database
 const client = new Client({
     connectionString: process.env.SUPABASE_DB_URL, // Database URL from .env file

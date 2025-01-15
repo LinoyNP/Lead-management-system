@@ -73,21 +73,23 @@ canvas {
 }
 .chart-container{
     position: relative;
-    display: flex; 
-    flex-direction: column; 
+    /* display: flex; 
+    flex-direction: column;  */
     justify-content: center;
     align-items: center; 
-    height: 300px; 
+    width: 500px;
+    height: 400px; 
     text-align: center; 
 }
 .h2{
     position: absolute;
+    top: 0;
     align-items: center;
     margin: 0; 
     padding: 0;
 }
 #pieChart {
-    width: 400px;
+    width: 500px;
     height: 300px;
   }
   
