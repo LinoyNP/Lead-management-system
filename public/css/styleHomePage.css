@@ -142,6 +142,17 @@ body {
 .search-container button:hover {
     color: var(--primary-blue); 
 }
+#noResultsMessage {
+    position: absolute; 
+    top: 100%;
+    transform: translateX(25%);
+    display: none;
+    font-size: 14px;
+    color: red;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
 
 /*
 panel search by
