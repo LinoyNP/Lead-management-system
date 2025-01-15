@@ -47,8 +47,9 @@ document.getElementById('profileForm').addEventListener('submit', function(event
 
     if (isValid) {
         document.getElementById('successMessage').textContent = 'Your details have been updated successfully.';
-        setTimeout(function() {
-            window.location.href = 'index.html'; // Redirect to homepage after success
+        setTimeout(() =>{
+            window.location.href = '/home' ; // Redirect to homepage after success
         }, 2000);
     }
 });
+
