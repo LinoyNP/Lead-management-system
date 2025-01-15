@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dchartContainer = document.getElementById("chart-container");
     const pieChart = document.getElementById("pieChart");
     const barChartCtx = document.getElementById("barChart");
+    barChartCtx.innerText= '';
     let NewStatus = 0;
     let InProcessStatus = 0;
     let ClosedStatus = 0;
@@ -15,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // instantiates the pie chart, passes in the data and
     // draws it.
     async function leadStatusPai(){
+        pieChart.innerText= '';
         try {
             const response = await fetch("http://localhost:3000/peiGraph", {
                 method: 'POST',
@@ -81,8 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
             dataFromQuery = await response.json();
             console.log(dataFromQuery);
             console.log('Data received:', dataFromQuery);
-            if(dataFromQuery.length == 0){
-
+            if(!dataFromQuery){
+                barChartCtx.innerText = "No agents for showing"; // משנה את התוכן של ה- div
+                barChartCtx.style.color = "red";
             }
         } catch (error) {
             console.error('Error occurred:', error);
@@ -100,8 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
             title: 'Sales performance per agent',
             'width':pieChart.width,
             'height':pieChart.height,
-            hAxis: { title: 'Agents',viewWindow: { min: 0 }  },
-            vAxis: { title: 'Number of closed leads', viewWindow: { min: 0 , max: 100}, viewWindowMode: 'explicit' },
+            hAxis: { title: 'Agents'  },
+            vAxis: { title: 'Number of closed leads', viewWindow: { min: 0 , max: 15}, viewWindowMode: 'explicit',  format: '0' },
             focusTarget: 'category',
             legend: 'none',
         };
