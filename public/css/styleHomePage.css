@@ -305,26 +305,26 @@ panel search by
     cursor: pointer;
 }
 
-/*.leads-table td {
+/* .leads-table td {
     text-transform: capitalize;
-}
+} */
 
-/*.leads-table td:nth-child(6) { /* עמודת סטטוס */
-    /*font-weight: bold;
+/* .leads-table td:nth-child(6) { 
+    font-weight: bold;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
-}*/
+} */
 
-/*.leads-table td:nth-child(6):contains('Active') {
-    /*background-color: #66bb6a; /* ירוק */
-/*}
+/* .leads-table td:nth-child(6):contains('Active') {
+    background-color: #66bb6a; 
+}.
 
 /*.leads-table td:nth-child(6):contains('Pending') {
-    background-color: #ffa726; /* כתום */
-/*}
+    background-color: #ffa726; 
+}*/
 
-.back-btn {
+/* .back-btn {
     display: none;
     margin-bottom: 20px;
     padding: 10px;
@@ -337,4 +337,4 @@ panel search by
 
 .back-btn:hover {
     background-color: #a71d2a;
-}
+} */

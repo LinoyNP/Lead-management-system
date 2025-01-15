@@ -1,21 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // const productModal = document.getElementById("productModal");
-    // const closeModal = document.querySelector(".close");
-    // const productTableBody = document.getElementById("productTableBody");
-
-    // // Close product window
-    // closeModal.addEventListener("click", () => {
-    //     productModal.style.display = "none";
-    // });
+    
     const productsPane = document.getElementById("productsPane");
     const closePaneButton = document.querySelector(".close-btn");
     const productTableBody = document.getElementById("productTableBody");
 
-    // Close the products pane
-    closePaneButton.addEventListener("click", () => {
-        productsPane.classList.add("hidden");
-    });
+    // Close the products pane when the close button is clicked
+    closePaneButton.addEventListener("click", closeProductPane);
 
+    function closeProductPane() {
+        productsPane.style.display = "none";   // Hide the products pane
+    }
 
 
     // func to add leads to the table
@@ -88,24 +82,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 Object.entries(product).forEach(([key, value]) => {
                     const cell = document.createElement("td");
 
-                    // Check if the value is a valid date and format it
+                    // // Check if the value is a valid date and format it
+                    // if (key === "viewDate") {
+                    //     const date = new Date(value);
+                    //     if (isNaN(date)) {
+                    //         cell.textContent = "Invalid Date";
+                    //     } else {
+                    //         const formattedDate = date.toISOString().split('T').join(' ').split('.')[0];
+                    //         cell.textContent = formattedDate;
+                    //     }
+                    // } else {
+                    //     cell.textContent = value;
+                    // }
+
+                    // row.appendChild(cell);
+
+                    // Handle date formatting
                     if (key === "viewDate") {
                         const date = new Date(value);
-                        if (isNaN(date)) {
-                            cell.textContent = "Invalid Date";
-                        } else {
-                            const formattedDate = date.toISOString().split('T').join(' ').split('.')[0];
-                            cell.textContent = formattedDate;
-                        }
+                        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0];
+                        cell.textContent = formattedDate;
                     } else {
                         cell.textContent = value;
                     }
 
                     row.appendChild(cell);
+
                 });
 
                 productTableBody.appendChild(row);
             });
+
+            productsPane.style.display = "block";  // Show the products pane
+
         } catch (error) {
             console.error("Error fetching products:", error);
         }
@@ -208,11 +217,4 @@ async function showProducts(leadPhone) {
         }
     }
 
-    function openProductPane() {
-        document.getElementById("productsPane").classList.remove("hidden");
-    }
-
-    function closeProductPane() {
-        document.getElementById("productsPane").classList.add("hidden");
-    }
 

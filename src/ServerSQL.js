@@ -285,7 +285,7 @@ app.get('/', (req, res) => {
 
 // מסך הבית
 app.get('/home', (req, res) => {
-    res.render('homePage');
+    res.render('HomePage');
 });
 
  app.get('/login', (req, res) => {
@@ -377,6 +377,9 @@ app.get('/set-new-password', (req, res) => {
 });
 
 
+  
+// PASSWORD RESET
+  
 app.get('/password-reset', (req, res) => {
     res.status(200).json({ message:'This is the password reset page placeholder.'});
 });
@@ -384,7 +387,7 @@ app.get('/password-reset', (req, res) => {
 app.post('/api/reset-password', async (req, res) => {
     const { email } = req.body;
     try {
-        const result = await pool.query('SELECT * FROM public.users WHERE email = $1', [email]);
+        const result = await client.query('SELECT * FROM public.users WHERE email = $1', [email]);
         if (result.rows.length === 0) {
             return res.status(400).json({ message: 'This email is not registered.' });
         }
@@ -422,7 +425,7 @@ app.post('/api/set-new-password', async (req, res) => {
 
     try {
         // Update password in DB without encryption
-        const result = await pool.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
+        const result = await client.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
         if (result.rowCount === 0) {
             return res.status(400).json({ message: 'User not found.' });
         }
