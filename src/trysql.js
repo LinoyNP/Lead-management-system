@@ -233,14 +233,12 @@ app.post('/api/login', async (req, res) => {
 //     res.status(200).send('This is the registration page placeholder.');
 //   });
 
-app.get('/reset-password', (req, res) => {
-    res.render('resetPassword');
-});
+
 
 // PASSWORD RESET
   
 app.get('/password-reset', (req, res) => {
-    res.status(200).send('This is the password reset page placeholder.');
+    res.status(200).json({ message:'This is the password reset page placeholder.'});
 });
   
 app.post('/api/reset-password', async (req, res) => {
@@ -248,7 +246,7 @@ app.post('/api/reset-password', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM public.users WHERE email = $1', [email]);
         if (result.rows.length === 0) {
-            return res.status(400).send({ message: 'This email is not registered.' });
+            return res.status(400).json({ message: 'This email is not registered.' });
         }
 
         const mailOptions = {
@@ -270,27 +268,27 @@ app.post('/api/reset-password', async (req, res) => {
         };
 
         await transporter.sendMail(mailOptions);
-        res.send({ message: 'Password reset link has been sent to your email.' });
+        res.json({ message: 'Password reset link has been sent to your email.' });
     } catch (error) {
-        res.status(500).send({ message: 'An error occurred. Please try again later.' });
+        res.status(500).json({ message: 'An error occurred. Please try again later.' });
     }
 });
 
 app.post('/api/set-new-password', async (req, res) => {
     const { email, newPassword, confirmPassword } = req.body;
     if (newPassword !== confirmPassword) {
-        return res.status(400).send({ message: 'Passwords do not match.' });
+        return res.status(400).json({ message: 'Passwords do not match.' });
     }
 
     try {
         // Update password in DB without encryption
         const result = await pool.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
         if (result.rowCount === 0) {
-            return res.status(400).send({ message: 'User not found.' });
+            return res.status(400).json({ message: 'User not found.' });
         }
         res.send({ message: 'Password has been successfully changed!' });
     } catch (error) {
-        res.status(500).send({ message: 'An error occurred. Please try again later.' });
+        res.status(500).json({ message: 'An error occurred. Please try again later.' });
     }
 });
 
