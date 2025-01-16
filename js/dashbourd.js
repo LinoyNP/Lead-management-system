@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const dashboardBtn = document.getElementById("dashboardBtn");
-    // const pieChartCtx = document.getElementById("pieChart").getContext("2d");
+    const dchartContainer = document.getElementById("chart-container");
     const pieChart = document.getElementById("pieChart");
-    // const barChartCtx = document.getElementById("barChart").getContext("2d");
+    const barChartCtx = document.getElementById("barChart");
+    barChartCtx.innerText= '';
     let NewStatus = 0;
     let InProcessStatus = 0;
     let ClosedStatus = 0;
@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // instantiates the pie chart, passes in the data and
     // draws it.
     async function leadStatusPai(){
+        pieChart.innerText= '';
         try {
             const response = await fetch("http://localhost:3000/peiGraph", {
                 method: 'POST',
@@ -30,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const dataFromQuery = await response.json();
-            console.log('Data received:', dataFromQuery);
+            // console.log('Data received:', dataFromQuery);
             if (dataFromQuery.length != 3 ) {
                 console.log("error- An array of 3 values ​​was not received.")
             }
@@ -54,15 +55,64 @@ document.addEventListener("DOMContentLoaded", () => {
             'width':pieChart.width,
             'height':pieChart.height,
             slices: {
-                0: { color: '#FF0000' }, // פלח ראשון (NewStatus) בצבע כתום
-                1: { color: '#FFFF00' }, // פלח שני (InProcessStatus) בצבע ירוק
-                2: { color: '#008000' }  // פלח שלישי (ClosedStatus) בצבע כחול
+                0: { color: '#FF0000' }, // NewStatus -red
+                1: { color: '#FFFF00' }, // InProcessStatus - yellow
+                2: { color: '#008000' }  // ClosedStatus- green
               }
         };
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.PieChart(pieChart);
         chart.draw(data, options);
     }
+
+    async function SalesPerformance(){
+        let dataFromQuery = NaN;
+        try {
+            const response = await fetch("http://localhost:3000/barGraphSalesPerformance", {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                console.error('Server returned an error:', response.status);
+                return;
+            }
+
+            dataFromQuery = await response.json();
+            console.log(dataFromQuery);
+            console.log('Data received:', dataFromQuery);
+            if(!dataFromQuery){
+                barChartCtx.innerText = "No agents for showing"; // משנה את התוכן של ה- div
+                barChartCtx.style.color = "red";
+            }
+        } catch (error) {
+            console.error('Error occurred:', error);
+        }
+        
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Agent');
+        data.addColumn('number', 'Number of closed leads');
+        dataFromQuery.forEach(agent => {
+            data.addRow([agent.agent_name, Number(agent.lead_count)]);
+            console.log(`Agent: ${agent.agent_name}, Lead Count: ${agent.lead_count}`);
+          });
+
+        const options = {
+            title: 'Sales performance per agent',
+            'width':pieChart.width,
+            'height':pieChart.height,
+            hAxis: { title: 'Agents'  },
+            vAxis: { title: 'Number of closed leads', viewWindow: { min: 0 , max: 15}, viewWindowMode: 'explicit',  format: '0' },
+            focusTarget: 'category',
+            legend: 'none',
+        };
+        const chart = new google.visualization.ColumnChart(barChartCtx);
+        chart.draw(data, options);
+    }
+
+    SalesPerformance();
     
 });  
     
