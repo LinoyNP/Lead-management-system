@@ -8,6 +8,7 @@ import path from 'path';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
+import session from 'express-session';
 import pkg from 'pg';
 const { Client } = pkg;
 
@@ -26,11 +27,17 @@ app.use(express.json());
 app.use(bodyParser.json());
 
 // Set up static file directories
-// app.use(express.static(path.join(__dirname, '../js')));
-// app.use(express.static(path.join(__dirname, '../css')));
-// הגדר קבצים סטטיים
 app.use('/css', express.static(path.join(__dirname, '../public/css')));
 app.use('/js', express.static(path.join(__dirname, '../js')));
+
+app.use('/login',(req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
+    next();
+});
+
 
 // app.use(express.static(path.join(__dirname, '../html')));
 app.use(express.static('public'));
@@ -41,6 +48,13 @@ app.set('views', '../views');
 function generateVerificationToken() {
     return crypto.randomBytes(20).toString('hex'); // Generates a 40-character hex string
 }
+
+app.use(session({
+    secret:process.env.SESSION_SECRET  ,  
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } 
+}));
 
 // Endpoint to fetch all leads
 app.get('/leads', async (req, res) => {
@@ -313,7 +327,6 @@ app.get('/', (req, res) => {
     res.render('SignUp');
 });
 
-// מסך הבית
 app.get('/home', (req, res) => {
     res.render('HomePage');
 });
@@ -385,7 +398,13 @@ app.post('/api/login', async (req, res) => {
     
         // Generate JWT
         const token = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    
+
+        // Create session (Store user data in session)
+        req.session.user = {
+            id: user.id,
+            email: user.email,
+        };
+
         res.status(200).json({ message: 'Login successful', token });
         // res.redirect('/home');
 
@@ -475,5 +494,21 @@ app.post('/api/set-new-password', async (req, res) => {
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+});
+
+
+//LOG OUT
+
+// Logout route
+app.post('/logout', (req, res) => {
+    // Destroy the session
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Failed to destroy session:', err);
+            return res.status(500).json({ message :'Error logging out.'});
+        }
+        res.clearCookie('connect.sid');  // Cookie name is typically 'connect.sid' for session management
+        return res.status(200).json({ message: 'Logged out successfully.' });
+    });
 });
 

@@ -1,6 +1,19 @@
-
+// // Prevent going back to the previous page after logging out
+// if (window.history && window.history.pushState) {
+//     window.history.pushState(null, null, window.location.href);
+//     window.onpopstate = function () {
+//       window.history.go(1); // Prevents going back to the previous page
+//     };
+//   }
+  
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("login-form");
+    // Prevent going back after logging out
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        alert('You cannot go back. Please log in again.');
+        window.history.go(1);
+    };
 
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();

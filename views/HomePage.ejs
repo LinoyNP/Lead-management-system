@@ -13,16 +13,22 @@
     <!-- Top Navigation Bar -->
     <header class="navbar">
         <div class="nav-left">
-            <button class="btn logout">Log Out</button>
+        <!-- Logout Button -->
+        <form action="/logout" method="POST" style="display: inline;">
+            <button id="logoutButton" type="submit" class="btn logout">Logout</button>
+        </form>
+        <script src="./js/logOut.js"></script>
+
+
         </div>
         <div class="nav-right">
             <!-- <a href="personalProfile.ejs" class="btn">Personal Profile</a> -->
             <!-- <a href="dashboard.ejs" class="btn">Dashboard</a> -->
-            <button class="btn" id="toggle-leads-btn" onclick="toggleLeadsView(this)">New Leads</button>
             <!-- <button class="btn add-lead" onclick="alert('Add Lead Form Opening...')">+</button>  -->
             <a href="/personalProfile" class="btn">Personal Profile</a>
             <a href="/dashboard" class="btn">Dashboard</a>
             <!-- <a href="/newLeads" class="btn" id="toggle-leads-btn">New Leads</a> -->
+            <button class="btn" id="toggle-leads-btn" onclick="toggleLeadsView(this)">New Leads</button>
             <a href="/addLeadForm" class="btn add-lead">+</a>
             
         </div>
@@ -199,6 +205,13 @@
         </table>
     </div>
     <script src="./js/leadsTable.js"></script>
+    <script>
+        // Redirect the user to the login page if they try to navigate back to this page
+        if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+            window.location.href = '/login';
+        }
+    </script>
+    
 
 </body>
 </html>
