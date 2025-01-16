@@ -62,6 +62,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             leadsBody.appendChild(row);
         });
+
+        // Add styling to status cells after table population
+        styleStatusCells();
     }
 
     // Show products for a given lead, this functiom is global because it has use in other files
@@ -131,6 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const newValue = input.value;
             cell.textContent = newValue;
             await updateLead(leadId, fieldName, newValue);
+
+            // אם השדה הוא סטטוס, עדכן את הצבע שלו
+            if (fieldName === "status") {
+                updateStatusColor(cell, newValue);
+            }
+
         };
         input.onkeypress = (e) => {
             if (e.key === "Enter") {
@@ -216,5 +225,41 @@ async function showProducts(leadPhone) {
             newLeadsTable.classList.add("hidden");
         }
     }
+
+
+// Function to style the status cells
+function styleStatusCells() {
+    const rows = document.querySelectorAll("#leadsBody tr");
+
+    rows.forEach(row => {
+        // const statusCell = row.querySelector(".status"); // Select the status column
+        const statusCell = row.querySelector("td:nth-child(6)"); // Assuming status is in the 3rd column (adjust as needed)
+        if (statusCell) {
+            const statusText = statusCell.textContent.trim();
+
+            if (statusText === "New") {
+                statusCell.classList.add("new");
+            } else if (statusText === "In Process") {
+                statusCell.classList.add("in-process");
+            } else if (statusText === "Closed") {
+                statusCell.classList.add("closed");
+            }
+        }
+    });
+}
+
+function updateStatusColor(cell, statusText) {
+    // הסר קודם כל את כל המחלקות הישנות
+    cell.classList.remove("new", "in-process", "closed");
+
+    // הוסף את המחלקה החדשה בהתאם לסטטוס
+    if (statusText === "New") {
+        cell.classList.add("new");
+    } else if (statusText === "In Process") {
+        cell.classList.add("in-process");
+    } else if (statusText === "Closed") {
+        cell.classList.add("closed");
+    }
+}
 
 

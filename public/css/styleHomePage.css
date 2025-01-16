@@ -305,6 +305,23 @@ panel search by
     cursor: pointer;
 }
 
+
+.new {
+    color: #f44336;
+    font-weight: bold;   
+}
+
+
+.in-process {
+    color: #ffc107;       
+    font-weight: bold;   
+}
+
+.closed {
+    color: #4caf50;
+    font-weight: bold;   
+}
+
 /* .leads-table td {
     text-transform: capitalize;
 } */
@@ -338,3 +355,13 @@ panel search by
 .back-btn:hover {
     background-color: #a71d2a;
 } */
+
+
+/* עיצוב לעמודת הסטטוס */
+/* .leads-table .status {
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+} */
+
