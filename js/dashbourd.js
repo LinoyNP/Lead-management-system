@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const agentEmail = localStorage.getItem('userEmail');
+    // console.log(agentEmail);
     const dchartContainer = document.getElementById("chart-container");
     const pieChart = document.getElementById("pieChart");
     const barChartCtx = document.getElementById("barChart");
@@ -18,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function leadStatusPai(){
         pieChart.innerText= '';
         try {
-            const response = await fetch("http://localhost:3000/peiGraph", {
+            const response = await fetch(`http://localhost:3000/peiGraph?email=${agentEmail}`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

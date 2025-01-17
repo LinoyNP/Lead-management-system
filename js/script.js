@@ -1,6 +1,8 @@
 /*
 -----Searching--------
 */
+const agentEmail = localStorage.getItem('userEmail');
+
 function filteringSearchBy(){
     // Open the "Filter by" menu
     const button = document.getElementById("openSearchingBY");
@@ -89,13 +91,13 @@ async function inputFromEngineSearch(typeOfAction)
 
     //Sending a request to the server to obtain information from the DB
     try {
-        const response = await fetch("http://localhost:3000/searchBy", {
+        const response = await fetch(`http://localhost:3000/searchBy`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
             },
             //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
-            body: JSON.stringify({ selectedSearchBy, searchValue }), 
+            body: JSON.stringify({ selectedSearchBy, searchValue, agentEmail }), 
         });
 
         if (!response.ok) {
@@ -206,7 +208,7 @@ function showResultWhenSearching(){
     const query = document.getElementById('Search').value;
 
     if (query.length > 0) {
-        fetch(`http://localhost:3000/searchBy?query=${query}`)
+        fetch(`http://localhost:3000/searchBy?query=${query}?email=${agentEmail}`)
             .then(response => response.json())
             .then(data => {
                 const results = document.getElementById('results');

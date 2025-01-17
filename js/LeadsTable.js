@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+    const email = localStorage.getItem('userEmail');
     const productsPane = document.getElementById("productsPane");
     const closePaneButton = document.querySelector(".close-btn");
     const productTableBody = document.getElementById("productTableBody");
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // func to add leads to the table
     async function fetchLeads() {
-        const response = await fetch("http://localhost:3000/leads");  // Server endpoint
+        const response = await fetch(`http://localhost:3000/leads?email=${email}`);  // Server endpoint
         const leads = await response.json();
         console.log("Leads fetched from server:", leads);
         const leadsBody = document.getElementById("leadsBody");
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add new lead to the server
     async function addLead(newLead) {
         console.log("Sending new lead to server:", newLead);
-        const response = await fetch("http://localhost:3000/leads", {
+        const response = await fetch(`http://localhost:3000/leads?email=${email}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
