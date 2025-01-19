@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 Object.entries(product).forEach(([key, value]) => {
                     const cell = document.createElement("td");
 
-                    // // Check if the value is a valid date and format it
+                    // Check if the value is a valid date and format it
                     // if (key === "viewDate") {
                     //     const date = new Date(value);
                     //     if (isNaN(date)) {
@@ -123,29 +123,42 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     // Edit fields in the table
     function makeEditable(cell, leadId, fieldName) {
         const originalText = cell.textContent;
         cell.innerHTML = `<input type='text' value='${originalText}' />`;
         const input = cell.querySelector("input");
         input.focus();
+    
         input.onblur = async () => {
-            const newValue = input.value;
+            let newValue = input.value.trim();
+    
+            if (fieldName === "status") {
+                newValue = capitalizeFirstLetter(newValue);
+    
+                if (newValue!="New" && newValue!="In Progress" && newValue!="Closed") {
+                    alert("Invalid status. You can only enter: 'New', 'In Progress', 'Closed'.");
+                    cell.textContent = originalText;
+                    return;
+                }
+            }
+    
             cell.textContent = newValue;
             await updateLead(leadId, fieldName, newValue);
-
-            // אם השדה הוא סטטוס, עדכן את הצבע שלו
             if (fieldName === "status") {
                 updateStatusColor(cell, newValue);
             }
-
         };
+    
         input.onkeypress = (e) => {
             if (e.key === "Enter") {
                 input.blur();
             }
         };
+    
+        function capitalizeFirstLetter(text) {
+            return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+        }
     }
 
     // Update Lead in the SQL database
@@ -249,10 +262,8 @@ function styleStatusCells() {
 }
 
 function updateStatusColor(cell, statusText) {
-    // הסר קודם כל את כל המחלקות הישנות
     cell.classList.remove("new", "in-process", "closed");
 
-    // הוסף את המחלקה החדשה בהתאם לסטטוס
     if (statusText === "New") {
         cell.classList.add("new");
     } else if (statusText === "In Process") {
