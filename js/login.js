@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 alert('Login successful!');
-                window.location.href = '/home'; // מעבר לעמוד הבית
+                localStorage.setItem('userEmail', email); //Saving the email in local storage
+                window.location.href = '/home'; // go to the home page
             } else {
                 // טיפול בשגיאות מצד השרת
                 if (data.error && data.error.toLowerCase().includes('email')) {

@@ -59,7 +59,9 @@ app.use(session({
 // Endpoint to fetch all leads
 app.get('/leads', async (req, res) => {
     try {
-        const result = await client.query('SELECT * FROM leads');  // Query to get leads from database
+        const email = req.query.email;
+        // const result = await client.query('SELECT * FROM leads;');  // Query to get leads from database
+        const result = await client.query('SELECT * FROM leads WHERE agent IN (SELECT full_name FROM users WHERE users.email = $1);', [email]);
         res.json(result.rows);  // Return leads as JSON
     } catch (error) {
         console.error("Error fetching leads:", error);
@@ -83,7 +85,7 @@ app.get('/leads/:id/products', async (req, res) => {
 //Endpoint for getting results from the database according to "search by"
 app.post('/searchBy', async (req, res) => {
     console.log('post');
-    const { selectedSearchBy, searchValue } = req.body;
+    const { selectedSearchBy, searchValue, agentEmail } = req.body;
     const searchPattern = `${searchValue}%`
     if (selectedSearchBy == "productName")
     {
@@ -92,9 +94,9 @@ app.post('/searchBy', async (req, res) => {
             const query = `SELECT l.* 
                         FROM products p
                         JOIN leads l ON p.lead_phone = l.phone
-                        WHERE p.${selectedSearchBy} LIKE $1;
-                        `;
-            const result = await client.query(query, [searchPattern]);
+                        WHERE p.${selectedSearchBy} LIKE $1 
+                        AND l.agent IN ( SELECT full_name FROM users WHERE email = $2);`;
+            const result = await client.query(query, [searchPattern, agentEmail]);
             console.log("Query successful:", result.rows);
             res.json(result.rows); 
         } catch (error) {
@@ -106,8 +108,9 @@ app.post('/searchBy', async (req, res) => {
 
     else{
         try{
-            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1`;
-            const result = await client.query(query, [searchPattern]);
+            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
+                        AND agent IN ( SELECT full_name FROM users WHERE email = $2);`;
+            const result = await client.query(query, [searchPattern, agentEmail]);
             console.log("Query successful:", result.rows);
             res.json(result.rows); 
         } catch (error) {
@@ -122,24 +125,25 @@ app.post('/searchBy', async (req, res) => {
 
 //Endpoint for getting results from database for pie graph
 app.post('/peiGraph', async (req, res) => {
-    
+    const agentEmail = req.query.email;
+    console.log(agentEmail);
     try {
         let queryForStatus = `SELECT COUNT(*) AS new_leads_count
                         FROM leads
-                        WHERE status = 'New';`;
-        let result = await client.query(queryForStatus);
+                        WHERE status = 'New' AND agent IN ( SELECT full_name FROM users WHERE email = $1);`;
+        let result = await client.query(queryForStatus, [agentEmail]);
         const newCount = result.rows[0].new_leads_count;
-
+        console.log('new count:',newCount);
         queryForStatus = `SELECT COUNT(*) AS new_leads_count
                         FROM leads
-                        WHERE status = 'In Process';`;
-        result = await client.query(queryForStatus);
+                        WHERE status = 'In Process' AND agent IN ( SELECT full_name FROM users WHERE email = $1);`;
+        result = await client.query(queryForStatus, [agentEmail]);
         const inProccesCount = result.rows[0].new_leads_count;
         
         queryForStatus = `SELECT COUNT(*) AS new_leads_count
                         FROM leads
-                        WHERE status = 'Closed';`;
-        result = await client.query(queryForStatus);
+                        WHERE status = 'Closed' AND agent IN ( SELECT full_name FROM users WHERE email = $1);`;
+        result = await client.query(queryForStatus, [agentEmail]);
         const closedCount = result.rows[0].new_leads_count;
         console.log(newCount, inProccesCount, closedCount)
         res.json([newCount, inProccesCount, closedCount]); 
