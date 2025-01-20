@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const leadsBody = document.getElementById("leadsBody");
         leadsBody.innerHTML = ""; // clean the table first
 
+        // Sort leads by joinDate in descending order
+        leads.sort((a, b) => new Date(b.joindate) - new Date(a.joindate)); 
+
         leads.forEach(lead => {
             const row = document.createElement("tr");
 
@@ -109,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Edit fields in the table
-    window.makeEditable = function (cell, leadId, fieldName) {
+    function makeEditable(cell, leadId, fieldName) {
         const originalText = cell.textContent;
         cell.innerHTML = `<input type='text' value='${originalText}' />`;
         const input = cell.querySelector("input");
@@ -182,47 +185,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // loading leads
     fetchLeads(); 
-
-    async function toggleLeadsView(button)
-    {
-    const leadsTable = document.getElementById("leadsTable");
-    const newLeadsTable = document.getElementById("newLeadsTable");
-   
-    if (button.textContent === "New Leads") {
-        button.textContent = "My Leads";
-        //Sending a request to the server to obtain information from the DB
-        try {
-            const response = await fetch(`http://localhost:3000/newLeads`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                console.error('Server returned an error:', response.status);
-                return;
-            }
-            // getting data from server
-            const data = await response.json();
-            // console.log('Data received:', data); 
-            showLeadsSearchBy(data); // present data in table   
-        } catch (error) {
-            console.error('Error occurred:', error);
-        }
-        // leadsTable.classList.add("hidden");
-        // newLeadsTable.classList.remove("hidden");
-    } else {
-        button.textContent = "New Leads";
-        fetchLeads();
-        // leadsTable.classList.remove("hidden");
-        // newLeadsTable.classList.add("hidden");
-    }
-    }
-
-    document.getElementById("toggle-leads-btn").addEventListener("click", (e) => {
-        toggleLeadsView(e.target);
-    });
 });
 
 // Function to format date
@@ -261,7 +223,7 @@ function toggleLeadsView(button) {
 }
 
 // Function to style the status cells
-window.styleStatusCells = function () {
+function styleStatusCells() {
     const rows = document.querySelectorAll("#leadsBody tr");
 
     rows.forEach(row => {
