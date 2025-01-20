@@ -129,7 +129,7 @@ async function inputFromEngineSearch(typeOfAction)
         resultsList.innerHTML = ""; 
         //Show options when typing in a search engine
         dataOfCriterion.forEach(item => {
-            const fieldName = selectedSearchBy; 
+            const fieldName = selectedSearchBy.toLowerCase(); 
             const resultItem = document.createElement("li");
             resultItem.textContent = item[fieldName];    
             resultItem.onclick = () => { 
