@@ -1,6 +1,6 @@
 function closeForm() {
     document.getElementById('interestForm').reset();
-    alert("Form closed.");
+    document.getElementById('interestForm').style.display = 'none';
 }
 
 function resetForm() {
@@ -89,6 +89,7 @@ function submitValidForm() {
         source,
         country,
         company,
+        additionalInfo,
     };
 
     fetch('http://localhost:3000/submitForm', {

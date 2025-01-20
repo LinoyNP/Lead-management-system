@@ -71,7 +71,7 @@ client.connect()
 
 // Endpoint to handle form submission and add lead to the database
 app.post('/submitForm', async (req, res) => {
-    const { fullName, phone, email, source, country, company } = req.body;
+    const { fullName, phone, email, source, country, company , additionalInfo} = req.body;
 
     // Check if the phone or email already exists in the database
     try {
@@ -92,12 +92,12 @@ app.post('/submitForm', async (req, res) => {
 
         // Insert query to add the lead to the database
         const insertQuery = `
-            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent, additional_info)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         `;
 
         await client.query(insertQuery, [
-            phone, fullName, email, country, company, status, currentDate, source, agent
+            phone, fullName, email, country, company, status, currentDate, source, agent, additionalInfo
         ]);
 
         res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
