@@ -85,7 +85,7 @@ app.get('/leads/:id/products', async (req, res) => {
 //Endpoint for getting results from the database for show new leads
 app.post('/newLeads', async (req, res) => {
     try {
-        const query = `SELECT * FROM leads WHERE status = 'New' OR status IS NULL;`;
+        const query = `SELECT * FROM leads WHERE agent IS NULL;`;
         const result = await client.query(query);
         console.log("Query successful:", result.rows);
         res.json(result.rows); 
@@ -112,6 +112,7 @@ app.post('/searchBy', async (req, res) => {
                         AND l.agent IN ( SELECT full_name FROM users WHERE email = $2);`;
             const resultQueryLeads = await client.query(query, [searchPattern, agentEmail]);
             console.log("Query successful:", resultQueryLeads.rows);
+            //Results of the products by which leads are searched
             query = `SELECT p.productName 
                     FROM products p
                     JOIN leads l ON p.lead_phone = l.phone
@@ -133,6 +134,7 @@ app.post('/searchBy', async (req, res) => {
             const result = await client.query(query, [searchPattern, agentEmail]);
             console.log("Query successful:", result.rows);
             
+            //Results of the "Search by" criteria(location,email,company, name) by which leads are searched
             query = `SELECT ${selectedSearchBy} FROM leads WHERE ${selectedSearchBy} LIKE $1 
                         AND agent IN ( SELECT full_name FROM users WHERE email = $2);`;
             
