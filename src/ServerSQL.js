@@ -183,7 +183,7 @@ app.get('/check-agent', async (req, res) => {
 //Endpoint for getting results from the database for show new leads
 app.post('/newLeads', async (req, res) => {
     try {
-        const query = `SELECT * FROM leads WHERE status = 'New' OR status IS NULL;`;
+        const query = `SELECT * FROM leads WHERE agent IS NULL;`;
         const result = await client.query(query);
         console.log("Query successful:", result.rows);
         res.json(result.rows); 
@@ -203,14 +203,21 @@ app.post('/searchBy', async (req, res) => {
     {
         
         try {
-            const query = `SELECT l.* 
+            let query = `SELECT l.* 
                         FROM products p
                         JOIN leads l ON p.lead_phone = l.phone
                         WHERE p.${selectedSearchBy} LIKE $1 
                         AND l.agent IN ( SELECT full_name FROM users WHERE email = $2);`;
-            const result = await client.query(query, [searchPattern, agentEmail]);
-            console.log("Query successful:", result.rows);
-            res.json(result.rows); 
+            const resultQueryLeads = await client.query(query, [searchPattern, agentEmail]);
+            console.log("Query successful:", resultQueryLeads.rows);
+            //Results of the products by which leads are searched
+            query = `SELECT p.productName 
+                    FROM products p
+                    JOIN leads l ON p.lead_phone = l.phone
+                    WHERE p.${selectedSearchBy} LIKE $1 
+                    AND l.agent IN ( SELECT full_name FROM users WHERE email = $2);`;
+            const resultQueryProduct = await client.query(query, [searchPattern, agentEmail]);
+            res.json([resultQueryLeads.rows, resultQueryProduct.rows]); 
         } catch (error) {
             console.error("Error fetching data:", error);
             res.status(500).send({ error: 'Failed to fetch data' });
@@ -220,17 +227,73 @@ app.post('/searchBy', async (req, res) => {
 
     else{
         try{
-            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
+            let query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
                         AND agent IN ( SELECT full_name FROM users WHERE email = $2);`;
             const result = await client.query(query, [searchPattern, agentEmail]);
             console.log("Query successful:", result.rows);
-            res.json(result.rows); 
+            
+            //Results of the "Search by" criteria(location,email,company, name) by which leads are searched
+            query = `SELECT ${selectedSearchBy} FROM leads WHERE ${selectedSearchBy} LIKE $1 
+                        AND agent IN ( SELECT full_name FROM users WHERE email = $2);`;
+            
+            const resultQueryCriterion =  await client.query(query, [searchPattern, agentEmail]);
+            res.json([result.rows, resultQueryCriterion.rows]); 
         } catch (error) {
             console.error("Error fetching data:", error);
             res.status(500).send({ error: 'Failed to fetch data' });
         }    
     }
+});
 
+// Search engine for "new leads"
+app.post('/searchByForNewLeads', async (req, res) => {
+    console.log('post');
+    const { selectedSearchBy, searchValue } = req.body;
+    const searchPattern = `${searchValue}%`
+    if (selectedSearchBy == "productName")
+    {
+        
+        try {
+            let query = `SELECT l.* 
+                        FROM products p
+                        JOIN leads l ON p.lead_phone = l.phone
+                        WHERE p.${selectedSearchBy} LIKE $1 
+                        AND l.agent IS NULL;`;
+            const resultQueryLeads = await client.query(query, [searchPattern]);
+            console.log("Query successful:", resultQueryLeads.rows);
+            //Results of the products by which leads are searched
+            query = `SELECT p.productName 
+                    FROM products p
+                    JOIN leads l ON p.lead_phone = l.phone
+                    WHERE p.${selectedSearchBy} LIKE $1 
+                    AND l.agent IS NULL;`;
+            const resultQueryProduct = await client.query(query, [searchPattern]);
+            res.json([resultQueryLeads.rows, resultQueryProduct.rows]); 
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            res.status(500).send({ error: 'Failed to fetch data' });
+        }
+
+    }
+
+    else{
+        try{
+            let query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
+                        AND agent IS NULL;`;
+            const result = await client.query(query, [searchPattern]);
+            console.log("Query successful:", result.rows);
+            
+            //Results of the "Search by" criteria(location,email,company, name) by which leads are searched
+            query = `SELECT ${selectedSearchBy} FROM leads WHERE ${selectedSearchBy} LIKE $1 
+                        AND agent IS NULL;`;
+            
+            const resultQueryCriterion =  await client.query(query, [searchPattern]);
+            res.json([result.rows, resultQueryCriterion.rows]); 
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            res.status(500).send({ error: 'Failed to fetch data' });
+        }    
+    }
 });
 
 // ---------------------------------------- DASHBOARD ----------------------------------------------------//

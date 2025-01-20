@@ -69,6 +69,7 @@ function ListenersForSearchAndFiltering(){
     
 async function inputFromEngineSearch(typeOfAction)
 {
+    const textContentMyOrNewLeads = document.getElementById("toggle-leads-btn");
     const searchInput = document.getElementById("Search");
     const searchValue = searchInput.value; // The value typed in the search field
     const noResultsMessage = document.getElementById("noResultsMessage");
@@ -88,39 +89,57 @@ async function inputFromEngineSearch(typeOfAction)
         searchInput.value = '';
         return; 
     }
-
-    //Sending a request to the server to obtain information from the DB
+    
+    let response;
     try {
-        const response = await fetch(`http://localhost:3000/searchBy`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
-            body: JSON.stringify({ selectedSearchBy, searchValue, agentEmail }), 
-        });
-
+        //If the caption on the button is "New Leads," it means you are currently on the "My Leads" page.
+        if (textContentMyOrNewLeads.textContent === "New Leads") {
+            //Sending a request to the server to obtain information from the DB
+            response = await fetch(`http://localhost:3000/searchBy`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
+                body: JSON.stringify({ selectedSearchBy, searchValue, agentEmail }), 
+            });
+        }
+        
+        else{
+            //Sending a request to the server to obtain information from the DB
+            response = await fetch(`http://localhost:3000/searchByForNewLeads`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+                //Search by criteria the user selected in "Search by" and by the value the user entered in the search engine
+                body: JSON.stringify({ selectedSearchBy, searchValue }), 
+            });
+        }
+    
         if (!response.ok) {
             console.error('Server returned an error:', response.status);
             return;
         }
         // getting data from server
         const data = await response.json();
-        // console.log('Data received:', data); 
+        leadsData = data[0]; //Result leads by criterion
+        dataOfCriterion = data[1]; //Results - the criterion themselfs
         
         resultsList.innerHTML = ""; 
         //Show options when typing in a search engine
-        data.forEach(item => {
+        dataOfCriterion.forEach(item => {
+            const fieldName = selectedSearchBy.toLowerCase(); 
             const resultItem = document.createElement("li");
-            resultItem.textContent = item.name;    
+            resultItem.textContent = item[fieldName];    
             resultItem.onclick = () => { 
-                searchInput.value = item.name; // Selecting the value by clicking
+                searchInput.value = item[fieldName];; // Selecting the value by clicking
                 resultsList.innerHTML = ""; 
             };
             resultsList.appendChild(resultItem);
         });
         if(typeOfAction == 'button'){
-            if (data.length === 0){
+            if (leadsData.length === 0){
                 noResultsMessage.textContent = " No leads found for this search.";
                 noResultsMessage.style.display = "block";
             }
@@ -130,7 +149,7 @@ async function inputFromEngineSearch(typeOfAction)
             resultsList.innerHTML = "";
             
             
-            showLeadsSearchBy(data); // present data in table
+            showLeadsSearchBy(leadsData); // present data in table
         }
             
     } catch (error) {
