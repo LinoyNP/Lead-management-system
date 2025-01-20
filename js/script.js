@@ -177,6 +177,7 @@ async function showLeadsSearchBy(leads) {
             cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
 
             row.appendChild(cell);
+            styleStatusCells();
             
         });
 

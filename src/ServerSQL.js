@@ -82,6 +82,20 @@ app.get('/leads/:id/products', async (req, res) => {
     }
 });
 
+//Endpoint for getting results from the database for show new leads
+app.post('/newLeads', async (req, res) => {
+    try {
+        const query = `SELECT * FROM leads WHERE status = 'New' OR status IS NULL;`;
+        const result = await client.query(query);
+        console.log("Query successful:", result.rows);
+        res.json(result.rows); 
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send({ error: 'Failed to fetch data' });
+    }
+    
+});
+
 //Endpoint for getting results from the database according to "search by"
 app.post('/searchBy', async (req, res) => {
     console.log('post');
