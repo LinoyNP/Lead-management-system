@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
         productsPane.style.display = "none";   // Hide the products pane
     }
 
-
     // func to add leads to the table
     async function fetchLeads() {
         const response = await fetch(`http://localhost:3000/leads?email=${email}`);  // Server endpoint
@@ -31,12 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cell = document.createElement("td");
 
                 // format of the joinDate (handle invalid date)
-                if (key === "joinDate") {
+                if (key === "joindate") {
                     const date = new Date(value);
                     if (isNaN(date)) {
                         cell.textContent = "Invalid Date";  // if not valid, show an error message
                     } else {
-                        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
+                        const formattedDate = DateFormat(date) // year-month-day hour:min:sec
                         cell.textContent = formattedDate;
                     }
                 } else {
@@ -44,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 cell.classList.add("editable");
-                cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
+                cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // 'phone' is the primary key
 
                 row.appendChild(cell);
             });
@@ -84,32 +83,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Add product data to the row
                 Object.entries(product).forEach(([key, value]) => {
                     const cell = document.createElement("td");
-
-                    // Check if the value is a valid date and format it
-                    // if (key === "viewDate") {
-                    //     const date = new Date(value);
-                    //     if (isNaN(date)) {
-                    //         cell.textContent = "Invalid Date";
-                    //     } else {
-                    //         const formattedDate = date.toISOString().split('T').join(' ').split('.')[0];
-                    //         cell.textContent = formattedDate;
-                    //     }
-                    // } else {
-                    //     cell.textContent = value;
-                    // }
-
-                    // row.appendChild(cell);
-
                     // Handle date formatting
-                    if (key === "viewDate") {
-                        const date = new Date(value);
-                        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0];
-                        cell.textContent = formattedDate;
+                    console.log(key);
+                    if (key === "viewdate") {
+                        const dateCell = document.createElement("td");
+                        const formattedDate = DateFormat(product.viewdate); // Show formatted date
+                        dateCell.textContent = formattedDate;
+                        row.appendChild(dateCell);
                     } else {
                         cell.textContent = value;
+                        row.appendChild(cell);
                     }
-
-                    row.appendChild(cell);
+                    
 
                 });
 
@@ -199,46 +184,40 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchLeads(); 
 });
 
-// function to show products
-async function showProducts(leadPhone) {
-    const response = await fetch(`http://localhost:3000/leads/${leadPhone}/products`);
-    const products = await response.json();
-    const productTableBody = document.getElementById("productTableBody");
-    productTableBody.innerHTML = "";  // clear the table before displaying new products
+// Function to format date
+function DateFormat(dateString) {
+    const date = new Date(dateString);
 
-    products.forEach(product => {
-        const row = document.createElement("tr");
-
-        // Display only product name and formatted date, not the product ID or lead phone number
-        const productNameCell = document.createElement("td");
-        productNameCell.textContent = product.productName;  // Show product name
-        row.appendChild(productNameCell);
-
-        const dateCell = document.createElement("td");
-        const date = new Date(product.viewDate);
-        const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
-        dateCell.textContent = formattedDate;  // Show formatted date
-        row.appendChild(dateCell);
-
-        productTableBody.appendChild(row);
-    });
-}
-
-    // JavaScript for toggling and pane control
-    function toggleLeadsView(button) {
-        const leadsTable = document.getElementById("leadsTable");
-        const newLeadsTable = document.getElementById("newLeadsTable");
-        if (button.textContent === "New Leads") {
-            button.textContent = "My Leads";
-            leadsTable.classList.add("hidden");
-            newLeadsTable.classList.remove("hidden");
-        } else {
-            button.textContent = "New Leads";
-            leadsTable.classList.remove("hidden");
-            newLeadsTable.classList.add("hidden");
-        }
+    if (isNaN(date.getTime())) {
+        return "Invalid Date";
     }
 
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const hours = String(date.getHours()).padStart(2, '0'); 
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // year-month-day hour:min:sec
+}
+
+
+// JavaScript for toggling and pane control
+function toggleLeadsView(button) {
+    const leadsTable = document.getElementById("leadsTable");
+    const newLeadsTable = document.getElementById("newLeadsTable");
+    if (button.textContent === "New Leads") {
+        button.textContent = "My Leads";
+        leadsTable.classList.add("hidden");
+        newLeadsTable.classList.remove("hidden");
+    } else {
+        button.textContent = "New Leads";
+        leadsTable.classList.remove("hidden");
+        newLeadsTable.classList.add("hidden");
+    }
+}
 
 // Function to style the status cells
 function styleStatusCells() {
@@ -261,6 +240,7 @@ function styleStatusCells() {
     });
 }
 
+// Function to update the style of the status cells
 function updateStatusColor(cell, statusText) {
     cell.classList.remove("new", "in-process", "closed");
 
@@ -272,5 +252,3 @@ function updateStatusColor(cell, statusText) {
         cell.classList.add("closed");
     }
 }
-
-
