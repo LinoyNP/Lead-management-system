@@ -105,14 +105,20 @@ app.post('/searchBy', async (req, res) => {
     {
         
         try {
-            const query = `SELECT l.* 
+            let query = `SELECT l.* 
                         FROM products p
                         JOIN leads l ON p.lead_phone = l.phone
                         WHERE p.${selectedSearchBy} LIKE $1 
                         AND l.agent IN ( SELECT full_name FROM users WHERE email = $2);`;
-            const result = await client.query(query, [searchPattern, agentEmail]);
-            console.log("Query successful:", result.rows);
-            res.json(result.rows); 
+            const resultQueryLeads = await client.query(query, [searchPattern, agentEmail]);
+            console.log("Query successful:", resultQueryLeads.rows);
+            query = `SELECT p.productName 
+                    FROM products p
+                    JOIN leads l ON p.lead_phone = l.phone
+                    WHERE p.${selectedSearchBy} LIKE $1 
+                    AND l.agent IN ( SELECT full_name FROM users WHERE email = $2);`;
+            const resultQueryProduct = await client.query(query, [searchPattern, agentEmail]);
+            res.json([resultQueryLeads.rows, resultQueryProduct.rows]); 
         } catch (error) {
             console.error("Error fetching data:", error);
             res.status(500).send({ error: 'Failed to fetch data' });
@@ -122,11 +128,16 @@ app.post('/searchBy', async (req, res) => {
 
     else{
         try{
-            const query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
+            let query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
                         AND agent IN ( SELECT full_name FROM users WHERE email = $2);`;
             const result = await client.query(query, [searchPattern, agentEmail]);
             console.log("Query successful:", result.rows);
-            res.json(result.rows); 
+            
+            query = `SELECT ${selectedSearchBy} FROM leads WHERE ${selectedSearchBy} LIKE $1 
+                        AND agent IN ( SELECT full_name FROM users WHERE email = $2);`;
+            
+            const resultQueryCriterion =  await client.query(query, [searchPattern, agentEmail]);
+            res.json([result.rows, resultQueryCriterion.rows]); 
         } catch (error) {
             console.error("Error fetching data:", error);
             res.status(500).send({ error: 'Failed to fetch data' });

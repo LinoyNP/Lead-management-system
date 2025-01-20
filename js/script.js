@@ -106,21 +106,23 @@ async function inputFromEngineSearch(typeOfAction)
         }
         // getting data from server
         const data = await response.json();
-        // console.log('Data received:', data); 
+        leadsData = data[0]; //Result leads by criterion
+        dataOfCriterion = data[1]; //Results - the criterion themselfs
         
         resultsList.innerHTML = ""; 
         //Show options when typing in a search engine
-        data.forEach(item => {
+        dataOfCriterion.forEach(item => {
+            const fieldName = selectedSearchBy; 
             const resultItem = document.createElement("li");
-            resultItem.textContent = item.name;    
+            resultItem.textContent = item[fieldName];    
             resultItem.onclick = () => { 
-                searchInput.value = item.name; // Selecting the value by clicking
+                searchInput.value = item[fieldName];; // Selecting the value by clicking
                 resultsList.innerHTML = ""; 
             };
             resultsList.appendChild(resultItem);
         });
         if(typeOfAction == 'button'){
-            if (data.length === 0){
+            if (leadsData.length === 0){
                 noResultsMessage.textContent = " No leads found for this search.";
                 noResultsMessage.style.display = "block";
             }
@@ -130,7 +132,7 @@ async function inputFromEngineSearch(typeOfAction)
             resultsList.innerHTML = "";
             
             
-            showLeadsSearchBy(data); // present data in table
+            showLeadsSearchBy(leadsData); // present data in table
         }
             
     } catch (error) {
