@@ -130,6 +130,40 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
             }
+
+            if (fieldName === "source") {
+                newValue = capitalizeFirstLetter(newValue);
+    
+                if (newValue!="Advertising" && newValue!="Recommendation" && newValue!="Social Media" && newValue!="Website" && newValue!="Phone Call") {
+                    alert("Invalid sorce. You can only enter: 'Advertising', 'Recommendation', 'Social Media' , 'Website' Or 'Phone Call' .");
+                    cell.textContent = originalText;
+                    return;
+                }
+            }
+
+            if (fieldName === "name" || fieldName === "phone" || fieldName === "email") {
+    
+                if (newValue === null) {
+                    alert("Invalid input. Not Null filed.");
+                    cell.textContent = originalText;
+                    return;
+                }
+            }
+
+            if (fieldName === "location" || fieldName === "company") {
+                newValue = capitalizeFirstLetter(newValue);
+            }
+
+            if (fieldName === "agent") {
+                if (newValue === "") {newValue = null;}
+                if (newValue != null){
+                    const agentExists = await checkAgentExists(newValue);
+                    if (!agentExists ) {
+                        alert("The agent does not exist in the system.");
+                        return;
+                    }
+                }
+            }
     
             cell.textContent = newValue;
             await updateLead(leadId, fieldName, newValue);
@@ -157,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ field, value })
+            body: JSON.stringify({ fieldName: field, newValue: value})
         });
 
         const result = await response.json();
@@ -186,6 +220,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // loading leads
     fetchLeads(); 
 });
+
+
+// ask the server if the agent exsist
+async function checkAgentExists(agentName) {
+    try {
+        const response = await fetch(`http://localhost:3000/check-agent?agentName=${agentName}`);
+        const data = await response.json();
+        return data.exists;
+    } catch (error) {
+        console.error("Error checking agent:", error);
+        return false;
+    }
+}
 
 // Function to format date
 function DateFormat(dateString) {

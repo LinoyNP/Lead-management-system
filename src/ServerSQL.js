@@ -38,7 +38,6 @@ app.use('/login',(req, res, next) => {
     next();
 });
 
-
 // app.use(express.static(path.join(__dirname, '../html')));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
@@ -55,6 +54,61 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false } 
 }));
+
+// Connect to PostgreSQL database
+const client = new Client({
+    connectionString: process.env.SUPABASE_DB_URL, // Database URL from .env file
+});
+
+client.connect()
+    .then(() => console.log("Connected to PostgreSQL"))
+    .catch((err) => {
+        console.error("Connection error", err.stack);
+        process.exit(1); // Exit if connection fails
+    });    
+
+// ------------------------------------------- intrest form ----------------------------------------------------//
+
+// Endpoint to handle form submission and add lead to the database
+app.post('/submitForm', async (req, res) => {
+    const { fullName, phone, email, source, country, company } = req.body;
+
+    // Check if the phone or email already exists in the database
+    try {
+         const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
+         if (phoneCheck.rows.length > 0) {
+             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
+         }
+ 
+         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+         if (emailCheck.rows.length > 0) {
+             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
+         }
+
+        // If phone does not exist, insert the new lead into the database
+        const currentDate = new Date();  // Current date and time
+        const status = 'New';            // Default status
+        const agent = '';                // Empty for now
+
+        // Insert query to add the lead to the database
+        const insertQuery = `
+            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `;
+
+        await client.query(insertQuery, [
+            phone, fullName, email, country, company, status, currentDate, source, agent
+        ]);
+
+        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
+
+    } catch (error) {
+        console.error("Error processing form submission:", error);
+        res.status(500).send({ error: 'Failed to process form submission.' });
+    }
+});
+
+//---------------------------------------------- leads table ----------------------------------------------------//
 
 // Endpoint to fetch all leads
 app.get('/leads', async (req, res) => {
@@ -81,6 +135,50 @@ app.get('/leads/:id/products', async (req, res) => {
         res.status(500).send({ error: 'Failed to fetch products' });
     }
 });
+
+// Endpoint to update a specific field in a lead
+app.put('/leads/:id', async (req, res) => {
+    const leadId = req.params.id; 
+    const { fieldName, newValue } = req.body; 
+
+    // filed that I can update
+    const validFields = ['name', 'phone', 'email', 'location', 'company', 'status', 'source', 'agent'];
+    
+    if (!validFields.includes(fieldName)) {
+        return res.status(400).send({ error: 'Invalid field name for update.' });
+    }
+
+    try {
+        // update filed in the database
+        const query = `UPDATE leads SET ${fieldName} = $1 WHERE phone = $2`;
+        await client.query(query, [newValue, leadId]);
+        res.status(200).send({ success: 'Field updated successfully.' });
+    } catch (error) {
+        console.error("Error updating field:", error);
+        res.status(500).send({ error: 'Failed to update field.' });
+    }
+});
+
+// Endpoint to chack validation to update agent filed
+app.get('/check-agent', async (req, res) => {
+    const agentName = req.query.agentName;
+
+    try {
+        const result = await client.query('SELECT * FROM users WHERE full_name = $1', [agentName]);
+        // chack if the agent exists in the database
+        if (result.rows.length > 0) {
+            res.status(200).send({ exists: true });
+        } else {
+            res.status(200).send({ exists: false });
+        }
+    } catch (error) {
+        console.error("Error checking agent:", error);
+        res.status(500).send({ error: 'Failed to check agent' });
+    }
+});
+
+
+// -------------------------------------- additional query ----------------------------------------------------//
 
 //Endpoint for getting results from the database for show new leads
 app.post('/newLeads', async (req, res) => {
@@ -135,7 +233,7 @@ app.post('/searchBy', async (req, res) => {
 
 });
 
-// ---DASHBOARD---
+// ---------------------------------------- DASHBOARD ----------------------------------------------------//
 
 //Endpoint for getting results from database for pie graph
 app.post('/peiGraph', async (req, res) => {
@@ -184,78 +282,8 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
     }
 });
 
-// Connect to PostgreSQL database
-const client = new Client({
-    connectionString: process.env.SUPABASE_DB_URL, // Database URL from .env file
-});
 
-client.connect()
-    .then(() => console.log("Connected to PostgreSQL"))
-    .catch((err) => {
-        console.error("Connection error", err.stack);
-        process.exit(1); // Exit if connection fails
-    });    
-
-
-
-// Endpoint to handle form submission and add lead to the database
-app.post('/submitForm', async (req, res) => {
-    const { fullName, phone, email, source, country, company } = req.body;
-
-    // Check if the phone or email already exists in the database
-    try {
-         const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
-         if (phoneCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
-         }
- 
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
-         }
-
-        // If phone does not exist, insert the new lead into the database
-        const currentDate = new Date();  // Current date and time
-        const status = 'New';            // Default status
-        const agent = '';                // Empty for now
-
-        // Insert query to add the lead to the database
-        const insertQuery = `
-            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `;
-
-        await client.query(insertQuery, [
-            phone, fullName, email, country, company, status, currentDate, source, agent
-        ]);
-
-        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
-
-    } catch (error) {
-        console.error("Error processing form submission:", error);
-        res.status(500).send({ error: 'Failed to process form submission.' });
-    }
-});
-
-// Endpoint to update a specific field in a lead
-app.put('/leads/:id', async (req, res) => {
-    const leadId = req.params.id; // Get the lead ID from the URL parameter
-    const { field, value } = req.body; // Extract the field and value from the request body
-
-    // Construct the dynamic SQL query
-    const query = `UPDATE leads SET ${field} = $1 WHERE phone = $2`;
-
-    try {
-        // Execute the query with parameterized values
-        await client.query(query, [value, leadId]);
-        res.status(200).send({ success: `Lead with phone ${leadId} updated successfully.` });
-    } catch (error) {
-        console.error("Error updating lead:", error);
-        res.status(500).send({ error: 'Failed to update the lead.' });
-    }
-});
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//--------------------------------------------  users ----------------------------------------------------------//
 
 // Nodemailer Transporter configuration
 const transporter = nodemailer.createTransport({
@@ -526,12 +554,6 @@ app.post('/api/set-new-password', async (req, res) => {
 //   });
 
 
-// Start the server and listen for incoming HTTP requests
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
-
-
 //LOG OUT
 
 // Logout route
@@ -547,3 +569,9 @@ app.post('/logout', (req, res) => {
     });
 });
 
+// ---------------------------------------------- Server ---------------------------------------------------//
+
+// Start the server and listen for incoming HTTP requests
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});
