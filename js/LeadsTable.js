@@ -25,10 +25,23 @@ document.addEventListener("DOMContentLoaded", () => {
         leads.forEach(lead => {
             const row = document.createElement("tr");
 
-            // rows with the leads data
+             // First add NAME, then PHONE, then the other fields
+            const nameCell = document.createElement("td");
+            nameCell.textContent = lead.name;
+            nameCell.classList.add("editable");
+            nameCell.ondblclick = () => makeEditable(nameCell, lead.phone, "name");
+            row.appendChild(nameCell);
+
+            const phoneCell = document.createElement("td");
+            phoneCell.textContent = lead.phone;
+            phoneCell.classList.add("editable");
+            phoneCell.ondblclick = () => makeEditable(phoneCell, lead.phone, "phone");
+            row.appendChild(phoneCell);
+
+            // rows with the rest of leads data
             Object.entries(lead).forEach(([key, value]) => {
                 // don't show the id
-                if (key === "id") return;
+                if (key === "id" || key === "additional_info" || key === "name" || key === "phone") return;
 
                 const cell = document.createElement("td");
 
