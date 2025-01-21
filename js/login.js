@@ -18,14 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // ניקוי הודעות שגיאה קיימות
+        // Clearing existing error messages
         document.getElementById('email-error').textContent = "";
         document.getElementById('password-error').textContent = "";
 
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
-
-        // ולידציה בסיסית
+        // Basic validation
         if (!email || !password) {
             if (!email) {
                 document.getElementById('email-error').textContent = "Please enter your email.";
@@ -50,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem('userEmail', email); //Saving the email in local storage
                 window.location.href = '/home'; // go to the home page
             } else {
-                // טיפול בשגיאות מצד השרת
+                // Handling server-side errors
                 if (data.error && data.error.toLowerCase().includes('email')) {
                     document.getElementById('email-error').textContent = data.error;
                     return;

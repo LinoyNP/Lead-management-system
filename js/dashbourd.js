@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log(dataFromQuery);
             console.log('Data received:', dataFromQuery);
             if(!dataFromQuery){
-                barChartCtx.innerText = "No agents for showing"; // משנה את התוכן של ה- div
+                barChartCtx.innerText = "No agents for showing"; 
                 barChartCtx.style.color = "red";
             }
         } catch (error) {

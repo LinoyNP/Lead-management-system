@@ -346,13 +346,6 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
 });
 
 
-client.connect()
-    .then(() => console.log("Connected to PostgreSQL"))
-    .catch((err) => {
-        console.error("Connection error", err.stack);
-        process.exit(1); // Exit if connection fails
-    });    
-
 
 
 // Endpoint to handle form submission and add lead to the database
@@ -412,10 +405,9 @@ app.put('/leads/:id', async (req, res) => {
     }
 });
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///SIGN UP
-//--------------------------------------------  users ----------------------------------------------------------//
 
+//--------------------------------------------  users ----------------------------------------------------------//
+//SIGN UP
 // Nodemailer Transporter configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -426,28 +418,27 @@ const transporter = nodemailer.createTransport({
 });
 
 
-// רישום משתמש חדש
+//Registering a new user
 app.post('/register', async (req, res) => {
     const { fullName, email, password } = req.body;
 
     try {
-        // בדיקה אם המשתמש כבר קיים
+        //Checking if the user already exists
         const userExists = await client.query('SELECT * FROM public.users WHERE email = $1', [email]);
         if (userExists.rows.length > 0) {
             return res.status(400).json({ error: 'User already exists.Please log in instead!' });
         }
 
-        // יצירת טוקן אימות
+        // Generating a verification token
         const verificationToken = generateVerificationToken();
-        const hashedPassword = await bcrypt.hash(password, 10); // 10 הוא ה-salt rounds
-
-        // הכנסת נתוני המשתמש לדאטהבייס
+        const hashedPassword = await bcrypt.hash(password, 10); 
+        // Inserting user data into the database
         await client.query(
             'INSERT INTO public.users (full_name, email, password, verification_token, verified) VALUES ($1, $2, $3, $4, $5)',
             [fullName, email, password, verificationToken, false]
         );
 
-        // שליחת מייל לאימות
+        // Sending verification email
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -482,12 +473,12 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// אימות משתמש
+// User verification
 app.get('/verify-email', async (req, res) => {
     const { token } = req.query;
 
     try {
-        // עדכון הסטטוס של המשתמש אם הטוקן תקין
+        // Updating the user's status if the token is valid
         const result = await client.query(
             'UPDATE public.users SET verified = true WHERE verification_token = $1 RETURNING *',
             [token]
@@ -635,12 +626,11 @@ app.post('/api/reset-password', async (req, res) => {
             return res.status(400).json({ message: 'This email is not registered.' });
         }
         //////////////
-        // יצירת טוקן אקראי ותוקף של 24 שעות
+        // Generating a random token with a 24-hour validity
         const resetToken = crypto.randomBytes(32).toString('hex');
         const expirationTime = new Date();
         expirationTime.setHours(expirationTime.getHours() + 24);
-
-        // שמירת הטוקן בבסיס הנתונים
+        // Storing the token in the database
         await client.query(
             'UPDATE public.users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
             [resetToken, expirationTime, email]
@@ -668,12 +658,11 @@ app.post('/api/reset-password', async (req, res) => {
         await transporter.sendMail(mailOptions);
         res.json({ message: 'Password reset link has been sent to your email.' });
     } catch (error) {
-        console.error(error);/////
+        console.error(error);
         res.status(500).json({ message: 'An error occurred. Please try again later.' });
     }
 });
-
-// שינוי סיסמה באמצעות טוקן
+// Changing the password using the token
 app.post('/api/set-new-password', async (req, res) => { 
     const { token, newPassword, confirmPassword } = req.body; 
 
@@ -682,7 +671,7 @@ app.post('/api/set-new-password', async (req, res) => {
     } 
 
     try { 
-        // בדיקת תקינות הטוקן והתוקף שלו
+        // Checking the validity of the token and its expiration time
         const result = await client.query(
             'SELECT * FROM public.users WHERE reset_token = $1', 
             [token]
@@ -693,13 +682,12 @@ app.post('/api/set-new-password', async (req, res) => {
         }
 
         const { email, reset_token_expires } = result.rows[0];
-
-        // בדיקה אם הטוקן פג תוקף
+        // Checking if the token has expired
         if (new Date() > new Date(reset_token_expires)) {
             return res.status(400).json({ message: 'Token has expired. Please request a new reset link.' });
         }
-
-        // עדכון הסיסמה ללא הצפנה
+        
+        // Updating the password without encryption
         const updateResult = await client.query(
             'UPDATE public.users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE email = $2',
             [newPassword, email]

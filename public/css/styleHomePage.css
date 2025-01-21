@@ -34,8 +34,8 @@ body {
 
 
 :root {
-    --primary-blue: #1e88e5; /* כחול עיקרי */
-    --hover-blue: #42a5f5;  /* כחול כשהעכבר מרחף */
+    --primary-blue: #1e88e5; 
+    --hover-blue: #42a5f5;  
 }
 /* Sort and Search */
 .sortAndSearch {
@@ -214,7 +214,7 @@ panel search by
     list-style: none; /*Remove list formatting*/
     padding: 0;
     margin: 0;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* צל קל */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 #results li {
@@ -223,7 +223,7 @@ panel search by
 }
 
 #results li:hover {
-    background-color: #f0f0f0; /* שינוי צבע בעת ריחוף */
+    background-color: #f0f0f0; 
 }
 
 
@@ -322,46 +322,4 @@ panel search by
     font-weight: bold;   
 }
 
-/* .leads-table td {
-    text-transform: capitalize;
-} */
-
-/* .leads-table td:nth-child(6) { 
-    font-weight: bold;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-} */
-
-/* .leads-table td:nth-child(6):contains('Active') {
-    background-color: #66bb6a; 
-}.
-
-/*.leads-table td:nth-child(6):contains('Pending') {
-    background-color: #ffa726; 
-}*/
-
-/* .back-btn {
-    display: none;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: none;
-    background-color: #dc3545;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.back-btn:hover {
-    background-color: #a71d2a;
-} */
-
-
-/* עיצוב לעמודת הסטטוס */
-/* .leads-table .status {
-    font-weight: bold;
-    text-align: center;
-    padding: 5px;
-    border-radius: 4px;
-} */
 
