@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeProductPane() {
         productsPane.style.display = "none";   // Hide the products pane
     }
-
+    
     // func to add leads to the table
     async function fetchLeads() {
         const response = await fetch(`http://localhost:3000/leads?email=${email}`);  // Server endpoint
