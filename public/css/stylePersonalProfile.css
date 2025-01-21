@@ -47,7 +47,7 @@ input {
 }
 
 input:focus {
-    border-color: #1e88e5; /* כחול עיקרי */
+    border-color: #1e88e5; 
     outline: none;
 }
 

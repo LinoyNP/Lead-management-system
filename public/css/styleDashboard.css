@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f1faff; /* רקע כחול בהיר */
+    background-color: #f1faff; 
     color: #333;
 }
 
@@ -12,7 +12,7 @@ body {
     justify-content: space-between;
     position: relative;
     align-items: center;
-    background-color: #1e88e5; /* כחול עיקרי */
+    background-color: #1e88e5; 
     padding: 1rem;
     color: white;
 }
@@ -57,7 +57,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 40%;
-    border: 1px solid #42a5f5; /* גבול כחול */
+    border: 1px solid #42a5f5; 
 }
 
 canvas {

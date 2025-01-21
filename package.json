@@ -1,7 +1,7 @@
 {
   "name": "lead-management-system",
   "version": "1.0.0",
-  "description": "A lead management system that consists of the following features:\r 1) Display all leads as a table\r 2) Search engine by different categories\r 3) Filtering - display leads in a table according to the selected criteria\r 4) Dashboard, personal profile, lead managementד",
+  "description": "A lead management system that consists of the following features:\r 1) Display all leads as a table\r 2) Search engine by different categories\r 3) Filtering - display leads in a table according to the selected criteria\r 4) Dashboard, personal profile, lead management",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
