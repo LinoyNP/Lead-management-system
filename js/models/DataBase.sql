@@ -8,7 +8,8 @@ CREATE TABLE leads (
     status VARCHAR(50),
     joinDate TIMESTAMP,  
     source VARCHAR(255),
-    agent VARCHAR(255)  
+    agent VARCHAR(255),
+    additional_info VARCHAR(500
 );
 
 -- Create the `products` table
