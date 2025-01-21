@@ -346,13 +346,6 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
 });
 
 
-client.connect()
-    .then(() => console.log("Connected to PostgreSQL"))
-    .catch((err) => {
-        console.error("Connection error", err.stack);
-        process.exit(1); // Exit if connection fails
-    });    
-
 
 
 // Endpoint to handle form submission and add lead to the database
