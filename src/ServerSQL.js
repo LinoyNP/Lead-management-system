@@ -242,7 +242,7 @@ app.put('/leads/:id', async (req, res) => {
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+///SIGN UP
 // Nodemailer Transporter configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -342,14 +342,14 @@ app.get('/verify-email', async (req, res) => {
     }
 });
 
+///////////////////////////////////////////////////////////////////////////////////////////
 
-// מסך הרשמה
 app.get('/', (req, res) => {
     res.render('SignUp');
 });
 
 app.get('/home', (req, res) => {
-    res.render('HomePage');
+    res.render('homePage');
 });
 
  app.get('/login', (req, res) => {
@@ -378,6 +378,16 @@ app.get('/dashboard', (req, res) => {
 });
 
 
+app.get('/reset-password', (req, res) => {
+    res.render('resetPassword');
+});
+
+app.get('/set-new-password', (req, res) => {
+    res.render('setNewPassword');
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////
 //LOGIN
 
 // Login endpoint
@@ -436,18 +446,8 @@ app.post('/api/login', async (req, res) => {
 });
   
 
-// PASSWORD RESET
 
-app.get('/reset-password', (req, res) => {
-    res.render('resetPassword');
-});
-
-app.get('/set-new-password', (req, res) => {
-    res.render('setNewPassword');
-});
-
-
-  
+/////////////////////////////////////////////////////////////////////////////////  
 // PASSWORD RESET
   
 app.get('/password-reset', (req, res) => {
@@ -461,63 +461,110 @@ app.post('/api/reset-password', async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(400).json({ message: 'This email is not registered.' });
         }
+        //////////////
+        // יצירת טוקן אקראי ותוקף של 24 שעות
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const expirationTime = new Date();
+        expirationTime.setHours(expirationTime.getHours() + 24);
 
+        // שמירת הטוקן בבסיס הנתונים
+        await client.query(
+            'UPDATE public.users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
+            [resetToken, expirationTime, email]
+        );
+
+        const resetLink = `http://localhost:3000/set-new-password?token=${resetToken}`;
+        /////////////
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Password Reset Request',
-            // text: `Click the link below to reset your password.\n\nhttp://localhost:3000/set-new-password?email=${email}`,
             html: `
             <p>Hello,</p>
-            <p>We received a request to reset your password. You can reset your password by clicking the link below:</p>
+            <p>Click the link below to reset your password. This link will expire in 24 hours:</p>
             <p>
-                <a href="http://localhost:3000/set-new-password?email=${email}" style="color: #007BFF; text-decoration: none; font-weight: bold;">
+                <a href="${resetLink}" style="color: #007BFF; text-decoration: none; font-weight: bold;">
                     Reset Your Password
                 </a>
             </p>
-            <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
+            <p>If you did not request a password reset, ignore this email.</p>
             <p>Thank you,<br>Your Website Team</p>
-        `    
+            `
         };
 
         await transporter.sendMail(mailOptions);
         res.json({ message: 'Password reset link has been sent to your email.' });
     } catch (error) {
+        console.error(error);/////
         res.status(500).json({ message: 'An error occurred. Please try again later.' });
     }
 });
 
-app.post('/api/set-new-password', async (req, res) => {
-    const { email, newPassword, confirmPassword } = req.body;
-    if (newPassword !== confirmPassword) {
-        return res.status(400).json({ message: 'Passwords do not match.' });
-    }
+// שינוי סיסמה באמצעות טוקן
+app.post('/api/set-new-password', async (req, res) => { 
+    const { token, newPassword, confirmPassword } = req.body; 
 
-    try {
-        // Update password in DB without encryption
-        const result = await client.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
-        if (result.rowCount === 0) {
-            return res.status(400).json({ message: 'User not found.' });
+    if (newPassword !== confirmPassword) { 
+        return res.status(400).json({ message: 'Passwords do not match.' }); 
+    } 
+
+    try { 
+        // בדיקת תקינות הטוקן והתוקף שלו
+        const result = await client.query(
+            'SELECT * FROM public.users WHERE reset_token = $1', 
+            [token]
+        );
+
+        if (result.rows.length === 0) { 
+            return res.status(400).json({ message: 'Invalid or expired token.' }); 
         }
-        res.send({ message: 'Password has been successfully changed!' });
-    } catch (error) {
-        res.status(500).json({ message: 'An error occurred. Please try again later.' });
-    }
+
+        const { email, reset_token_expires } = result.rows[0];
+
+        // בדיקה אם הטוקן פג תוקף
+        if (new Date() > new Date(reset_token_expires)) {
+            return res.status(400).json({ message: 'Token has expired. Please request a new reset link.' });
+        }
+
+        // עדכון הסיסמה ללא הצפנה
+        const updateResult = await client.query(
+            'UPDATE public.users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE email = $2',
+            [newPassword, email]
+        );
+
+        if (updateResult.rowCount === 0) { 
+            return res.status(400).json({ message: 'Failed to update password.' }); 
+        } 
+
+        res.send({ message: 'Password has been successfully changed!' }); 
+    } catch (error) { 
+        console.error(error);
+        res.status(500).json({ message: 'An error occurred. Please try again later.' }); 
+    } 
 });
 
 
-//   // Placeholder routes for registration and password reset
-//   app.get('/register', (req, res) => {
-//     res.status(200).send('This is the registration page placeholder.');
-//   });
+// app.post('/api/set-new-password', async (req, res) => {
+//     const { email, newPassword, confirmPassword } = req.body;
+//     if (newPassword !== confirmPassword) {
+//         return res.status(400).json({ message: 'Passwords do not match.' });
+//     }
+
+//     try {
+//         // Update password in DB without encryption
+//         const result = await client.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
+//         if (result.rowCount === 0) {
+//             return res.status(400).json({ message: 'User not found.' });
+//         }
+//         res.send({ message: 'Password has been successfully changed!' });
+//     } catch (error) {
+//         res.status(500).json({ message: 'An error occurred. Please try again later.' });
+//     }
+// });
 
 
-// Start the server and listen for incoming HTTP requests
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
 
-
+//////////////////////////////////////////////////////////////////////////////
 //LOG OUT
 
 // Logout route
@@ -532,4 +579,8 @@ app.post('/logout', (req, res) => {
         return res.status(200).json({ message: 'Logged out successfully.' });
     });
 });
-
+////////////////////////////////////////////////////////////////////////
+// Start the server and listen for incoming HTTP requests
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+});

@@ -70,3 +70,8 @@ INSERT INTO products (lead_phone, productName, viewDate)
 VALUES 
     ('0521234567', 'Smartphone X', '2025-01-11 10:00:00'), -- Example product 1
     ('0521234567', 'Laptop Pro', '2025-01-12 15:45:00'); -- Example product 2
+
+
+ALTER TABLE users 
+ADD COLUMN reset_token VARCHAR(100) UNIQUE,
+ADD COLUMN reset_token_expires TIMESTAMP;
