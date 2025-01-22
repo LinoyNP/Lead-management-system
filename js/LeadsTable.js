@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Edit fields in the table
-    function makeEditable(cell, leadId, fieldName) {
+    window.makeEditable  = function  (cell, leadId, fieldName) {
         const originalText = cell.textContent;
         cell.innerHTML = `<input type='text' value='${originalText}' />`;
         const input = cell.querySelector("input");
