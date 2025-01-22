@@ -183,7 +183,7 @@ app.put('/leads/:id', async (req, res) => {
 //Endpoint for getting results from the database for show new leads
 app.post('/newLeads', async (req, res) => {
     try {
-        const query = `SELECT * FROM leads WHERE agent IS NULL;`;
+        const query = `SELECT * FROM leads WHERE agent IS NULL OR agent = '';`;
         const result = await client.query(query);
         console.log("Query successful:", result.rows);
         res.json(result.rows); 
@@ -258,7 +258,7 @@ app.post('/searchByForNewLeads', async (req, res) => {
                         FROM products p
                         JOIN leads l ON p.lead_phone = l.phone
                         WHERE p.${selectedSearchBy} LIKE $1 
-                        AND l.agent IS NULL;`;
+                        AND (l.agent IS NULL OR l.agent = '');`;
             const resultQueryLeads = await client.query(query, [searchPattern]);
             console.log("Query successful:", resultQueryLeads.rows);
             //Results of the products by which leads are searched
@@ -266,7 +266,7 @@ app.post('/searchByForNewLeads', async (req, res) => {
                     FROM products p
                     JOIN leads l ON p.lead_phone = l.phone
                     WHERE p.${selectedSearchBy} LIKE $1 
-                    AND l.agent IS NULL;`;
+                    AND (l.agent IS NULL OR l.agent = '');`;
             const resultQueryProduct = await client.query(query, [searchPattern]);
             res.json([resultQueryLeads.rows, resultQueryProduct.rows]); 
         } catch (error) {
@@ -279,13 +279,13 @@ app.post('/searchByForNewLeads', async (req, res) => {
     else{
         try{
             let query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
-                        AND agent IS NULL;`;
+                        AND (agent IS NULL OR agent = '');`;
             const result = await client.query(query, [searchPattern]);
             console.log("Query successful:", result.rows);
             
             //Results of the "Search by" criteria(location,email,company, name) by which leads are searched
             query = `SELECT ${selectedSearchBy} FROM leads WHERE ${selectedSearchBy} LIKE $1 
-                        AND agent IS NULL;`;
+                        AND (agent IS NULL OR agent = '');`;
             
             const resultQueryCriterion =  await client.query(query, [searchPattern]);
             res.json([result.rows, resultQueryCriterion.rows]); 
