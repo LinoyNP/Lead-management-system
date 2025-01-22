@@ -180,7 +180,7 @@ async function showLeadsSearchBy(leads) {
             const cell = document.createElement("td");
 
             // format of the joinDate (handle invalid date)
-            if (key === "joinDate") {
+            if (key === "joindate") {
                 const date = new Date(value);
                 if (isNaN(date)) {
                     cell.textContent = "Invalid Date";  // if not valid, show an error message
