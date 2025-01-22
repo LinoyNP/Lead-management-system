@@ -513,7 +513,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/home', (req, res) => {
-    res.render('homePage');
+    res.render('HomePage');
 });
 
  app.get('/login', (req, res) => {
