@@ -76,13 +76,14 @@ async function inputFromEngineSearch(typeOfAction)
     const resultsList = document.getElementById("results");
     noResultsMessage.style.display = "none";    
     
+    
     if (!searchValue && typeOfAction=='button') {
-        noResultsMessage.textContent = "No leads found, please enter a search value."; 
+        noResultsMessage.textContent = "Please enter a search value."; 
         noResultsMessage.style.display = 'block'; 
         return;
     }
 
-    if ((searchValue.length > 21 && selectedSearchBy=='name') || (searchValue.length > 15 && (selectedSearchBy=='productName' || selectedSearchBy=='company'))){
+    if (searchValue.length > 21) {
         noResultsMessage.textContent = " No leads found for this search.";
         noResultsMessage.style.display = 'block';
         resultsList.innerHTML = ''; 
@@ -166,8 +167,10 @@ async function showLeadsSearchBy(leads) {
     //     //TODO messege - empty
     //     return;
     // }
-    
+
     leadsBody.innerHTML = ""; // clean the table first
+    // // Sort leads by joinDate in descending order
+    // leads.sort((a, b) => new Date(b.joindate) - new Date(a.joindate)); 
 
     leads.forEach(lead => {
         const row = document.createElement("tr");
@@ -176,8 +179,11 @@ async function showLeadsSearchBy(leads) {
         Object.entries(lead).forEach(([key, value]) => {
             // don't show the id
             if (key === "id") return;
+            // if (key === "id" || key === "additional_info" || key === "name" || key === "phone") return;
 
             const cell = document.createElement("td");
+            // cell.textContent = lead.name;
+
 
             // format of the joinDate (handle invalid date)
             if (key === "joindate") {
@@ -196,34 +202,90 @@ async function showLeadsSearchBy(leads) {
             cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
 
             row.appendChild(cell);
+            // styleStatusCells();
             
         });
 
+        // // Create the "Products" button column right after the "agent" column
+        // const buttonCell = document.createElement("td");  // New cell for the button
+        // const button = document.createElement("button");
+        // button.textContent = "Products";
+        // button.addEventListener("click", () => {
+        //     const productModal = document.getElementById("productsPane");
+        //     const closeModal = document.querySelector(".close-btn");
+        //     const productTableBody = document.getElementById("productTableBody");
+            
+        //     // Close product window
+        //     closeModal.addEventListener("click", () => {
+        //         productModal.style.display = "none";
+        //     });
+        //     productModal.style.display = "block";
+        //     showProducts(lead.phone);  // pass the lead's phone number to fetch the products
+        // });
+        // buttonCell.appendChild(button);
+        // row.appendChild(buttonCell); // Add the button cell to the row
+        // // console.log("Row is:", row);
+        // leadsBody.appendChild(row);
         // Create the "Products" button column right after the "agent" column
         const buttonCell = document.createElement("td");  // New cell for the button
         const button = document.createElement("button");
         button.textContent = "Products";
         button.addEventListener("click", () => {
-            const productModal = document.getElementById("productsPane");
-            const closeModal = document.querySelector(".close-btn");
-            const productTableBody = document.getElementById("productTableBody");
-            
-            // Close product window
-            closeModal.addEventListener("click", () => {
-                productModal.style.display = "none";
-            });
-            productModal.style.display = "block";
+            productsPane.style.display = "block";
             showProducts(lead.phone);  // pass the lead's phone number to fetch the products
         });
         buttonCell.appendChild(button);
         row.appendChild(buttonCell); // Add the button cell to the row
-        console.log("Row is:", row);
-        leadsBody.appendChild(row);
-    });
-    styleStatusCells();
 
+        leadsBody.appendChild(row);
+
+
+    });
+
+    styleStatusCells();
 }
-// });
+// Show products for a given lead, this functiom is global because it has use in other files
+window.showProducts  = async function (leadPhone) {
+    try {
+        const response = await fetch(`http://localhost:3000/leads/${leadPhone}/products`);
+        const products = await response.json();
+        console.log("Products fetched from server:", products);
+
+        const productTable = document.getElementById("productTable");
+        const productTableBody = document.getElementById("productTableBody");
+        productTableBody.innerHTML = "";  // clear previous products
+
+        products.forEach(product => {
+            const row = document.createElement("tr");
+
+            // Add product data to the row
+            Object.entries(product).forEach(([key, value]) => {
+                const cell = document.createElement("td");
+                // Handle date formatting
+                console.log(key);
+                if (key === "viewdate") {
+                    const dateCell = document.createElement("td");
+                    const formattedDate = DateFormat(product.viewdate); // Show formatted date
+                    dateCell.textContent = formattedDate;
+                    row.appendChild(dateCell);
+                } else {
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                }
+                
+
+            });
+
+            productTableBody.appendChild(row);
+        });
+
+        productsPane.style.display = "block";  // Show the products pane
+
+    } catch (error) {
+        console.error("Error fetching products:", error);
+    }
+}
+
 
 function showResultWhenSearching(){
     const query = document.getElementById('Search').value;
@@ -266,20 +328,22 @@ function Sort(event){
 }
 
 function togglePanel(event, button) {
-    event.stopPropagation(); 
+    event.stopPropagation(); // מונע התפשטות האירוע
     
+    // סוגר את כל הפאנלים האחרים
     const allPanels = document.querySelectorAll('.sorting-options');
     allPanels.forEach((panel) => {
         panel.classList.remove('open');
     });
 
-    const panel = button.nextElementSibling; 
+    // מוצא את הפאנל הרלוונטי לכפתור שנלחץ
+    const panel = button.nextElementSibling; // הפאנל הוא האלמנט הבא אחרי הכפתור
     if (panel && panel.classList.contains('sorting-options')) {
-        panel.classList.toggle('open'); 
+        panel.classList.toggle('open'); // פותח/סוגר את הפאנל
     }
 }
 
-
+// מאזין לסגירת כל הפאנלים בלחיצה מחוץ
 document.addEventListener('click', () => {
     const allPanels = document.querySelectorAll('.sorting-options');
     allPanels.forEach((panel) => {
