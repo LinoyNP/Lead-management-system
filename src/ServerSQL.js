@@ -80,10 +80,10 @@ app.post('/submitForm', async (req, res) => {
              return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
          }
  
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
-         }
+        //  const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+        //  if (emailCheck.rows.length > 0) {
+        //      return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
+        //  }
 
         // If phone does not exist, insert the new lead into the database
         const currentDate = new Date();  // Current date and time
@@ -142,7 +142,7 @@ app.put('/leads/:id', async (req, res) => {
     const { fieldName, newValue } = req.body; 
 
     // filed that I can update
-    const validFields = ['name', 'phone', 'email', 'location', 'company', 'status', 'source', 'agent'];
+    const validFields = ['name', 'phone', 'email', 'location', 'company', 'status', 'source','joindate', 'agent'];
     
     if (!validFields.includes(fieldName)) {
         return res.status(400).send({ error: 'Invalid field name for update.' });
@@ -159,23 +159,23 @@ app.put('/leads/:id', async (req, res) => {
     }
 });
 
-// Endpoint to chack validation to update agent filed
-app.get('/check-agent', async (req, res) => {
-    const agentName = req.query.agentName;
+// // Endpoint to chack validation to update agent filed
+// app.get('/check-agent', async (req, res) => {
+//     const agentName = req.query.agentName;
 
-    try {
-        const result = await client.query('SELECT * FROM users WHERE full_name = $1', [agentName]);
-        // chack if the agent exists in the database
-        if (result.rows.length > 0) {
-            res.status(200).send({ exists: true });
-        } else {
-            res.status(200).send({ exists: false });
-        }
-    } catch (error) {
-        console.error("Error checking agent:", error);
-        res.status(500).send({ error: 'Failed to check agent' });
-    }
-});
+//     try {
+//         const result = await client.query('SELECT * FROM users WHERE full_name = $1', [agentName]);
+//         // chack if the agent exists in the database
+//         if (result.rows.length > 0) {
+//             res.status(200).send({ exists: true });
+//         } else {
+//             res.status(200).send({ exists: false });
+//         }
+//     } catch (error) {
+//         console.error("Error checking agent:", error);
+//         res.status(500).send({ error: 'Failed to check agent' });
+//     }
+// });
 
 
 // -------------------------------------- additional query ----------------------------------------------------//
@@ -346,68 +346,8 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
 });
 
 
-
-
-// Endpoint to handle form submission and add lead to the database
-app.post('/submitForm', async (req, res) => {
-    const { fullName, phone, email, source, country, company } = req.body;
-
-    // Check if the phone or email already exists in the database
-    try {
-         const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
-         if (phoneCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
-         }
- 
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
-         }
-
-        // If phone does not exist, insert the new lead into the database
-        const currentDate = new Date();  // Current date and time
-        const status = 'New';            // Default status
-        const agent = '';                // Empty for now
-
-        // Insert query to add the lead to the database
-        const insertQuery = `
-            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `;
-
-        await client.query(insertQuery, [
-            phone, fullName, email, country, company, status, currentDate, source, agent
-        ]);
-
-        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
-
-    } catch (error) {
-        console.error("Error processing form submission:", error);
-        res.status(500).send({ error: 'Failed to process form submission.' });
-    }
-});
-
-// Endpoint to update a specific field in a lead
-app.put('/leads/:id', async (req, res) => {
-    const leadId = req.params.id; // Get the lead ID from the URL parameter
-    const { field, value } = req.body; // Extract the field and value from the request body
-
-    // Construct the dynamic SQL query
-    const query = `UPDATE leads SET ${field} = $1 WHERE phone = $2`;
-
-    try {
-        // Execute the query with parameterized values
-        await client.query(query, [value, leadId]);
-        res.status(200).send({ success: `Lead with phone ${leadId} updated successfully.` });
-    } catch (error) {
-        console.error("Error updating lead:", error);
-        res.status(500).send({ error: 'Failed to update the lead.' });
-    }
-});
-
-
 //--------------------------------------------  users ----------------------------------------------------------//
-//SIGN UP
+
 // Nodemailer Transporter configuration
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -418,27 +358,28 @@ const transporter = nodemailer.createTransport({
 });
 
 
-//Registering a new user
+// רישום משתמש חדש
 app.post('/register', async (req, res) => {
     const { fullName, email, password } = req.body;
 
     try {
-        //Checking if the user already exists
+        // בדיקה אם המשתמש כבר קיים
         const userExists = await client.query('SELECT * FROM public.users WHERE email = $1', [email]);
         if (userExists.rows.length > 0) {
             return res.status(400).json({ error: 'User already exists.Please log in instead!' });
         }
 
-        // Generating a verification token
+        // יצירת טוקן אימות
         const verificationToken = generateVerificationToken();
-        const hashedPassword = await bcrypt.hash(password, 10); 
-        // Inserting user data into the database
+        const hashedPassword = await bcrypt.hash(password, 10); // 10 הוא ה-salt rounds
+
+        // הכנסת נתוני המשתמש לדאטהבייס
         await client.query(
             'INSERT INTO public.users (full_name, email, password, verification_token, verified) VALUES ($1, $2, $3, $4, $5)',
             [fullName, email, password, verificationToken, false]
         );
 
-        // Sending verification email
+        // שליחת מייל לאימות
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -473,12 +414,12 @@ app.post('/register', async (req, res) => {
     }
 });
 
-// User verification
+// אימות משתמש
 app.get('/verify-email', async (req, res) => {
     const { token } = req.query;
 
     try {
-        // Updating the user's status if the token is valid
+        // עדכון הסטטוס של המשתמש אם הטוקן תקין
         const result = await client.query(
             'UPDATE public.users SET verified = true WHERE verification_token = $1 RETURNING *',
             [token]
@@ -506,8 +447,8 @@ app.get('/verify-email', async (req, res) => {
     }
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////
 
+// מסך הרשמה
 app.get('/', (req, res) => {
     res.render('SignUp');
 });
@@ -542,16 +483,6 @@ app.get('/dashboard', (req, res) => {
 });
 
 
-app.get('/reset-password', (req, res) => {
-    res.render('resetPassword');
-});
-
-app.get('/set-new-password', (req, res) => {
-    res.render('setNewPassword');
-});
-
-
-/////////////////////////////////////////////////////////////////////////////////
 //LOGIN
 
 // Login endpoint
@@ -610,8 +541,18 @@ app.post('/api/login', async (req, res) => {
 });
   
 
+// PASSWORD RESET
 
-/////////////////////////////////////////////////////////////////////////////////  
+app.get('/reset-password', (req, res) => {
+    res.render('resetPassword');
+});
+
+app.get('/set-new-password', (req, res) => {
+    res.render('setNewPassword');
+});
+
+
+  
 // PASSWORD RESET
   
 app.get('/password-reset', (req, res) => {
@@ -625,108 +566,56 @@ app.post('/api/reset-password', async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(400).json({ message: 'This email is not registered.' });
         }
-        //////////////
-        // Generating a random token with a 24-hour validity
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        const expirationTime = new Date();
-        expirationTime.setHours(expirationTime.getHours() + 24);
-        // Storing the token in the database
-        await client.query(
-            'UPDATE public.users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
-            [resetToken, expirationTime, email]
-        );
 
-        const resetLink = `http://localhost:3000/set-new-password?token=${resetToken}`;
-        /////////////
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'Password Reset Request',
+            // text: `Click the link below to reset your password.\n\nhttp://localhost:3000/set-new-password?email=${email}`,
             html: `
             <p>Hello,</p>
-            <p>Click the link below to reset your password. This link will expire in 24 hours:</p>
+            <p>We received a request to reset your password. You can reset your password by clicking the link below:</p>
             <p>
-                <a href="${resetLink}" style="color: #007BFF; text-decoration: none; font-weight: bold;">
+                <a href="http://localhost:3000/set-new-password?email=${email}" style="color: #007BFF; text-decoration: none; font-weight: bold;">
                     Reset Your Password
                 </a>
             </p>
-            <p>If you did not request a password reset, ignore this email.</p>
+            <p>If you did not request a password reset, please ignore this email or contact support if you have concerns.</p>
             <p>Thank you,<br>Your Website Team</p>
-            `
+        `    
         };
 
         await transporter.sendMail(mailOptions);
         res.json({ message: 'Password reset link has been sent to your email.' });
     } catch (error) {
-        console.error(error);
         res.status(500).json({ message: 'An error occurred. Please try again later.' });
     }
 });
-// Changing the password using the token
-app.post('/api/set-new-password', async (req, res) => { 
-    const { token, newPassword, confirmPassword } = req.body; 
 
-    if (newPassword !== confirmPassword) { 
-        return res.status(400).json({ message: 'Passwords do not match.' }); 
-    } 
+app.post('/api/set-new-password', async (req, res) => {
+    const { email, newPassword, confirmPassword } = req.body;
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: 'Passwords do not match.' });
+    }
 
-    try { 
-        // Checking the validity of the token and its expiration time
-        const result = await client.query(
-            'SELECT * FROM public.users WHERE reset_token = $1', 
-            [token]
-        );
-
-        if (result.rows.length === 0) { 
-            return res.status(400).json({ message: 'Invalid or expired token.' }); 
+    try {
+        // Update password in DB without encryption
+        const result = await client.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
+        if (result.rowCount === 0) {
+            return res.status(400).json({ message: 'User not found.' });
         }
-
-        const { email, reset_token_expires } = result.rows[0];
-        // Checking if the token has expired
-        if (new Date() > new Date(reset_token_expires)) {
-            return res.status(400).json({ message: 'Token has expired. Please request a new reset link.' });
-        }
-        
-        // Updating the password without encryption
-        const updateResult = await client.query(
-            'UPDATE public.users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE email = $2',
-            [newPassword, email]
-        );
-
-        if (updateResult.rowCount === 0) { 
-            return res.status(400).json({ message: 'Failed to update password.' }); 
-        } 
-
-        res.send({ message: 'Password has been successfully changed!' }); 
-    } catch (error) { 
-        console.error(error);
-        res.status(500).json({ message: 'An error occurred. Please try again later.' }); 
-    } 
+        res.send({ message: 'Password has been successfully changed!' });
+    } catch (error) {
+        res.status(500).json({ message: 'An error occurred. Please try again later.' });
+    }
 });
 
 
-// app.post('/api/set-new-password', async (req, res) => {
-//     const { email, newPassword, confirmPassword } = req.body;
-//     if (newPassword !== confirmPassword) {
-//         return res.status(400).json({ message: 'Passwords do not match.' });
-//     }
+//   // Placeholder routes for registration and password reset
+//   app.get('/register', (req, res) => {
+//     res.status(200).send('This is the registration page placeholder.');
+//   });
 
-//     try {
-//         // Update password in DB without encryption
-//         const result = await client.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
-//         if (result.rowCount === 0) {
-//             return res.status(400).json({ message: 'User not found.' });
-//         }
-//         res.send({ message: 'Password has been successfully changed!' });
-//     } catch (error) {
-//         res.status(500).json({ message: 'An error occurred. Please try again later.' });
-//     }
-// });
-
-
-
-
-//////////////////////////////////////////////////////////////////////////////
 
 //LOG OUT
 
