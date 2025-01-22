@@ -168,16 +168,18 @@ async function showLeadsSearchBy(leads) {
     // }
     
     leadsBody.innerHTML = ""; // clean the table first
-
+    // Sort leads by joinDate in descending order
+    leads.sort((a, b) => new Date(b.joindate) - new Date(a.joindate));
+    
     leads.forEach(lead => {
         const row = document.createElement("tr");
-
+        let cell;
         // rows with the leads data
         Object.entries(lead).forEach(([key, value]) => {
             // don't show the id
             if (key === "id") return;
 
-            const cell = document.createElement("td");
+            cell = document.createElement("td");
 
             // format of the joinDate (handle invalid date)
             if (key === "joindate") {
@@ -215,8 +217,8 @@ async function showLeadsSearchBy(leads) {
             productModal.style.display = "block";
             showProducts(lead.phone);  // pass the lead's phone number to fetch the products
         });
-        buttonCell.appendChild(button);
-        row.appendChild(buttonCell); // Add the button cell to the row
+        cell.appendChild(button);
+        row.appendChild(cell); // Add the button cell to the row
         console.log("Row is:", row);
         leadsBody.appendChild(row);
     });
