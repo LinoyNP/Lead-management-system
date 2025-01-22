@@ -232,6 +232,47 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // loading leads
     fetchLeads(); 
+
+    async function toggleLeadsView(button)
+    {
+    const leadsTable = document.getElementById("leadsTable");
+    const newLeadsTable = document.getElementById("newLeadsTable");
+   
+    if (button.textContent === "New Leads") {
+        button.textContent = "My Leads";
+        //Sending a request to the server to obtain information from the DB
+        try {
+            const response = await fetch(`http://localhost:3000/newLeads`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+                console.error('Server returned an error:', response.status);
+                return;
+            }
+            // getting data from server
+            const data = await response.json();
+            // console.log('Data received:', data); 
+            showLeadsSearchBy(data); // present data in table   
+        } catch (error) {
+            console.error('Error occurred:', error);
+        }
+        // leadsTable.classList.add("hidden");
+        // newLeadsTable.classList.remove("hidden");
+    } else {
+        button.textContent = "New Leads";
+        fetchLeads();
+        // leadsTable.classList.remove("hidden");
+        // newLeadsTable.classList.add("hidden");
+    }
+    }
+
+    document.getElementById("toggle-leads-btn").addEventListener("click", (e) => {
+        toggleLeadsView(e.target);
+    });
 });
 
 
@@ -268,19 +309,19 @@ function DateFormat(dateString) {
 
 
 // JavaScript for toggling and pane control
-function toggleLeadsView(button) {
-    const leadsTable = document.getElementById("leadsTable");
-    const newLeadsTable = document.getElementById("newLeadsTable");
-    if (button.textContent === "New Leads") {
-        button.textContent = "My Leads";
-        leadsTable.classList.add("hidden");
-        newLeadsTable.classList.remove("hidden");
-    } else {
-        button.textContent = "New Leads";
-        leadsTable.classList.remove("hidden");
-        newLeadsTable.classList.add("hidden");
-    }
-}
+// function toggleLeadsView(button) {
+//     const leadsTable = document.getElementById("leadsTable");
+//     const newLeadsTable = document.getElementById("newLeadsTable");
+//     if (button.textContent === "New Leads") {
+//         button.textContent = "My Leads";
+//         leadsTable.classList.add("hidden");
+//         newLeadsTable.classList.remove("hidden");
+//     } else {
+//         button.textContent = "New Leads";
+//         leadsTable.classList.remove("hidden");
+//         newLeadsTable.classList.add("hidden");
+//     }
+// }
 
 // Function to style the status cells
 function styleStatusCells() {
