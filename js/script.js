@@ -77,7 +77,7 @@ async function inputFromEngineSearch(typeOfAction)
     noResultsMessage.style.display = "none";    
     
     if (!searchValue && typeOfAction=='button') {
-        noResultsMessage.textContent = "Please enter a search value."; 
+        noResultsMessage.textContent = "No leads found, please enter a search value."; 
         noResultsMessage.style.display = 'block'; 
         return;
     }
