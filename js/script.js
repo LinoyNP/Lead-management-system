@@ -82,7 +82,7 @@ async function inputFromEngineSearch(typeOfAction)
         return;
     }
 
-    if (searchValue.length > 21) {
+    if ((searchValue.length > 21 && selectedSearchBy=='name') || (searchValue.length > 15 && (selectedSearchBy=='productName' || selectedSearchBy=='company'))){
         noResultsMessage.textContent = " No leads found for this search.";
         noResultsMessage.style.display = 'block';
         resultsList.innerHTML = ''; 
@@ -265,22 +265,20 @@ function Sort(event){
 }
 
 function togglePanel(event, button) {
-    event.stopPropagation(); // מונע התפשטות האירוע
+    event.stopPropagation(); 
     
-    // סוגר את כל הפאנלים האחרים
     const allPanels = document.querySelectorAll('.sorting-options');
     allPanels.forEach((panel) => {
         panel.classList.remove('open');
     });
 
-    // מוצא את הפאנל הרלוונטי לכפתור שנלחץ
-    const panel = button.nextElementSibling; // הפאנל הוא האלמנט הבא אחרי הכפתור
+    const panel = button.nextElementSibling; 
     if (panel && panel.classList.contains('sorting-options')) {
-        panel.classList.toggle('open'); // פותח/סוגר את הפאנל
+        panel.classList.toggle('open'); 
     }
 }
 
-// מאזין לסגירת כל הפאנלים בלחיצה מחוץ
+
 document.addEventListener('click', () => {
     const allPanels = document.querySelectorAll('.sorting-options');
     allPanels.forEach((panel) => {
