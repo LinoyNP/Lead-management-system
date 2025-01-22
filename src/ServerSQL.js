@@ -279,13 +279,13 @@ app.post('/searchByForNewLeads', async (req, res) => {
     else{
         try{
             let query = `SELECT * FROM leads WHERE ${selectedSearchBy} LIKE $1 
-                        AND agent IS NULL OR agent = '';`;
+                        AND (agent IS NULL OR agent = '');`;
             const result = await client.query(query, [searchPattern]);
             console.log("Query successful:", result.rows);
             
             //Results of the "Search by" criteria(location,email,company, name) by which leads are searched
             query = `SELECT ${selectedSearchBy} FROM leads WHERE ${selectedSearchBy} LIKE $1 
-                        AND agent IS NULL OR agent = '';`;
+                        AND (agent IS NULL OR agent = '');`;
             
             const resultQueryCriterion =  await client.query(query, [searchPattern]);
             res.json([result.rows, resultQueryCriterion.rows]); 
