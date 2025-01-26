@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeProductPane() {
         productsPane.style.display = "none";   // Hide the products pane
     }
-    
+
     // func to add leads to the table
     async function fetchLeads() {
         const response = await fetch(`http://localhost:3000/leads?email=${email}`);  // Server endpoint
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Edit fields in the table
-    window.makeEditable  = function  (cell, leadId, fieldName) {
+    function makeEditable(cell, leadId, fieldName) {
         const originalText = cell.textContent;
         cell.innerHTML = `<input type='text' value='${originalText}' />`;
         const input = cell.querySelector("input");
@@ -134,49 +134,49 @@ document.addEventListener("DOMContentLoaded", () => {
         input.onblur = async () => {
             let newValue = input.value.trim();
     
-            if (fieldName === "status") {
-                newValue = capitalizeFirstLetter(newValue);
+            // if (fieldName === "status") {
+            //     newValue = capitalizeFirstLetter(newValue);
     
-                if (newValue!="New" && newValue!="In Progress" && newValue!="Closed") {
-                    alert("Invalid status. You can only enter: 'New', 'In Progress', 'Closed'.");
-                    cell.textContent = originalText;
-                    return;
-                }
-            }
+            //     if (newValue!="New" && newValue!="In Progress" && newValue!="Closed") {
+            //         alert("Invalid status. You can only enter: 'New', 'In Progress', 'Closed'.");
+            //         cell.textContent = originalText;
+            //         return;
+            //     }
+            // }
 
-            if (fieldName === "source") {
-                newValue = capitalizeFirstLetter(newValue);
+            // if (fieldName === "source") {
+            //     newValue = capitalizeFirstLetter(newValue);
     
-                if (newValue!="Advertising" && newValue!="Recommendation" && newValue!="Social Media" && newValue!="Website" && newValue!="Phone Call") {
-                    alert("Invalid sorce. You can only enter: 'Advertising', 'Recommendation', 'Social Media' , 'Website' Or 'Phone Call' .");
-                    cell.textContent = originalText;
-                    return;
-                }
-            }
+            //     if (newValue!="Advertising" && newValue!="Recommendation" && newValue!="Social Media" && newValue!="Website" && newValue!="Phone Call") {
+            //         alert("Invalid sorce. You can only enter: 'Advertising', 'Recommendation', 'Social Media' , 'Website' Or 'Phone Call' .");
+            //         cell.textContent = originalText;
+            //         return;
+            //     }
+            // }
 
-            if (fieldName === "name" || fieldName === "phone" || fieldName === "email") {
+            // if (fieldName === "name" || fieldName === "phone" || fieldName === "email") {
     
-                if (newValue === null) {
-                    alert("Invalid input. Not Null filed.");
-                    cell.textContent = originalText;
-                    return;
-                }
-            }
+            //     if (newValue === null) {
+            //         alert("Invalid input. Not Null filed.");
+            //         cell.textContent = originalText;
+            //         return;
+            //     }
+            // }
 
-            if (fieldName === "location" || fieldName === "company") {
-                newValue = capitalizeFirstLetter(newValue);
-            }
+            // if (fieldName === "location" || fieldName === "company") {
+            //     newValue = capitalizeFirstLetter(newValue);
+            // }
 
-            if (fieldName === "agent") {
-                if (newValue === "") {newValue = null;}
-                if (newValue != null){
-                    const agentExists = await checkAgentExists(newValue);
-                    if (!agentExists ) {
-                        alert("The agent does not exist in the system.");
-                        return;
-                    }
-                }
-            }
+            // if (fieldName === "agent") {
+            //     if (newValue === "") {newValue = null;}
+            //     if (newValue != null){
+            //         const agentExists = await checkAgentExists(newValue);
+            //         if (!agentExists ) {
+            //             alert("The agent does not exist in the system.");
+            //             return;
+            //         }
+            //     }
+            // }
     
             cell.textContent = newValue;
             await updateLead(leadId, fieldName, newValue);
@@ -232,61 +232,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // loading leads
     fetchLeads(); 
-
-    async function toggleLeadsView(button)
-    {
-    const leadsTable = document.getElementById("leadsTable");
-    const newLeadsTable = document.getElementById("newLeadsTable");
-   
-    if (button.textContent === "New Leads") {
-        button.textContent = "My Leads";
-        //Sending a request to the server to obtain information from the DB
-        try {
-            const response = await fetch(`http://localhost:3000/newLeads`, {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                console.error('Server returned an error:', response.status);
-                return;
-            }
-            // getting data from server
-            const data = await response.json();
-            // console.log('Data received:', data); 
-            showLeadsSearchBy(data); // present data in table   
-        } catch (error) {
-            console.error('Error occurred:', error);
-        }
-        // leadsTable.classList.add("hidden");
-        // newLeadsTable.classList.remove("hidden");
-    } else {
-        button.textContent = "New Leads";
-        fetchLeads();
-        // leadsTable.classList.remove("hidden");
-        // newLeadsTable.classList.add("hidden");
-    }
-    }
-
-    document.getElementById("toggle-leads-btn").addEventListener("click", (e) => {
-        toggleLeadsView(e.target);
-    });
 });
 
 
-// ask the server if the agent exsist
-async function checkAgentExists(agentName) {
-    try {
-        const response = await fetch(`http://localhost:3000/check-agent?agentName=${agentName}`);
-        const data = await response.json();
-        return data.exists;
-    } catch (error) {
-        console.error("Error checking agent:", error);
-        return false;
-    }
-}
+// // ask the server if the agent exsist
+// async function checkAgentExists(agentName) {
+//     try {
+//         const response = await fetch(`http://localhost:3000/check-agent?agentName=${agentName}`);
+//         const data = await response.json();
+//         return data.exists;
+//     } catch (error) {
+//         console.error("Error checking agent:", error);
+//         return false;
+//     }
+// }
+
 
 // Function to format date
 function DateFormat(dateString) {
@@ -309,19 +269,19 @@ function DateFormat(dateString) {
 
 
 // JavaScript for toggling and pane control
-// function toggleLeadsView(button) {
-//     const leadsTable = document.getElementById("leadsTable");
-//     const newLeadsTable = document.getElementById("newLeadsTable");
-//     if (button.textContent === "New Leads") {
-//         button.textContent = "My Leads";
-//         leadsTable.classList.add("hidden");
-//         newLeadsTable.classList.remove("hidden");
-//     } else {
-//         button.textContent = "New Leads";
-//         leadsTable.classList.remove("hidden");
-//         newLeadsTable.classList.add("hidden");
-//     }
-// }
+function toggleLeadsView(button) {
+    const leadsTable = document.getElementById("leadsTable");
+    const newLeadsTable = document.getElementById("newLeadsTable");
+    if (button.textContent === "New Leads") {
+        button.textContent = "My Leads";
+        leadsTable.classList.add("hidden");
+        newLeadsTable.classList.remove("hidden");
+    } else {
+        button.textContent = "New Leads";
+        leadsTable.classList.remove("hidden");
+        newLeadsTable.classList.add("hidden");
+    }
+}
 
 // Function to style the status cells
 function styleStatusCells() {

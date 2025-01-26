@@ -110,8 +110,6 @@ function submitValidForm() {
                 if (data.error.includes("phone")) {
                     document.getElementById('successMessage').textContent = "This lead already exists in the system.(change phone number)";
                     document.getElementById('successMessage').style.color = "red";
-                } else if (data.error.includes("email")) {
-                    document.getElementById('emailError').textContent = data.error;
                 } else {
                     document.getElementById('successMessage').textContent = data.error;
                     document.getElementById('successMessage').style.color = "red";

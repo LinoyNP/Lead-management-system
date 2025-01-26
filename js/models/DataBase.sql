@@ -2,7 +2,7 @@
 CREATE TABLE leads (
     phone VARCHAR(15) PRIMARY KEY, 
     name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL,
     location VARCHAR(255),
     company VARCHAR(255),
     status VARCHAR(50),
