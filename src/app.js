@@ -12,6 +12,7 @@ import session from 'express-session';
 import pkg from 'pg';
 const { Client } = pkg;
 
+
 // Get the current file path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,18 +55,32 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false } 
 }));
-
-// Connect to PostgreSQL database
+///////
 const client = new Client({
-    connectionString: process.env.SUPABASE_DB_URL, // Database URL from .env file
-});
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl:true
+  });
+  
+  client.connect()
+    .then(() => console.log("Connected to PostgreSQL on Render"))
+    .catch((err) => console.error("Connection error", err.stack));
+  //////////
+  
+// // Connect to PostgreSQL database
+// const client = new Client({
+//     connectionString: process.env.SUPABASE_DB_URL, // Database URL from .env file
+// });
 
-client.connect()
-    .then(() => console.log("Connected to PostgreSQL"))
-    .catch((err) => {
-        console.error("Connection error", err.stack);
-        process.exit(1); // Exit if connection fails
-    });    
+// client.connect()
+//     .then(() => console.log("Connected to PostgreSQL"))
+//     .catch((err) => {
+//         console.error("Connection error", err.stack);
+//         process.exit(1); // Exit if connection fails
+//     });    
 
 // ------------------------------------------- intrest form ----------------------------------------------------//
 
@@ -424,7 +439,7 @@ app.post('/register', async (req, res) => {
 
     try {
         //Checking if the user already exists
-        const userExists = await client.query('SELECT * FROM public.users WHERE email = $1', [email]);
+        const userExists = await client.query('SELECT * FROM users WHERE email = $1', [email]);
         if (userExists.rows.length > 0) {
             return res.status(400).json({ error: 'User already exists.Please log in instead!' });
         }
@@ -434,7 +449,7 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10); 
         // Inserting user data into the database
         await client.query(
-            'INSERT INTO public.users (full_name, email, password, verification_token, verified) VALUES ($1, $2, $3, $4, $5)',
+            'INSERT INTO users (full_name, email, password, verification_token, verified) VALUES ($1, $2, $3, $4, $5)',
             [fullName, email, password, verificationToken, false]
         );
 
@@ -480,7 +495,7 @@ app.get('/verify-email', async (req, res) => {
     try {
         // Updating the user's status if the token is valid
         const result = await client.query(
-            'UPDATE public.users SET verified = true WHERE verification_token = $1 RETURNING *',
+            'UPDATE users SET verified = true WHERE verification_token = $1 RETURNING *',
             [token]
         );
 
@@ -566,7 +581,7 @@ app.post('/api/login', async (req, res) => {
   
     try {
         // Find user by email in the database
-        const result = await client.query('SELECT * FROM public.users WHERE email = $1', [email]);
+        const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
 
         if (result.rows.length === 0) {
             return res.status(401).json({ error: 'This email is not registered. Please check your email or register.' });
@@ -621,7 +636,7 @@ app.get('/password-reset', (req, res) => {
 app.post('/api/reset-password', async (req, res) => {
     const { email } = req.body;
     try {
-        const result = await client.query('SELECT * FROM public.users WHERE email = $1', [email]);
+        const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
         if (result.rows.length === 0) {
             return res.status(400).json({ message: 'This email is not registered.' });
         }
@@ -632,7 +647,7 @@ app.post('/api/reset-password', async (req, res) => {
         expirationTime.setHours(expirationTime.getHours() + 24);
         // Storing the token in the database
         await client.query(
-            'UPDATE public.users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
+            'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE email = $3',
             [resetToken, expirationTime, email]
         );
 
@@ -673,7 +688,7 @@ app.post('/api/set-new-password', async (req, res) => {
     try { 
         // Checking the validity of the token and its expiration time
         const result = await client.query(
-            'SELECT * FROM public.users WHERE reset_token = $1', 
+            'SELECT * FROM users WHERE reset_token = $1', 
             [token]
         );
 
@@ -689,7 +704,7 @@ app.post('/api/set-new-password', async (req, res) => {
         
         // Updating the password without encryption
         const updateResult = await client.query(
-            'UPDATE public.users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE email = $2',
+            'UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE email = $2',
             [newPassword, email]
         );
 
@@ -713,7 +728,7 @@ app.post('/api/set-new-password', async (req, res) => {
 
 //     try {
 //         // Update password in DB without encryption
-//         const result = await client.query('UPDATE public.users SET password = $1 WHERE email = $2', [newPassword, email]);
+//         const result = await client.query('UPDATE users SET password = $1 WHERE email = $2', [newPassword, email]);
 //         if (result.rowCount === 0) {
 //             return res.status(400).json({ message: 'User not found.' });
 //         }

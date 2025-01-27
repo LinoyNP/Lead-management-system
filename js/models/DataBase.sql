@@ -9,7 +9,7 @@ CREATE TABLE leads (
     joinDate TIMESTAMP,  
     source VARCHAR(255),
     agent VARCHAR(255),
-    additional_info VARCHAR(500
+    additional_info VARCHAR(500)
 );
 
 -- Create the `products` table
@@ -34,7 +34,7 @@ CREATE TABLE users (
 -- Insert data into `leads` table
 INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
 VALUES (
-    '1234567890', -- Example phone number
+    '0544567890', -- Example phone number
     'Name Example',
     'example@example.com',
     'City, Country',
