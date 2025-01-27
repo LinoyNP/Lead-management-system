@@ -173,13 +173,26 @@ async function showLeadsSearchBy(leads) {
     
     leads.forEach(lead => {
         const row = document.createElement("tr");
-        let cell;
-        // rows with the leads data
+
+         // First add NAME, then PHONE, then the other fields
+        const nameCell = document.createElement("td");
+        nameCell.textContent = lead.name;
+        nameCell.classList.add("editable");
+        nameCell.ondblclick = () => makeEditable(nameCell, lead.phone, "name");
+        row.appendChild(nameCell);
+
+        const phoneCell = document.createElement("td");
+        phoneCell.textContent = lead.phone;
+        phoneCell.classList.add("editable");
+        phoneCell.ondblclick = () => makeEditable(phoneCell, lead.phone, "phone");
+        row.appendChild(phoneCell);
+
+        // rows with the rest of leads data
         Object.entries(lead).forEach(([key, value]) => {
             // don't show the id
-            if (key === "id") return;
+            if (key === "id" || key === "additional_info" || key === "name" || key === "phone") return;
 
-            cell = document.createElement("td");
+            const cell = document.createElement("td");
 
             // format of the joinDate (handle invalid date)
             if (key === "joindate") {
@@ -187,7 +200,7 @@ async function showLeadsSearchBy(leads) {
                 if (isNaN(date)) {
                     cell.textContent = "Invalid Date";  // if not valid, show an error message
                 } else {
-                    const formattedDate = date.toISOString().split('T').join(' ').split('.')[0]; // year-month-day hour:min:sec
+                    const formattedDate = DateFormat(date) // year-month-day hour:min:sec
                     cell.textContent = formattedDate;
                 }
             } else {
@@ -195,10 +208,9 @@ async function showLeadsSearchBy(leads) {
             }
 
             cell.classList.add("editable");
-            cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // assuming 'phone' is the primary key
+            cell.ondblclick = () => makeEditable(cell, lead.phone, key);  // 'phone' is the primary key
 
             row.appendChild(cell);
-            
         });
 
         // Create the "Products" button column right after the "agent" column
@@ -206,20 +218,12 @@ async function showLeadsSearchBy(leads) {
         const button = document.createElement("button");
         button.textContent = "Products";
         button.addEventListener("click", () => {
-            const productModal = document.getElementById("productsPane");
-            const closeModal = document.querySelector(".close-btn");
-            const productTableBody = document.getElementById("productTableBody");
-            
-            // Close product window
-            closeModal.addEventListener("click", () => {
-                productModal.style.display = "none";
-            });
-            productModal.style.display = "block";
+            productsPane.style.display = "block";
             showProducts(lead.phone);  // pass the lead's phone number to fetch the products
         });
-        cell.appendChild(button);
-        row.appendChild(cell); // Add the button cell to the row
-        console.log("Row is:", row);
+        buttonCell.appendChild(button);
+        row.appendChild(buttonCell); // Add the button cell to the row
+
         leadsBody.appendChild(row);
     });
     styleStatusCells();
