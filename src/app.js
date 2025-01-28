@@ -14,7 +14,6 @@ import session from 'express-session';
 import pkg from 'pg';
 const { Client } = pkg;
 
-
 // Get the current file path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +21,8 @@ const __dirname = path.dirname(__filename);
 // Set up dotenv for environment variables
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
+export const port = process.env.PORT || 3000; 
 
 // Middleware to parse JSON requests
 app.use(cors());
@@ -679,7 +679,7 @@ app.post('/api/reset-password', async (req, res) => {
             [resetToken, expirationTime, email]
         );
 
-        const resetLink = `http://localhost:3000/set-new-password?token=${resetToken}`;
+        const resetLink = `http://localhost:port/set-new-password?token=${resetToken}`;
         
         const mailOptions = {
             from: process.env.EMAIL_USER,

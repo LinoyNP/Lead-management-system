@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/update-profile', {
+            const response = await fetch('/update-profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             // Message will disappear after 3 seconds
             setTimeout(() => {
-                successMessage.textContent = ""; // מוחק את ההודעה
+                successMessage.textContent = "";  
             }, 3000);
 
         } catch (error) {

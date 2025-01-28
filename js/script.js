@@ -95,7 +95,7 @@ async function inputFromEngineSearch(typeOfAction)
         //If the caption on the button is "New Leads," it means you are currently on the "My Leads" page.
         if (textContentMyOrNewLeads.textContent === "New Leads") {
             //Sending a request to the server to obtain information from the DB
-            response = await fetch(`http://localhost:3000/searchBy`, {
+            response = await fetch(`/searchBy`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -107,7 +107,7 @@ async function inputFromEngineSearch(typeOfAction)
         
         else{
             //Sending a request to the server to obtain information from the DB
-            response = await fetch(`http://localhost:3000/searchByForNewLeads`, {
+            response = await fetch(`/searchByForNewLeads`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ function showResultWhenSearching(){
     const query = document.getElementById('Search').value;
 
     if (query.length > 0) {
-        fetch(`http://localhost:3000/searchBy?query=${query}?email=${agentEmail}`)
+        fetch(`/searchBy?query=${query}?email=${agentEmail}`)
             .then(response => response.json())
             .then(data => {
                 const results = document.getElementById('results');
