@@ -397,15 +397,19 @@ app.post('/sortingBy', async (req, res) => {
         
         console.log("queryResults",queryResults);
         let unionQuery;
+        let intersectionQuery;
         if (queryResults.length > 0){
             
             // Trimming all queries to filter by all selected options
-            unionQuery =  [...new Set(queryResults.flat())]
-            
-            console.log(unionQuery);
+            // unionQuery =  [...new Set(queryResults.flat())]
+            // Trimming all queries to filter by all selected options
+            intersectionQuery = queryResults.reduce((accumulatedListAfterCut, list) =>
+                accumulatedListAfterCut.filter(item => list.some(entry => entry.phone === item.phone))
+            );
+            console.log(intersectionQuery);
         }
         
-        res.json(unionQuery);
+        res.json(intersectionQuery);
     }catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send({ error: 'Failed to fetch data' });
