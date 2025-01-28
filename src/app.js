@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 // Set up dotenv for environment variables
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON requests
 app.use(cors());
