@@ -335,6 +335,79 @@ app.post('/searchByForNewLeads', async (req, res) => {
     }
 });
 
+app.post('/sortingBy', async (req, res) => {
+    try{
+        // The function performs separate queries for status, lead joining source ("source"), joining date, and then snips the results.
+        const { selectedValues, agentEmail } = req.body;
+        // const queryByStatus, queryBySource, queryByJoinDate = 0;
+        let queryResults = []
+        let query;
+
+        //status
+        if (selectedValues['status'].length > 0){
+            const formattedValues = selectedValues['status'].map(value => `'${value}'`).join(", ");
+            query = `SELECT * FROM leads WHERE status IN  (${formattedValues})
+                            AND agent IN ( SELECT full_name FROM users WHERE email = $1);`;
+            // console.log(query);
+            queryResults.push((await client.query(query, [agentEmail])).rows);
+        }
+
+        //source
+        if (selectedValues['source'].length > 0)
+        {
+            const formattedValues = selectedValues['source'].map(value => `'${value}'`).join(", ");
+            query = `SELECT * FROM leads WHERE source IN  (${formattedValues})
+                            AND agent IN ( SELECT full_name FROM users WHERE email = $1);`;
+            console.log(query);
+            queryResults.push((await client.query(query, [agentEmail])).rows);
+        }
+
+        //joinDate
+        if(selectedValues['JoinDate'].length > 0){
+            const dateConditions = selectedValues['JoinDate'].map(dateOption => {
+                switch (dateOption) {
+                    case 'Today':
+                        return `DATE(joinDate) = CURRENT_DATE`;
+                    case 'Week':
+                        return `joinDate >= CURRENT_DATE - INTERVAL '7 days'`;
+                    case 'Month':
+                        return `joinDate >= CURRENT_DATE - INTERVAL '1 month'`;
+                    case 'Year':
+                        return `joinDate >= CURRENT_DATE - INTERVAL '1 year'`;
+                    case 'Years':
+                        return `joinDate >= CURRENT_DATE - INTERVAL '3 years'`;
+                    default:
+                        return null;
+                }
+            }).filter(Boolean).join(" OR ");
+
+            // const dateConditionFinal = dateConditions ? `(${dateConditions})` : "1=1";
+
+            const query = `SELECT * 
+                        FROM leads 
+                        WHERE ${dateConditions} 
+                        AND agent IN (SELECT full_name FROM users WHERE email = $1);`;
+            queryResults.push((await client.query(query, [agentEmail])).rows);
+
+        }
+        
+        console.log("queryResults",queryResults);
+        let unionQuery;
+        if (queryResults.length > 0){
+            
+            // Trimming all queries to filter by all selected options
+            unionQuery =  [...new Set(queryResults.flat())]
+            
+            console.log(unionQuery);
+        }
+        
+        res.json(unionQuery);
+    }catch (error) {
+        console.error("Error fetching data:", error);
+        res.status(500).send({ error: 'Failed to fetch data' });
+    }  
+});
+
 // ---------------------------------------- DASHBOARD ----------------------------------------------------//
 
 //Endpoint for getting results from database for pie graph

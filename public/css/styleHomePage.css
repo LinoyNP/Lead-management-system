@@ -68,14 +68,16 @@ body {
 .panel-sorting {
     display: none;
     position: absolute;
-    top: 10%;
+    top: 20%;
     left: 0;
-    width: 220px;
+    /* width: 220px; */
+    width:fit-content; 
     background-color: white; 
     border: 2px solid #42a5f5; 
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+
 }
 
 .panel-sorting.open {
@@ -84,9 +86,15 @@ body {
 
 .panel-sorting .btns-sort {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 30px;
     padding: 15px;
+    align-items: flex-start; 
+    position: relative;
+}
+
+.panel-sorting label{
+    align-items:center
 }
 
 .panel-sorting .btns-sort label {
@@ -106,6 +114,26 @@ body {
 
 .panel-sorting .btns-sort button:hover {
     background-color: #64b5f6; 
+}
+
+.sorting-options {
+    display: none;
+    margin-top: 10px;
+}
+
+.sorting-options.open {
+    display: block; 
+}
+
+.sorting-options.close{
+    display: none;
+}
+
+.checkboxs-sorting {
+    display: flex;
+    flex-direction:row; 
+    gap: 2px;
+    align-items: flex-start;
 }
 
 /* style to search*/

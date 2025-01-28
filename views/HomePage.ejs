@@ -40,7 +40,7 @@
 
             <!----Sort ---->
             <div class="sorting-container" onclick="event.stopPropagation();">
-                <button type="button" id="openSorting"  onclick="Sort(event)">
+                <button type="button" id="openSorting" >
                     <span class="material-symbols-outlined">
                         filter_alt
                         </span>
@@ -87,7 +87,7 @@
 
         <!----Panel of sort ---->
         <div class="panel-sorting" id="panel-sorting" onclick="event.stopPropagation();" >
-            <br><label for="sorting by">Sorting by..</label><br>
+            <br><label for="sorting by" style="font-size: 20px; align-items:center; ">Sorting by..</label><br>
             
             <div class="btns-sort" id = "btns-sort">
                 <!-- status -->
@@ -95,9 +95,9 @@
                     <label for="status">Status</label><br>
                     <button class="sorting-btn" id="status-btn" onclick="togglePanel(event, this)">&#9662;</button>
                     <div class="sorting-options" id="status-options" onclick="event.stopPropagation();">
-                        <label><input type="checkbox" value="new"> New</label><br>
-                        <label><input type="checkbox" value="in process"> In Process</label><br>
-                        <label><input type="checkbox" value="closed"> Closed</label>
+                        <label><input type="checkbox" value="New"> New</label><br>
+                        <label><input type="checkbox" value="In Process"> In Process</label><br>
+                        <label><input type="checkbox" value="Closed"> Closed</label>
                     </div>
                     <!-- <input type="checkbox" id="" name="checkbox-sort" value=""> -->
                 </div>
@@ -105,7 +105,7 @@
                 <!-- Joining date -->
                 <!-- <div class="checkboxs-JoiningDate"> -->
                 <div class="checkboxs-sorting">
-                    <label for="Joining date">Joining date</label>
+                    <label for="JoinDate">Joining date</label>
                     <button class="sorting-btn" id="JoiningDate-btn" onclick="togglePanel(event, this)">&#9662;</button>
                     <!-- <button class="JoiningDate-btn" id="JoiningDate-btn" onclick="toggleStatus(event)">&#9662;</button> -->
                     <div class="sorting-options" id="JoiningDate-options" onclick="event.stopPropagation();">
@@ -113,6 +113,7 @@
                         <label><input type="checkbox" value="Today"> Today</label><br>
                         <label><input type="checkbox" value="Week"> A week ago</label><br>
                         <label><input type="checkbox" value="Month"> A month ago</label>
+                        <label><input type="checkbox" value="Year"> A Year ago</label>
                         <label><input type="checkbox" value="Years"> 3 years ago</label>
                     </div>
                 </div>
@@ -120,14 +121,14 @@
                 
                 <!-- joining source -->
                 <div class="checkboxs-sorting">
-                    <label for="joiningSource">Source of joining</label><br>
+                    <label for="source">Source of joining</label><br>
                     <button class="sorting-btn" id="joiningSource-btn" onclick="togglePanel(event, this)">&#9662;</button>
                     <div class="sorting-options" id="joiningSource-options" onclick="event.stopPropagation();">
-                        <label><input type="checkbox" value="Advertisement"> "Advertisement" </label><br>
+                        <label><input type="checkbox" value="Advertising"> Advertisement </label><br>
                         <label><input type="checkbox" value="Recommendation"> Recommendation</label><br>
-                        <label><input type="checkbox" value="SocialMedia"> Social Media</label>
+                        <label><input type="checkbox" value="Social Media"> Social Media</label>
                         <label><input type="checkbox" value="Website"> Website</label>
-                        <label><input type="checkbox" value="PhoneCall"> Phone Call</label>
+                        <label><input type="checkbox" value="Phone Call"> Phone Call</label>
                     </div>
                 </div>
 
@@ -140,6 +141,7 @@
                         <label><input type="checkbox" value="Medium"> Medium Active Leads</label><br>
                         <label><input type="checkbox" value="Inactive"> Inactive Leads</label>
                     </div>
+                    <label style="color: red; font-size: 12px;">בפיתוח</label><br>
                 </div>
                 
 
