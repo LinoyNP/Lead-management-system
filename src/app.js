@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 // Set up dotenv for environment variables
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON requests
 app.use(cors());
@@ -91,7 +91,11 @@ const client = new Client({
   
   client.connect()
     .then(() => console.log("Connected to PostgreSQL on Render"))
-    .catch((err) => console.error("Connection error", err.stack));
+    .catch((err) => {
+        console.error("Connection error", err.stack);
+        process.exit(1); // Exit if connection fails
+    });    
+
   //////////
   
 // // Connect to PostgreSQL database
@@ -618,7 +622,7 @@ app.get('/verify-email', async (req, res) => {
     }
 });
 
-///////////////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------- Routes----------------------------------------------------//
 
 app.get('/', (req, res) => {
     res.render('SignUp');
@@ -645,9 +649,9 @@ app.get('/addLeadForm', (req, res) => {
 });
 
 
-app.get('/personalProfile', (req, res) => {
-    res.render('personalProfile');
-});
+// app.get('/personalProfile', (req, res) => {
+//     res.render('personalProfile');
+// });
 
 app.get('/dashboard', (req, res) => {
     res.render('dashboard');
@@ -663,8 +667,7 @@ app.get('/set-new-password', (req, res) => {
 });
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//LOGIN
+// ---------------------------------------- LOGIN ----------------------------------------------------//
 
 // Login endpoint
 app.post('/api/login', async (req, res) => {
@@ -715,6 +718,7 @@ app.post('/api/login', async (req, res) => {
         res.status(200).json({ message: 'Login successful', token });
         // res.redirect('/home');
 
+
     } catch (error) {
         console.error('Error during login:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -723,9 +727,9 @@ app.post('/api/login', async (req, res) => {
   
 
 
-/////////////////////////////////////////////////////////////////////////////////  
-// PASSWORD RESET
-  
+
+// ---------------------------------------- PASSWORD RESET ----------------------------------------------------//
+ 
 app.get('/password-reset', (req, res) => {
     res.status(200).json({ message:'This is the password reset page placeholder.'});
 });
@@ -737,7 +741,7 @@ app.post('/api/reset-password', async (req, res) => {
         if (result.rows.length === 0) {
             return res.status(400).json({ message: 'This email is not registered.' });
         }
-        //////////////
+        
         // Generating a random token with a 24-hour validity
         const resetToken = crypto.randomBytes(32).toString('hex');
         const expirationTime = new Date();
@@ -749,7 +753,7 @@ app.post('/api/reset-password', async (req, res) => {
         );
 
         const resetLink = `http://localhost:3000/set-new-password?token=${resetToken}`;
-        /////////////
+        
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -838,9 +842,8 @@ app.post('/api/set-new-password', async (req, res) => {
 
 
 
-//////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------- LOG OUT ----------------------------------------------------//
 
-//LOG OUT
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -855,9 +858,87 @@ app.post('/logout', (req, res) => {
     });
 });
 
+
+// ---------------------------------------- PERSONAL PROFILE----------------------------------------------------//
+
+// Route to display the profile page with pre-filled data
+app.get('/profile', async (req, res) => {
+    try {
+        const userId = req.session.user.id; // מזהה משתמש מתוך session או token
+    
+        if (!userId) {
+            return res.status(401).send('Unauthorized');
+        }
+    
+        const { rows } = await client.query(
+            'SELECT full_name, phone_number, city, street, house_number FROM users WHERE id = $1',
+            [userId]
+        );
+    
+        if (rows.length === 0) {
+            return res.status(404).send('User not found');
+        }
+    
+        // Render the profile page with pre-filled data
+        res.render('personalProfile', { user: rows[0] });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server error');
+    }
+  });
+  
+  
+// Route to update personal profile
+app.post("/update-profile", async (req, res) => {
+    // const { fullName, phoneNumber, city, street, houseNumber } = req.body;
+    try {
+        const userId = req.session.user.id;
+        const { fullName, phoneNumber, city, street, houseNumber } = req.body;
+    
+        if (!userId) {
+          return res.status(401).send('Unauthorized');
+        }
+  
+        // Validate user details
+        if (fullName.length > 20) {
+            return res.json({ success: false, message: "Full name must be up to 20 characters." });
+        }
+        const phonePattern = /^0\d{9}$/;
+        if (!phonePattern.test(phoneNumber)) {
+            return res.json({ success: false, message: "Phone number must be 10 digits and start with 0." });
+        }
+
+        if (!city || !street || isNaN(houseNumber)) {
+            return res.json({ success: false, message: "Invalid address data." });
+        }
+
+        // Update the data in the database
+        const result = await client.query(
+            'UPDATE users SET full_name = $1, phone_number = $2, city = $3, street = $4, house_number = $5 WHERE id = $6 RETURNING id',
+            [fullName, phoneNumber, city, street, houseNumber, userId]
+        );
+
+        if (result.rows.length > 0) {
+            const updatedUser = result.rows[0];
+            //res.render('personalProfile', { user: updatedUser });
+            res.json({ success: true, message: 'Profile updated successfully' });
+        } else {
+            res.json({ success: false, message: 'User not found.' });
+        }
+    } catch (err) {
+        console.error('Error updating profile:', err);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+
+});
+
 // ---------------------------------------------- Server ---------------------------------------------------//
+
 
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
+
+

@@ -30,6 +30,15 @@ CREATE TABLE users (
     verified BOOLEAN DEFAULT false
 );
 
+ALTER TABLE users 
+ADD COLUMN reset_token VARCHAR(100) UNIQUE,
+ADD COLUMN reset_token_expires TIMESTAMP;
+
+ALTER TABLE users
+ADD COLUMN phone_number VARCHAR(10),
+ADD COLUMN city VARCHAR(50),
+ADD COLUMN street VARCHAR(50),
+ADD COLUMN house_number INTEGER;
 
 -- Insert data into `leads` table
 INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
@@ -73,6 +82,3 @@ VALUES
     ('0521234567', 'Laptop Pro', '2025-01-12 15:45:00'); -- Example product 2
 
 
-ALTER TABLE users 
-ADD COLUMN reset_token VARCHAR(100) UNIQUE,
-ADD COLUMN reset_token_expires TIMESTAMP;

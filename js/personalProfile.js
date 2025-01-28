@@ -1,55 +1,112 @@
-document.getElementById('profileForm').addEventListener('submit', function(event) {
-    event.preventDefault();
 
-    let isValid = true;
+document.addEventListener("DOMContentLoaded", () => {
+    const profileForm = document.getElementById("profileForm");
 
-    // Reset error messages
-    document.querySelectorAll('.error-message').forEach(function(errorMessage) {
-        errorMessage.textContent = '';
+    profileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+
+        // Collecting form data
+        const fullName = document.getElementById("fullName").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const city = document.getElementById("city").value;
+        const street = document.getElementById("street").value;
+        const houseNumber = document.getElementById("houseNumber").value;
+
+        // Variables to store error status
+        let isValid = true;
+
+        // Full name validation
+        const fullNameError = document.getElementById("fullNameError");
+        if (fullName.length > 20) {
+            fullNameError.textContent = "Full name must be up to 20 characters.";
+            isValid = false;
+        } else {
+            fullNameError.textContent = "";
+        }
+
+        // Phone number validation 
+        const phoneNumberError = document.getElementById("phoneNumberError");
+        const phonePattern = /^0\d{9}$/;
+        if (!phonePattern.test(phoneNumber)) {
+            phoneNumberError.textContent = "Phone number must be 10 digits and start with 0.";
+            isValid = false;
+        } else {
+            phoneNumberError.textContent = "";
+        }
+
+        // City validation
+        const cityError = document.getElementById("cityError");
+        if (!city) {
+            cityError.textContent = "City is required.";
+            isValid = false;
+        } else {
+            cityError.textContent = "";
+        }
+
+        // Street validation
+        const streetError = document.getElementById("streetError");
+        if (!street) {
+            streetError.textContent = "Street is required.";
+            isValid = false;
+        } else {
+            streetError.textContent = "";
+        }
+
+        // House number validation
+        const houseNumberError = document.getElementById("houseNumberError");
+        if (!houseNumber || isNaN(houseNumber)) {
+            houseNumberError.textContent = "House number must be a number.";
+            isValid = false;
+        } else {
+            houseNumberError.textContent = "";
+        }
+
+        // If there are errors, do not submit the data
+        if (!isValid) {
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fullName,
+                    phoneNumber,
+                    city,
+                    street,
+                    houseNumber
+                })
+            });
+
+            const data = await response.json();
+
+            const successMessage = document.getElementById("successMessage");
+            if (response.ok) {
+                successMessage.textContent = "Profile updated successfully!";
+                successMessage.classList.add("success");
+                successMessage.classList.remove("error");
+            } else {
+                successMessage.textContent = "There was an error updating your profile.";
+                successMessage.classList.add("error");
+                successMessage.classList.remove("success");
+            }
+            // Message will disappear after 3 seconds
+            setTimeout(() => {
+                successMessage.textContent = ""; // מוחק את ההודעה
+            }, 3000);
+
+        } catch (error) {
+            const successMessage = document.getElementById("successMessage");
+            if (successMessage) {
+                successMessage.textContent = "There was an error updating your profile.";
+                successMessage.classList.add("error");
+                successMessage.classList.remove("success");
+                console.error("Error:", error);
+            }
+        }
+
     });
 
-    // Validate full name
-    const fullName = document.getElementById('fullName').value;
-    if (fullName.length > 20) {
-        document.getElementById('fullNameError').textContent = 'Full name must include up to 20 characters only.';
-        isValid = false;
-    }
-
-    // Validate phone number
-    const phoneNumber = document.getElementById('phoneNumber').value;
-    const phonePattern = /^0[0-9]{9}$/;
-    if (!phonePattern.test(phoneNumber)) {
-        document.getElementById('phoneNumberError').textContent = 'Phone number must include 10 digits and start with 0.';
-        isValid = false;
-    }
-
-    // Validate city (auto-complete from list)
-    const city = document.getElementById('city').value;
-    const validCities = ['Tel Aviv', 'Haifa', 'Jerusalem', 'Beersheba'];
-    if (!validCities.includes(city)) {
-        document.getElementById('cityError').textContent = 'City must be selected from the auto-complete list or typed manually.';
-        isValid = false;
-    }
-
-    // Validate street
-    const street = document.getElementById('street').value;
-    if (!street) {
-        document.getElementById('streetError').textContent = 'Street must be entered.';
-        isValid = false;
-    }
-
-    // Validate house number
-    const houseNumber = document.getElementById('houseNumber').value;
-    if (isNaN(houseNumber) || houseNumber <= 0) {
-        document.getElementById('houseNumberError').textContent = 'House number must include digits only.';
-        isValid = false;
-    }
-
-    if (isValid) {
-        document.getElementById('successMessage').textContent = 'Your details have been updated successfully.';
-        setTimeout(() =>{
-            window.location.href = '/home' ; // Redirect to homepage after success
-        }, 2000);
-    }
 });
-
