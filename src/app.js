@@ -23,6 +23,7 @@ dotenv.config();
 const app = express();
 // const port = process.env.PORT || 3000;
 export const port = process.env.PORT || 3000; 
+const host = process.env.HOST || 'localhost';
 
 // Middleware to parse JSON requests
 app.use(cors());
@@ -575,7 +576,7 @@ app.post('/register', async (req, res) => {
                             <h2 style="color: #333;">Hello ${fullName},</h2>
                             <p style="font-size: 16px; color: #555;">Thank you for registering with us!</p>
                             <p style="font-size: 16px; color: #555;">Please verify your email address by clicking the link below:</p>
-                            <a href="http://localhost:${port}/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
+                            <a href="http://${host}:${port}/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
                             <p style="font-size: 16px; color: #555;">If you did not request this registration, please ignore this email.</p>
                             <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
                             <p style="font-size: 14px; color: #777;">If you need assistance, please contact us at <a href="mailto:support@yourwebsite.com">support@yourwebsite.com</a></p>
@@ -756,7 +757,7 @@ app.post('/api/reset-password', async (req, res) => {
             [resetToken, expirationTime, email]
         );
 
-        const resetLink = `http://localhost:port/set-new-password?token=${resetToken}`;
+        const resetLink = `http://${host}:${port}/set-new-password?token=${resetToken}`;
         
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -939,9 +940,14 @@ app.post("/update-profile", async (req, res) => {
 // ---------------------------------------------- Server ---------------------------------------------------//
 
 
+// // Start the server and listen for incoming HTTP requests
+// app.listen(port, () => {
+//     console.log(`Server running at http://localhost:${port}`);
+// });
+
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log('listening on port', port);
 });
 
 

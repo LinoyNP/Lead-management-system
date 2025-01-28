@@ -338,7 +338,7 @@ async function Sort(){
         noResultsMessage.style.display = "none";
         try{
             //Sending a request to the server to obtain information from the DB
-            response = await fetch(`http://localhost:3000/sortingBy`, {
+            response = await fetch(`/sortingBy`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
