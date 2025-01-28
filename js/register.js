@@ -59,7 +59,7 @@ async function handleRegistration(event) {
 
     try {
         // Register the user
-        const registerResponse = await fetch('http://localhost:3000/register', {
+        const registerResponse = await fetch('/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ fullName, email, password }),

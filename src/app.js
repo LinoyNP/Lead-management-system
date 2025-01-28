@@ -5,7 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
 import path from 'path';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
@@ -14,7 +14,6 @@ import session from 'express-session';
 import pkg from 'pg';
 const { Client } = pkg;
 
-
 // Get the current file path
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +21,9 @@ const __dirname = path.dirname(__filename);
 // Set up dotenv for environment variables
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
+export const port = process.env.PORT || 3000; 
+const host = process.env.HOST || 'localhost';
 
 // Middleware to parse JSON requests
 app.use(cors());
@@ -397,15 +398,19 @@ app.post('/sortingBy', async (req, res) => {
         
         console.log("queryResults",queryResults);
         let unionQuery;
+        let intersectionQuery;
         if (queryResults.length > 0){
             
             // Trimming all queries to filter by all selected options
-            unionQuery =  [...new Set(queryResults.flat())]
-            
-            console.log(unionQuery);
+            // unionQuery =  [...new Set(queryResults.flat())]
+            // Trimming all queries to filter by all selected options
+            intersectionQuery = queryResults.reduce((accumulatedListAfterCut, list) =>
+                accumulatedListAfterCut.filter(item => list.some(entry => entry.phone === item.phone))
+            );
+            console.log(intersectionQuery);
         }
         
-        res.json(unionQuery);
+        res.json(intersectionQuery);
     }catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).send({ error: 'Failed to fetch data' });
@@ -580,7 +585,7 @@ app.post('/register', async (req, res) => {
                             <h2 style="color: #333;">Hello ${fullName},</h2>
                             <p style="font-size: 16px; color: #555;">Thank you for registering with us!</p>
                             <p style="font-size: 16px; color: #555;">Please verify your email address by clicking the link below:</p>
-                            <a href="http://localhost:${port}/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
+                            <a href="http://${host}:${port}/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
                             <p style="font-size: 16px; color: #555;">If you did not request this registration, please ignore this email.</p>
                             <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
                             <p style="font-size: 14px; color: #777;">If you need assistance, please contact us at <a href="mailto:support@yourwebsite.com">support@yourwebsite.com</a></p>
@@ -761,7 +766,7 @@ app.post('/api/reset-password', async (req, res) => {
             [resetToken, expirationTime, email]
         );
 
-        const resetLink = `http://localhost:3000/set-new-password?token=${resetToken}`;
+        const resetLink = `http://${host}:${port}/set-new-password?token=${resetToken}`;
         
         const mailOptions = {
             from: process.env.EMAIL_USER,
@@ -944,9 +949,14 @@ app.post("/update-profile", async (req, res) => {
 // ---------------------------------------------- Server ---------------------------------------------------//
 
 
+// // Start the server and listen for incoming HTTP requests
+// app.listen(port, () => {
+//     console.log(`Server running at http://localhost:${port}`);
+// });
+
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log('listening on port', port);
 });
 
 

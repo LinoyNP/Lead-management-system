@@ -92,7 +92,7 @@ function submitValidForm() {
         additionalInfo,
     };
 
-    fetch('http://localhost:3000/submitForm', {
+    fetch('/submitForm', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function leadStatusPai(){
         pieChart.innerText= '';
         try {
-            const response = await fetch(`http://localhost:3000/peiGraph?email=${agentEmail}`, {
+            const response = await fetch(`/peiGraph?email=${agentEmail}`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function SalesPerformance(){
         let dataFromQuery = NaN;
         try {
-            const response = await fetch("http://localhost:3000/barGraphSalesPerformance", {
+            const response = await fetch("/barGraphSalesPerformance", {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
