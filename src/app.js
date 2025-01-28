@@ -9,8 +9,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
-import RedisStore from 'connect-redis';
-import redis from 'redis';  
+// import RedisStore from 'connect-redis';
+// import redis from 'redis';  
 import pkg from 'pg';
 const { Client } = pkg;
 
@@ -51,34 +51,34 @@ function generateVerificationToken() {
     return crypto.randomBytes(20).toString('hex'); // Generates a 40-character hex string
 }
 
-// app.use(session({
-//     secret:process.env.SESSION_SECRET  ,  
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: false } 
-// }));
-///////
+app.use(session({
+    secret:process.env.SESSION_SECRET  ,  
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } 
+}));
+/////
 
-// יצירת הלקוח של Redis
-const redisClient = redis.createClient({
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-});
+// // יצירת הלקוח של Redis
+// const redisClient = redis.createClient({
+//     url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+// });
 
-// חיבור ל-Redis
-redisClient.connect()
-    .then(() => console.log('Redis connected'))
-    .catch((err) => console.error('Error connecting to Redis:', err));
+// // חיבור ל-Redis
+// redisClient.connect()
+//     .then(() => console.log('Redis connected'))
+//     .catch((err) => console.error('Error connecting to Redis:', err));
 
-// הגדרת session עם Redis Store
-app.use(
-    session({
-        store: new RedisStore({client: redisClient}), // שימוש ב-RedisStore לאחסון הסשנים
-        secret: process.env.SESSION_SECRET,  // משתנה סוד מה-ENV
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false },  // במקרה ואתה לא משתמש ב-https, אחרת תעבוד עם secure: true
-    })
-);
+// // הגדרת session עם Redis Store
+// app.use(
+//     session({
+//         store: new RedisStore({client: redisClient}), // שימוש ב-RedisStore לאחסון הסשנים
+//         secret: process.env.SESSION_SECRET,  // משתנה סוד מה-ENV
+//         resave: false,
+//         saveUninitialized: true,
+//         cookie: { secure: false },  // במקרה ואתה לא משתמש ב-https, אחרת תעבוד עם secure: true
+//     })
+// );
 //////
 const client = new Client({
     host: process.env.DB_HOST,
