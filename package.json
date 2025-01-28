@@ -13,6 +13,7 @@
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
+    "connect-redis": "^8.0.1",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
@@ -21,6 +22,11 @@
     "express-session": "^1.18.1",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^6.9.16",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/connect-redis": "^0.0.23",
+    "@types/redis": "^4.0.10"
   }
 }
