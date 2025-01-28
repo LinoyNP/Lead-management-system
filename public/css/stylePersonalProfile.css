@@ -78,3 +78,19 @@ button:hover {
     margin-top: 20px;
     text-align: center;
 }
+
+#successMessage {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#successMessage.success {
+    color: green;
+}
+
+#successMessage.error {
+    color: red;
+}
+

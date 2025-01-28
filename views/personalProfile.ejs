@@ -14,15 +14,15 @@
         <h1>Personal Profile</h1>
         <form id="profileForm">
             <label for="fullName">Full Name:</label>
-            <input type="text" id="fullName" name="fullName" maxlength="20" value="Yossi Cohen" required>
+            <input type="text" id="fullName" name="fullName" value="<%= user.full_name || '' %>" required>
             <span id="fullNameError" class="error-message"></span>
 
             <label for="phoneNumber">Phone Number:</label>
-            <input type="tel" id="phoneNumber" name="phoneNumber" pattern="0[0-9]{9}" value="0501234567" required>
+            <input type="tel" id="phoneNumber" name="phoneNumber" value="<%= user.phone_number || '' %>" required>
             <span id="phoneNumberError" class="error-message"></span>
 
             <label for="city">City:</label>
-            <input type="text" id="city" name="city" list="cities" value="Tel Aviv" required>
+            <input type="text" id="city" name="city" value="<%= user.city || '' %>" list="cities" required>
             <datalist id="cities">
                 <option value="Tel Aviv">
                 <option value="Haifa">
@@ -32,11 +32,11 @@
             <span id="cityError" class="error-message"></span>
 
             <label for="street">Street:</label>
-            <input type="text" id="street" name="street" value="HaShalom" required>
+            <input type="text" id="street" name="street" value="<%= user.street || '' %>" required>
             <span id="streetError" class="error-message"></span>
 
             <label for="houseNumber">House Number:</label>
-            <input type="number" id="houseNumber" name="houseNumber" value="10" required>
+            <input type="number" id="houseNumber" name="houseNumber" value="<%= user.house_number || '' %>" required>
             <span id="houseNumberError" class="error-message"></span>
 
             <button type="submit">Save</button>
