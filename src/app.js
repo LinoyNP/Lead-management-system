@@ -463,7 +463,6 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
 
 
 
-
 // Endpoint to handle form submission and add lead to the database
 app.post('/submitForm', async (req, res) => {
     const { fullName, phone, email, source, country, company } = req.body;
@@ -533,7 +532,17 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-
+//initial password check
+app.post('/verify-initialPassword', (req, res) => {
+    const { InitialPassword } = req.body;
+  
+    if (InitialPassword !== process.env.INITIAL_PASSWORD) {
+      return res.status(400).json({ error: 'Invalid initial password.' });
+    }
+  
+    res.status(200).json({ message: 'Initial password is valid.' });
+  });
+  
 //Registering a new user
 app.post('/register', async (req, res) => {
     const { fullName, email, password } = req.body;
