@@ -13,6 +13,8 @@ import session from 'express-session';
 // import redis from 'redis';  
 import pkg from 'pg';
 const { Client } = pkg;
+const { Pool } = pkg;
+
 
 // Get the current file path
 const __filename = fileURLToPath(import.meta.url);
@@ -81,21 +83,34 @@ app.use(session({
 //     })
 // );
 //////
-const client = new Client({
+// const client = new Client({
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME,
+//     ssl:{ rejectUnauthorized: false }
+//   });
+
+  const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl:{ rejectUnauthorized: false }
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
   
-  client.connect()
-    .then(() => console.log("Connected to PostgreSQL on Render"))
-    .catch((err) => {
-        console.error("Connection error", err.stack);
-        process.exit(1); // Exit if connection fails
-    });    
+  const client = await pool.connect();
+  
+//   client.connect()
+//     .then(() => console.log("Connected to PostgreSQL on Render"))
+//     .catch((err) => {
+//         console.error("Connection error", err.stack);
+//         process.exit(1); // Exit if connection fails
+//     });    
 
   //////////
   
