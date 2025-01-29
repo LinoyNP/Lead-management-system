@@ -87,7 +87,7 @@ const client = new Client({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl:true
+    ssl:{ rejectUnauthorized: false }
   });
   
   client.connect()
@@ -949,15 +949,15 @@ app.post("/update-profile", async (req, res) => {
 // ---------------------------------------------- Server ---------------------------------------------------//
 
 
-// // Start the server and listen for incoming HTTP requests
-// app.listen(port, () => {
-//     console.log(`Server running at http://localhost:${port}`);
-// });
-
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
-    console.log('listening on port', port);
+    console.log(`Server running at http://${host}:${port}`);
 });
+
+// // Start the server and listen for incoming HTTP requests
+// app.listen(port, () => {
+//     console.log('listening on port', port);
+// });
 
 
 

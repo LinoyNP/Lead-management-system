@@ -87,6 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 successMessage.textContent = "Profile updated successfully!";
                 successMessage.classList.add("success");
                 successMessage.classList.remove("error");
+                setTimeout(() => {
+                    window.location.href = "/home";
+                }, 4000);
             } else {
                 successMessage.textContent = "There was an error updating your profile.";
                 successMessage.classList.add("error");
