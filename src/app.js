@@ -783,8 +783,9 @@ app.post('/api/reset-password', async (req, res) => {
             [resetToken, expirationTime, email]
         );
 
-        const resetLink = `http://${host}:${port}/set-new-password?token=${resetToken}`;
-        
+        // const resetLink = `http://${host}:${port}/set-new-password?token=${resetToken}`;
+        const resetLink = `https://lead-management-system-91vg.onrender.com/set-new-password?token=${resetToken}`;
+
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
