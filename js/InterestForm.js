@@ -91,7 +91,7 @@ function submitValidForm() {
         company,
         additionalInfo,
     };
-
+    
     fetch('/submitForm', {
         method: 'POST',
         headers: {

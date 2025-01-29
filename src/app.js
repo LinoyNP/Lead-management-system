@@ -485,44 +485,44 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
 
 
 
-// Endpoint to handle form submission and add lead to the database
-app.post('/submitForm', async (req, res) => {
-    const { fullName, phone, email, source, country, company } = req.body;
+// // Endpoint to handle form submission and add lead to the database
+// app.post('/submitForm', async (req, res) => {
+//     const { fullName, phone, email, source, country, company } = req.body;
 
-    // Check if the phone or email already exists in the database
-    try {
-         const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
-         if (phoneCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
-         }
+//     // Check if the phone or email already exists in the database
+//     try {
+//          const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
+//          if (phoneCheck.rows.length > 0) {
+//              return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
+//          }
  
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
-         }
+//          const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+//          if (emailCheck.rows.length > 0) {
+//              return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
+//          }
 
-        // If phone does not exist, insert the new lead into the database
-        const currentDate = new Date();  // Current date and time
-        const status = 'New';            // Default status
-        const agent = '';                // Empty for now
+//         // If phone does not exist, insert the new lead into the database
+//         const currentDate = new Date();  // Current date and time
+//         const status = 'New';            // Default status
+//         const agent = '';                // Empty for now
 
-        // Insert query to add the lead to the database
-        const insertQuery = `
-            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `;
+//         // Insert query to add the lead to the database
+//         const insertQuery = `
+//             INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
+//             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+//         `;
 
-        await client.query(insertQuery, [
-            phone, fullName, email, country, company, status, currentDate, source, agent
-        ]);
+//         await client.query(insertQuery, [
+//             phone, fullName, email, country, company, status, currentDate, source, agent
+//         ]);
 
-        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
+//         res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
 
-    } catch (error) {
-        console.error("Error processing form submission:", error);
-        res.status(500).send({ error: 'Failed to process form submission.' });
-    }
-});
+//     } catch (error) {
+//         console.error("Error processing form submission:", error);
+//         res.status(500).send({ error: 'Failed to process form submission.' });
+//     }
+// });
 
 // Endpoint to update a specific field in a lead
 app.put('/leads/:id', async (req, res) => {
