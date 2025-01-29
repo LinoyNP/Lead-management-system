@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // func to add leads to the table
     async function fetchLeads() {
-        const response = await fetch(`http://localhost:3000/leads?email=${email}`);  // Server endpoint
+        const response = await fetch(`/leads?email=${email}`);  // Server endpoint
         const leads = await response.json();
         console.log("Leads fetched from server:", leads);
         const leadsBody = document.getElementById("leadsBody");
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Show products for a given lead, this functiom is global because it has use in other files
     window.showProducts  = async function (leadPhone) {
         try {
-            const response = await fetch(`http://localhost:3000/leads/${leadPhone}/products`);
+            const response = await fetch(`/leads/${leadPhone}/products`);
             const products = await response.json();
             console.log("Products fetched from server:", products);
 
@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update Lead in the SQL database
     async function updateLead(id, field, value) {
         console.log(`Updating lead with ID: ${id}, field: ${field}, value: ${value}`);
-        const response = await fetch(`http://localhost:3000/leads/${id}`, {
+        const response = await fetch(`/leads/${id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add new lead to the server
     async function addLead(newLead) {
         console.log("Sending new lead to server:", newLead);
-        const response = await fetch(`http://localhost:3000/leads?email=${email}`, {
+        const response = await fetch(`/leads?email=${email}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.textContent = "My Leads";
         //Sending a request to the server to obtain information from the DB
         try {
-            const response = await fetch(`http://localhost:3000/newLeads`, {
+            const response = await fetch(`/newLeads`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',

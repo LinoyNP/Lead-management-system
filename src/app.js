@@ -9,10 +9,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
-// import RedisStore from 'connect-redis';
-// import redis from 'redis';  
 import pkg from 'pg';
 const { Client } = pkg;
+const { Pool } = pkg;
 
 
 // Get the current file path
@@ -22,7 +21,9 @@ const __dirname = path.dirname(__filename);
 // Set up dotenv for environment variables
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
+export const port = process.env.PORT || 3000; 
+const host = process.env.HOST || 'localhost';
 
 // Middleware to parse JSON requests
 app.use(cors());
@@ -43,8 +44,10 @@ app.use('/login',(req, res, next) => {
 
 // app.use(express.static(path.join(__dirname, '../html')));
 app.use(express.static('public'));
+// app.set('views', '../views');
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
-app.set('views', '../views');
+
 
 // Function to generate a verification token
 function generateVerificationToken() {
@@ -80,21 +83,34 @@ app.use(session({
 //     })
 // );
 //////
-const client = new Client({
+// const client = new Client({
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME,
+//     ssl:{ rejectUnauthorized: false }
+//   });
+
+  const pool = new Pool({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    ssl:true
+    ssl: {
+      rejectUnauthorized: false
+    }
   });
   
-  client.connect()
-    .then(() => console.log("Connected to PostgreSQL on Render"))
-    .catch((err) => {
-        console.error("Connection error", err.stack);
-        process.exit(1); // Exit if connection fails
-    });    
+  const client = await pool.connect();
+  
+//   client.connect()
+//     .then(() => console.log("Connected to PostgreSQL on Render"))
+//     .catch((err) => {
+//         console.error("Connection error", err.stack);
+//         process.exit(1); // Exit if connection fails
+//     });    
 
   //////////
   
@@ -120,13 +136,13 @@ app.post('/submitForm', async (req, res) => {
     try {
          const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
          if (phoneCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
+             return res.status(400).json({ error: 'Lead with this phone number already exists in the system.' });
          }
  
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
-         }
+        //  const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+        //  if (emailCheck.rows.length > 0) {
+        //      return res.status(400).json({ error: 'Lead with this email already exists in the system.' });
+        //  }
 
         // If phone does not exist, insert the new lead into the database
         const currentDate = new Date();  // Current date and time
@@ -143,11 +159,11 @@ app.post('/submitForm', async (req, res) => {
             phone, fullName, email, country, company, status, currentDate, source, agent, additionalInfo
         ]);
 
-        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
+        res.status(200).json({ success: 'Form submitted successfully. Lead has been added.' });
 
     } catch (error) {
         console.error("Error processing form submission:", error);
-        res.status(500).send({ error: 'Failed to process form submission.' });
+        res.status(500).json({ error: 'Failed to process form submission.' });
     }
 });
 
@@ -467,45 +483,44 @@ app.post('/barGraphSalesPerformance', async (req, res) => {
 
 
 
+// // Endpoint to handle form submission and add lead to the database
+// app.post('/submitForm', async (req, res) => {
+//     const { fullName, phone, email, source, country, company } = req.body;
 
-// Endpoint to handle form submission and add lead to the database
-app.post('/submitForm', async (req, res) => {
-    const { fullName, phone, email, source, country, company } = req.body;
-
-    // Check if the phone or email already exists in the database
-    try {
-         const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
-         if (phoneCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
-         }
+//     // Check if the phone or email already exists in the database
+//     try {
+//          const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
+//          if (phoneCheck.rows.length > 0) {
+//              return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
+//          }
  
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
-         }
+//          const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+//          if (emailCheck.rows.length > 0) {
+//              return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
+//          }
 
-        // If phone does not exist, insert the new lead into the database
-        const currentDate = new Date();  // Current date and time
-        const status = 'New';            // Default status
-        const agent = '';                // Empty for now
+//         // If phone does not exist, insert the new lead into the database
+//         const currentDate = new Date();  // Current date and time
+//         const status = 'New';            // Default status
+//         const agent = '';                // Empty for now
 
-        // Insert query to add the lead to the database
-        const insertQuery = `
-            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `;
+//         // Insert query to add the lead to the database
+//         const insertQuery = `
+//             INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent)
+//             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+//         `;
 
-        await client.query(insertQuery, [
-            phone, fullName, email, country, company, status, currentDate, source, agent
-        ]);
+//         await client.query(insertQuery, [
+//             phone, fullName, email, country, company, status, currentDate, source, agent
+//         ]);
 
-        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
+//         res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
 
-    } catch (error) {
-        console.error("Error processing form submission:", error);
-        res.status(500).send({ error: 'Failed to process form submission.' });
-    }
-});
+//     } catch (error) {
+//         console.error("Error processing form submission:", error);
+//         res.status(500).send({ error: 'Failed to process form submission.' });
+//     }
+// });
 
 // Endpoint to update a specific field in a lead
 app.put('/leads/:id', async (req, res) => {
@@ -537,7 +552,17 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-
+//initial password check
+app.post('/verify-initialPassword', (req, res) => {
+    const { InitialPassword } = req.body;
+  
+    if (InitialPassword !== process.env.INITIAL_PASSWORD) {
+      return res.status(400).json({ error: 'Invalid initial password.' });
+    }
+  
+    res.status(200).json({ message: 'Initial password is valid.' });
+  });
+  
 //Registering a new user
 app.post('/register', async (req, res) => {
     const { fullName, email, password } = req.body;
@@ -575,7 +600,7 @@ app.post('/register', async (req, res) => {
                             <h2 style="color: #333;">Hello ${fullName},</h2>
                             <p style="font-size: 16px; color: #555;">Thank you for registering with us!</p>
                             <p style="font-size: 16px; color: #555;">Please verify your email address by clicking the link below:</p>
-                            <a href="http://localhost:${port}/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
+                            <a href="https://lead-management-system-91vg.onrender.com/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
                             <p style="font-size: 16px; color: #555;">If you did not request this registration, please ignore this email.</p>
                             <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
                             <p style="font-size: 14px; color: #777;">If you need assistance, please contact us at <a href="mailto:support@yourwebsite.com">support@yourwebsite.com</a></p>
@@ -641,7 +666,7 @@ app.get('/home', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('signUp');
+    res.render('SignUp');
 });
 
 app.get('/reset-password', (req, res) => {
@@ -756,8 +781,9 @@ app.post('/api/reset-password', async (req, res) => {
             [resetToken, expirationTime, email]
         );
 
-        const resetLink = `http://localhost:3000/set-new-password?token=${resetToken}`;
-        
+        // const resetLink = `http://${host}:${port}/set-new-password?token=${resetToken}`;
+        const resetLink = `https://lead-management-system-91vg.onrender.com/set-new-password?token=${resetToken}`;
+
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -941,8 +967,13 @@ app.post("/update-profile", async (req, res) => {
 
 // Start the server and listen for incoming HTTP requests
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://${host}:${port}`);
 });
+
+// // Start the server and listen for incoming HTTP requests
+// app.listen(port, () => {
+//     console.log('listening on port', port);
+// });
 
 
 

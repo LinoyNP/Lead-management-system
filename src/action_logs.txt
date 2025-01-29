@@ -1,0 +1,1 @@
+{"timestamp":"2025-01-29T01:36:29.460Z","action":"Form submitted successfully. Lead has been added","userId":"0506354999","ipAddress":"::1","additionalInfo":"\n            INSERT INTO leads (phone, name, email, location, company, status, joinDate, source, agent, additional_info)\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)\n        "}

@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3000/update-profile', {
+            const response = await fetch('/update-profile', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -87,6 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 successMessage.textContent = "Profile updated successfully!";
                 successMessage.classList.add("success");
                 successMessage.classList.remove("error");
+                setTimeout(() => {
+                    window.location.href = "/home";
+                }, 4000);
             } else {
                 successMessage.textContent = "There was an error updating your profile.";
                 successMessage.classList.add("error");
@@ -94,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             // Message will disappear after 3 seconds
             setTimeout(() => {
-                successMessage.textContent = ""; // מוחק את ההודעה
+                successMessage.textContent = "";  
             }, 3000);
 
         } catch (error) {

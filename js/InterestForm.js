@@ -91,32 +91,32 @@ function submitValidForm() {
         company,
         additionalInfo,
     };
-
-    fetch('http://localhost:3000/submitForm', {
+    
+    fetch('/submitForm', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                //return "The form has been submitted successfully, we will contact you soon."
-                document.getElementById('successMessage').textContent = "The form has been submitted successfully, we will contact you soon.";
-                document.getElementById('successMessage').style.color = "green";
-                document.getElementById('interestForm').reset();
-            } else if (data.error) {
-                if (data.error.includes("phone")) {
-                    document.getElementById('successMessage').textContent = "This lead already exists in the system.(change phone number)";
-                    document.getElementById('successMessage').style.color = "red";
-                } else {
-                    document.getElementById('successMessage').textContent = data.error;
-                    document.getElementById('successMessage').style.color = "red";
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            //return "The form has been submitted successfully, we will contact you soon."
+            document.getElementById('successMessage').textContent = "The form has been submitted successfully, we will contact you soon.";
+            document.getElementById('successMessage').style.color = "green";
+            document.getElementById('interestForm').reset();
+        } else if (data.error) {
+            if (data.error.includes("phone")) {
+                document.getElementById('successMessage').textContent = "This lead already exists in the system.(change phone number)";
+                document.getElementById('successMessage').style.color = "red";
+            } else {
+                document.getElementById('successMessage').textContent = data.error;
+                document.getElementById('successMessage').style.color = "red";
             }
         }
     })
-        .catch(error => {
-            return "This lead already exists in the system."
-        });
+    .catch(error => {
+        return "This lead already exists in the system."
+    });
 }
