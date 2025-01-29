@@ -656,7 +656,7 @@ app.get('/verify-email', async (req, res) => {
 // ---------------------------------------- Routes----------------------------------------------------//
 
 app.get('/', (req, res) => {
-    res.render('SignUp');
+    res.render('signUp');
 });
 
 app.get('/home', (req, res) => {
