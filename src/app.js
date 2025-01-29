@@ -602,7 +602,7 @@ app.post('/register', async (req, res) => {
                             <h2 style="color: #333;">Hello ${fullName},</h2>
                             <p style="font-size: 16px; color: #555;">Thank you for registering with us!</p>
                             <p style="font-size: 16px; color: #555;">Please verify your email address by clicking the link below:</p>
-                            <a href="http://${host}:${port}/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
+                            <a href="https://lead-management-system-91vg.onrender.com/verify-email?token=${verificationToken}" style="font-size: 16px; color: #fff; background-color: #4CAF50; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Verify your email</a>
                             <p style="font-size: 16px; color: #555;">If you did not request this registration, please ignore this email.</p>
                             <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;">
                             <p style="font-size: 14px; color: #777;">If you need assistance, please contact us at <a href="mailto:support@yourwebsite.com">support@yourwebsite.com</a></p>
