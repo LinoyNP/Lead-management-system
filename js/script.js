@@ -2,7 +2,7 @@
 -----Searching--------
 */
 const agentEmail = localStorage.getItem('userEmail');
-
+let leadsAfterSort = null;
 function filteringSearchBy(){
     // Open the "Filter by" menu
     const button = document.getElementById("openSearchingBY");
@@ -123,9 +123,33 @@ async function inputFromEngineSearch(typeOfAction)
         }
         // getting data from server
         const data = await response.json();
-        leadsData = data[0]; //Result leads by criterion
+        let leadsData = data[0]; //Result leads by criterion
         dataOfCriterion = data[1]; //Results - the criterion themselfs
         
+        if(Array.isArray(leadsAfterSort) && typeOfAction=='button'){
+            const mergedList = leadsData.concat(leadsAfterSort);
+            console.log("marge:", mergedList);
+            if (mergedList[0].length === 0){
+                leadsData = [];
+            }
+            else{
+                // Checking whether there are identical records in the merged list of leads (a list that contains both 
+                // what was filtered and what was searched for) by comparing keys (comparing the phone numbers)
+                const phoneCounts = mergedList.reduce((counts, item) => {
+                    const phone = item.phone.trim();  
+                    counts[phone] = (counts[phone] || 0) + 1;
+                    return counts;
+                }, {});
+                // Leaving duplicate entries only once
+                const intersectionQuery = Array.from(new Map(mergedList
+                        .filter(item => phoneCounts[item.phone.trim()] > 1)
+                        .map(item => [item.phone.trim(), item])).values());
+                leadsData = intersectionQuery;    
+            }
+            leadsAfterSort = null;
+            
+        }
+
         resultsList.innerHTML = ""; 
         //Show options when typing in a search engine
         dataOfCriterion.forEach(item => {
@@ -314,14 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function clearAllCheckboxes() {
-    document.querySelectorAll('.checkboxs-sorting input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-    });
-
-    // Clear selected values as well
-    for (const key in selectedValues) {
-        selectedValues[key] = [];
-    }
+    resetCheckBox();
     const allPanels = document.querySelectorAll('.sorting-options');
     allPanels.forEach((panel) => {
         panel.classList.remove('open');
@@ -362,8 +379,9 @@ async function Sort(){
                 leadsBody.innerHTML = ""; // clean the table first
                 return;
             }
-
+            
             // present data in table
+            leadsAfterSort = JSON.parse(JSON.stringify(leadsData)); 
             showLeadsSearchBy(leadsData); 
         }catch (error) {
             console.error('Error occurred:', error);
@@ -376,28 +394,28 @@ function togglePanel(event, button) {
     event.preventDefault();
     event.stopPropagation(); 
     
-    // const allPanels = document.querySelectorAll('.sorting-options');
-    // allPanels.forEach((panel) => {
-    //     panel.classList.remove('open');
-    // });
 
-    // const panel = button.nextElementSibling; 
-    // if (panel && panel.classList.contains('sorting-options')) {
-    //     panel.classList.toggle('open'); 
-    // }
     const panel = button.nextElementSibling;
 
-    // בדיקה האם הפאנל כבר פתוח לפני הסרה
     const isPanelOpen = panel.classList.contains('open');
 
-    // סגירת כל הפאנלים האחרים
     document.querySelectorAll('.sorting-options.open').forEach(openPanel => {
         openPanel.classList.remove('open');
     });
 
-    // פתיחה/סגירה של הפאנל הנוכחי בהתאם למצבו
+    
     if (!isPanelOpen) {
         panel.classList.add('open');
+    }
+}
+
+function resetCheckBox(){
+    document.querySelectorAll('.checkboxs-sorting input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+      // Clear selected values as well
+      for (const key in selectedValues) {
+        selectedValues[key] = [];
     }
 }
 

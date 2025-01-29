@@ -88,7 +88,7 @@
         <!----Panel of sort ---->
         <div class="panel-sorting" id="panel-sorting" onclick="event.stopPropagation();" >
             <br><label for="sorting by" style="font-size: 20px; align-items:center; ">Sorting by..</label><br>
-            
+            <!-- <button class = "reset" id = "reset" onclick="clearAllCheckboxes()">Reset </button> -->
             <div class="btns-sort" id = "btns-sort">
                 <!-- status -->
                 <div class="checkboxs-sorting" >
@@ -146,6 +146,8 @@
                 
 
             </div>
+            <button type="button" class="sorting-btn" id= "btns-sort" onclick="resetCheckBox()">Reset</button>
+
         </div>
     </form>
     <script src="./js/script.js"></script>
