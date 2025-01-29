@@ -17,7 +17,7 @@ function validateEmail(email) {
 // Function to validate Initial_password
 async function validateInitialPassword(InitialPassword) {
     try {
-      const response = await fetch('http://localhost:3000/verify-initialPassword', {
+      const response = await fetch('/verify-initialPassword', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ InitialPassword }),
