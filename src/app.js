@@ -141,10 +141,10 @@ app.post('/submitForm', async (req, res) => {
              return res.status(400).json({ error: 'Lead with this phone number already exists in the system.' });
          }
  
-         const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
-         if (emailCheck.rows.length > 0) {
-             return res.status(400).json({ error: 'Lead with this email already exists in the system.' });
-         }
+        //  const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
+        //  if (emailCheck.rows.length > 0) {
+        //      return res.status(400).json({ error: 'Lead with this email already exists in the system.' });
+        //  }
 
         // If phone does not exist, insert the new lead into the database
         const currentDate = new Date();  // Current date and time
