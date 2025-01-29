@@ -46,8 +46,10 @@ app.use('/login',(req, res, next) => {
 
 // app.use(express.static(path.join(__dirname, '../html')));
 app.use(express.static('public'));
+// app.set('views', '../views');
+app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'ejs');
-app.set('views', '../views');
+
 
 // Function to generate a verification token
 function generateVerificationToken() {
