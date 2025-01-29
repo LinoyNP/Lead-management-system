@@ -138,12 +138,12 @@ app.post('/submitForm', async (req, res) => {
     try {
          const phoneCheck = await client.query('SELECT * FROM leads WHERE phone = $1', [phone]);
          if (phoneCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this phone number already exists in the system.' });
+             return res.status(400).json({ error: 'Lead with this phone number already exists in the system.' });
          }
  
          const emailCheck = await client.query('SELECT * FROM leads WHERE email = $1', [email]);
          if (emailCheck.rows.length > 0) {
-             return res.status(400).send({ error: 'Lead with this email already exists in the system.' });
+             return res.status(400).json({ error: 'Lead with this email already exists in the system.' });
          }
 
         // If phone does not exist, insert the new lead into the database
@@ -161,11 +161,11 @@ app.post('/submitForm', async (req, res) => {
             phone, fullName, email, country, company, status, currentDate, source, agent, additionalInfo
         ]);
 
-        res.status(200).send({ success: 'Form submitted successfully. Lead has been added.' });
+        res.status(200).json({ success: 'Form submitted successfully. Lead has been added.' });
 
     } catch (error) {
         console.error("Error processing form submission:", error);
-        res.status(500).send({ error: 'Failed to process form submission.' });
+        res.status(500).json({ error: 'Failed to process form submission.' });
     }
 });
 
